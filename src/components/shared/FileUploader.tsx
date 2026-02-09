@@ -120,10 +120,10 @@ export function FileUploader({
       {/* Drop Zone */}
       <div
         className={clsx(
-          "border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors",
+          "border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-200 ease-in-out",
           isDragging
-            ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-            : "border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500"
+            ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 scale-[1.02] shadow-lg ring-4 ring-blue-500/10 animate-pulse"
+            : "border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-gray-50 dark:hover:bg-gray-800/50"
         )}
         onDrop={handleDrop}
         onDragOver={handleDragOver}

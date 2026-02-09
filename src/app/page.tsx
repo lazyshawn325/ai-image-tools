@@ -14,6 +14,7 @@ import {
   RotateCw,
   Palette,
   Info,
+  LayoutGrid,
 } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Container } from "@/components/layout/Container";
@@ -68,6 +69,12 @@ const tools = [
     description: "查看图片元数据，支持一键清除隐私信息",
     href: "/exif",
     icon: Info,
+  },
+  {
+    title: "图片拼图",
+    description: "将多张图片拼接成一张，支持多种布局模板",
+    href: "/collage",
+    icon: LayoutGrid,
   },
   {
     title: "二维码生成",

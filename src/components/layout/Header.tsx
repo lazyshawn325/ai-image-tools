@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { href: '/crop', label: '裁剪' },
   { href: '/rotate', label: '旋转' },
   { href: '/filters', label: '滤镜' },
+  { href: '/collage', label: '拼图' },
   { href: '/exif', label: 'EXIF' },
   { href: '/remove-bg', label: 'AI 去背景' },
   { href: '/watermark', label: '水印工具' },
