@@ -72,17 +72,25 @@
 
 ## 4. 网站功能清单
 
-### 4.1 图片处理工具 (6个)
-| 工具 | 路径 | 实现方式 |
-|------|------|----------|
-| 图片压缩 | `/compress` | browser-image-compression 库 |
-| 格式转换 | `/convert` | Canvas API |
-| 尺寸调整 | `/resize` | Canvas API |
-| 二维码生成 | `/qrcode` | qrcode 库 |
-| AI 去背景 | `/remove-bg` | ONNX Runtime + u2netp 模型 |
-| 水印工具 | `/watermark` | Canvas API |
+### 4.1 图片处理工具 (12个)
+
+| 工具 | 路径 | 实现方式 | 状态 |
+|------|------|----------|------|
+| 图片压缩 | `/compress` | browser-image-compression 库 + 批量+ZIP | ✅ |
+| 格式转换 | `/convert` | Canvas API | ✅ |
+| 尺寸调整 | `/resize` | Canvas API | ✅ |
+| 无损放大 | `/upscale` | Canvas API (多步放大算法) | ✅ 新增 |
+| 图片裁剪 | `/crop` | Canvas API + 拖拽裁剪框 | ✅ 新增 |
+| 旋转翻转 | `/rotate` | Canvas API + CSS Transform | ✅ 新增 |
+| 图片滤镜 | `/filters` | Canvas filter API | ✅ 新增 |
+| 图片拼图 | `/collage` | Canvas API (多布局模板) | ✅ 新增 |
+| EXIF 查看 | `/exif` | exif-js 库 | ✅ 新增 |
+| 二维码生成 | `/qrcode` | qrcode 库 | ✅ |
+| AI 去背景 | `/remove-bg` | ONNX Runtime + u2netp 模型 | ✅ |
+| 水印工具 | `/watermark` | Canvas API | ✅ |
 
 ### 4.2 信息页面 (5个)
+
 | 页面 | 路径 | 用途 |
 |------|------|------|
 | 关于我们 | `/about` | 网站介绍 |
@@ -90,6 +98,14 @@
 | 联系我们 | `/contact` | 联系方式 |
 | 隐私政策 | `/privacy` | 法律合规 |
 | 使用条款 | `/terms` | 法律合规 |
+
+### 4.3 UX 组件
+
+| 组件 | 路径 | 功能 |
+|------|------|------|
+| Toast 通知 | `src/components/ui/Toast.tsx` | success/error/info 提示，3秒自动消失 |
+| Spinner 加载 | `src/components/ui/Spinner.tsx` | sm/md/lg 三种尺寸加载动画 |
+| 主题切换 | `src/components/theme/ThemeToggle.tsx` | 深色/浅色模式切换 |
 
 ---
 
@@ -100,12 +116,18 @@ ai-image-tools/
 ├── src/
 │   ├── app/                    # Next.js App Router 页面
 │   │   ├── page.tsx            # 首页
-│   │   ├── layout.tsx          # 全局布局（AdSense、GA、验证码）
+│   │   ├── layout.tsx          # 全局布局（AdSense、GA、验证码、ToastProvider）
 │   │   ├── sitemap.ts          # 自动生成 sitemap.xml
 │   │   ├── robots.ts           # 自动生成 robots.txt
-│   │   ├── compress/           # 图片压缩
+│   │   ├── compress/           # 图片压缩 (支持批量+ZIP)
 │   │   ├── convert/            # 格式转换
 │   │   ├── resize/             # 尺寸调整
+│   │   ├── upscale/            # 无损放大 (2x/3x/4x)
+│   │   ├── crop/               # 图片裁剪
+│   │   ├── rotate/             # 旋转翻转
+│   │   ├── filters/            # 图片滤镜
+│   │   ├── collage/            # 图片拼图
+│   │   ├── exif/               # EXIF 查看器
 │   │   ├── qrcode/             # 二维码
 │   │   ├── remove-bg/          # AI 去背景
 │   │   ├── watermark/          # 水印
@@ -118,8 +140,9 @@ ai-image-tools/
 │       ├── analytics/          # Google Analytics 组件
 │       ├── ads/                # AdSense 广告组件
 │       ├── seo/                # JSON-LD 结构化数据
+│       ├── theme/              # ThemeProvider、ThemeToggle
 │       ├── layout/             # Header、Footer、Container
-│       ├── ui/                 # Button、Card 等 UI 组件
+│       ├── ui/                 # Button、Card、Toast、Spinner
 │       └── shared/             # FileUploader 等共享组件
 ├── public/                     # 静态资源
 ├── .env.example                # 环境变量示例
@@ -166,7 +189,7 @@ git push
 ### 中优先级
 - [ ] 优化页面性能（Lighthouse 评分）
 - [ ] 添加更多 SEO 优化
-- [ ] 考虑添加更多工具功能
+- [ ] 集成 Toast 到各工具页面显示操作结果
 
 ### 低优先级
 - [ ] 考虑自定义域名
@@ -196,13 +219,52 @@ git push
 
 ## 9. 更新日志
 
-### 2026-02-10
+### 2026-02-10 (第二次更新)
+- 新增 7 个图片处理工具：
+  - `/upscale` - 无损放大 (2x/3x/4x，Smooth/Sharp算法)
+  - `/crop` - 图片裁剪 (预设比例 1:1, 4:3, 16:9, 3:2, 9:16)
+  - `/rotate` - 旋转翻转 (0-360° + 水平/垂直翻转)
+  - `/filters` - 图片滤镜 (亮度/对比度/饱和度/黑白/复古等)
+  - `/collage` - 图片拼图 (水平/垂直/2x2/3x3/1+2/2+1布局)
+  - `/exif` - EXIF 查看器 (查看+清除元数据)
+  - `/compress` 增强 - 批量压缩 + ZIP 下载
+- 新增 UX 组件：
+  - Toast 通知组件 (success/error/info)
+  - Spinner 加载组件 (sm/md/lg)
+  - FileUploader 拖拽增强 (脉冲动画)
+- 更新首页展示 12 个工具
+- 更新导航菜单
+
+### 2026-02-10 (初始版本)
 - 初始版本发布
 - 完成 6 个图片处理工具
 - 配置 AdSense、Analytics、Search Console
 - 添加 About、FAQ、Contact 页面
 - 添加 JSON-LD 结构化数据
+- 添加深色/浅色主题切换
+- 添加移动端汉堡菜单
 - 优化 Footer 布局
+
+---
+
+## 10. 使用 Toast 通知示例
+
+```tsx
+import { useToast } from "@/components/ui/Toast";
+
+export function MyComponent() {
+  const { success, error, info } = useToast();
+  
+  const handleAction = async () => {
+    try {
+      // ... 执行操作
+      success("处理完成");
+    } catch (err) {
+      error("处理失败");
+    }
+  };
+}
+```
 
 ---
 
