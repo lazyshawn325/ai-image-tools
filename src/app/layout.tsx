@@ -16,6 +16,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
+
 export const metadata: Metadata = {
   title: "AI 图片工具箱 - 免费在线图片处理工具",
   description:
@@ -62,10 +64,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <GoogleAnalytics />
+        <ThemeProvider>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <GoogleAnalytics />
+        </ThemeProvider>
       </body>
     </html>
   );

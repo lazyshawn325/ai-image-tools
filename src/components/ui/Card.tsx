@@ -12,6 +12,7 @@ interface CardProps {
   badge?: string;
   className?: string;
   onClick?: () => void;
+  style?: React.CSSProperties;
 }
 
 export function Card({
@@ -22,17 +23,20 @@ export function Card({
   badge,
   className,
   onClick,
+  style,
 }: CardProps) {
   const content = (
     <div
       className={clsx(
         "relative p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700",
-        "transition-all duration-200",
+        "transition-all duration-300 ease-out",
+        "group",
         (href || onClick) &&
-          "cursor-pointer hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-600 hover:-translate-y-1",
+          "cursor-pointer hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-400 dark:hover:border-blue-500 hover:-translate-y-2",
         className
       )}
       onClick={onClick}
+      style={style}
     >
       {badge && (
         <span className="absolute top-3 right-3 px-2 py-1 text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 rounded-full">
@@ -40,7 +44,7 @@ export function Card({
         </span>
       )}
       {icon && (
-        <div className="mb-4 w-12 h-12 flex items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400">
+        <div className="mb-4 w-12 h-12 flex items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 transition-transform duration-300 group-hover:scale-110">
           {icon}
         </div>
       )}

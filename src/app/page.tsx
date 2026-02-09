@@ -80,37 +80,39 @@ export default function Home() {
       <div className="bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
         <Container className="py-16 md:py-24">
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 animate-fade-in-up">
             免费 AI 图片工具箱
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8 animate-fade-in-up delay-100">
             一站式图片处理，完全在浏览器运行，保护您的隐私
           </p>
-          <Link href="/compress">
+          <Link href="/compress" className="inline-block animate-fade-in-up delay-200">
             <Button size="lg">开始使用</Button>
           </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
-          {tools.map((tool) => (
+          {tools.map((tool, index) => (
             <Card
               key={tool.href}
               title={tool.title}
               description={tool.description}
               href={tool.href}
               icon={<tool.icon className="w-6 h-6" />}
+              className="animate-fade-in-up"
+              style={{ animationDelay: `${index * 100}ms` }}
             />
           ))}
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 md:p-12 shadow-lg">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 md:p-12 shadow-lg animate-fade-in-up delay-300">
           <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">
             为什么选择我们？
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <div key={index} className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400">
+              <div key={index} className="text-center group">
+                <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
                   <feature.icon className="w-8 h-8" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
