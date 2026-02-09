@@ -35,6 +35,9 @@ export const metadata: Metadata = {
     description: "免费在线图片处理工具，所有处理在浏览器本地完成",
     type: "website",
   },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+  },
 };
 
 export default function RootLayout({
