@@ -3,12 +3,17 @@ import {
   ImageDown,
   FileImage,
   Maximize2,
+  ZoomIn,
   QrCode,
   Wand2,
   Copyright,
   Shield,
   Zap,
   Infinity,
+  Crop,
+  RotateCw,
+  Palette,
+  Info,
 } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Container } from "@/components/layout/Container";
@@ -33,6 +38,36 @@ const tools = [
     description: "自定义图片尺寸，支持预设常用规格",
     href: "/resize",
     icon: Maximize2,
+  },
+  {
+    title: "无损放大",
+    description: "AI 智能放大图片，保持清晰度，支持 2x/3x/4x",
+    href: "/upscale",
+    icon: ZoomIn,
+  },
+  {
+    title: "图片裁剪",
+    description: "自由裁剪图片，支持多种预设比例",
+    href: "/crop",
+    icon: Crop,
+  },
+  {
+    title: "旋转翻转",
+    description: "旋转任意角度，支持水平/垂直翻转",
+    href: "/rotate",
+    icon: RotateCw,
+  },
+  {
+    title: "图片滤镜",
+    description: "调整亮度、对比度、饱和度，应用复古/黑白效果",
+    href: "/filters",
+    icon: Palette,
+  },
+  {
+    title: "EXIF 查看",
+    description: "查看图片元数据，支持一键清除隐私信息",
+    href: "/exif",
+    icon: Info,
   },
   {
     title: "二维码生成",

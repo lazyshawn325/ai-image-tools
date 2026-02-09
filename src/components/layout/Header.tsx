@@ -9,6 +9,11 @@ const NAV_LINKS = [
   { href: '/compress', label: '图片压缩' },
   { href: '/convert', label: '格式转换' },
   { href: '/resize', label: '尺寸调整' },
+  { href: '/upscale', label: '无损放大' },
+  { href: '/crop', label: '裁剪' },
+  { href: '/rotate', label: '旋转' },
+  { href: '/filters', label: '滤镜' },
+  { href: '/exif', label: 'EXIF' },
   { href: '/remove-bg', label: 'AI 去背景' },
   { href: '/watermark', label: '水印工具' },
 ];
