@@ -13,6 +13,7 @@ import {
 import { Card } from "@/components/ui/Card";
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/Button";
+import { WebsiteJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd";
 
 const tools = [
   {
@@ -73,8 +74,11 @@ const features = [
 
 export default function Home() {
   return (
-    <div className="bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
-      <Container className="py-16 md:py-24">
+    <>
+      <WebsiteJsonLd />
+      <OrganizationJsonLd />
+      <div className="bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
+        <Container className="py-16 md:py-24">
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
             免费 AI 图片工具箱
@@ -118,8 +122,9 @@ export default function Home() {
               </div>
             ))}
           </div>
-        </div>
-      </Container>
-    </div>
+          </div>
+        </Container>
+      </div>
+    </>
   );
 }
