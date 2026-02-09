@@ -1,65 +1,125 @@
-import Image from "next/image";
+import Link from "next/link";
+import {
+  ImageDown,
+  FileImage,
+  Maximize2,
+  QrCode,
+  Wand2,
+  Copyright,
+  Shield,
+  Zap,
+  Infinity,
+} from "lucide-react";
+import { Card } from "@/components/ui/Card";
+import { Container } from "@/components/layout/Container";
+import { Button } from "@/components/ui/Button";
+
+const tools = [
+  {
+    title: "图片压缩",
+    description: "智能压缩图片，大幅减小文件体积，保持画质",
+    href: "/compress",
+    icon: ImageDown,
+  },
+  {
+    title: "格式转换",
+    description: "支持 PNG、JPEG、WebP、GIF 等格式互转",
+    href: "/convert",
+    icon: FileImage,
+  },
+  {
+    title: "尺寸调整",
+    description: "自定义图片尺寸，支持预设常用规格",
+    href: "/resize",
+    icon: Maximize2,
+  },
+  {
+    title: "二维码生成",
+    description: "生成个性化二维码，支持自定义颜色和尺寸",
+    href: "/qrcode",
+    icon: QrCode,
+  },
+  {
+    title: "AI 去背景",
+    description: "一键智能抠图，自动移除图片背景",
+    href: "/remove-bg",
+    icon: Wand2,
+  },
+  {
+    title: "水印工具",
+    description: "添加文字或图片水印，保护作品版权",
+    href: "/watermark",
+    icon: Copyright,
+  },
+];
+
+const features = [
+  {
+    title: "隐私保护",
+    description: "所有图片处理完全在您的浏览器中进行，图片不会上传到任何服务器",
+    icon: Shield,
+  },
+  {
+    title: "完全免费",
+    description: "无需注册，无隐藏收费，所有功能永久免费使用",
+    icon: Zap,
+  },
+  {
+    title: "无限次使用",
+    description: "没有任何次数限制，随时随地处理您的图片",
+    icon: Infinity,
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
+      <Container className="py-16 md:py-24">
+        <div className="text-center mb-16">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            免费 AI 图片工具箱
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
+            一站式图片处理，完全在浏览器运行，保护您的隐私
           </p>
+          <Link href="/compress">
+            <Button size="lg">开始使用</Button>
+          </Link>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+          {tools.map((tool) => (
+            <Card
+              key={tool.href}
+              title={tool.title}
+              description={tool.description}
+              href={tool.href}
+              icon={<tool.icon className="w-6 h-6" />}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          ))}
         </div>
-      </main>
+
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 md:p-12 shadow-lg">
+          <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">
+            为什么选择我们？
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <div key={index} className="text-center">
+                <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400">
+                  <feature.icon className="w-8 h-8" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Container>
     </div>
   );
 }
