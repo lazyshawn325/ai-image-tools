@@ -1,4 +1,5 @@
 "use client";
+// Image Collage Tool - Combine multiple images into one
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Download, LayoutGrid, Grid2X2, Grid3X3, Rows, Columns } from "lucide-react";
