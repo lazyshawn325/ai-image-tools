@@ -2,57 +2,72 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Image as ImageIcon, Menu, X } from 'lucide-react';
+import { useTranslations, useLocale } from 'next-intl';
+import { Image as ImageIcon, Menu, X, Globe } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 const NAV_LINKS = [
-  { href: '/compress', label: '图片压缩' },
-  { href: '/convert', label: '格式转换' },
-  { href: '/resize', label: '尺寸调整' },
-  { href: '/upscale', label: '无损放大' },
-  { href: '/crop', label: '裁剪' },
-  { href: '/rotate', label: '旋转' },
-  { href: '/filters', label: '滤镜' },
-  { href: '/collage', label: '拼图' },
-  { href: '/exif', label: 'EXIF' },
-  { href: '/remove-bg', label: 'AI 去背景' },
-  { href: '/watermark', label: '水印工具' },
+  { href: '/compress', key: 'compress' },
+  { href: '/convert', key: 'convert' },
+  { href: '/resize', key: 'resize' },
+  { href: '/upscale', key: 'upscale' },
+  { href: '/crop', key: 'crop' },
+  { href: '/rotate', key: 'rotate' },
+  { href: '/filters', key: 'filters' },
+  { href: '/collage', key: 'collage' },
+  { href: '/exif', key: 'exif' },
+  { href: '/remove-bg', key: 'removeBg' },
+  { href: '/watermark', key: 'watermark' },
 ];
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const t = useTranslations('Navigation');
+  const locale = useLocale();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
 
+  const switchLocale = locale === 'zh' ? 'en' : 'zh';
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 max-w-screen-2xl items-center justify-between">
-        <div className="flex items-center">
-          <Link className="mr-6 flex items-center space-x-2" href="/" onClick={closeMenu}>
-            <ImageIcon className="h-6 w-6" />
-            <span className="hidden font-bold sm:inline-block">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 transition-all duration-300">
+      <div className="container flex h-16 max-w-screen-2xl items-center justify-between px-4 md:px-8">
+        <div className="flex items-center gap-8">
+          <Link className="flex items-center space-x-2 group" href="/" onClick={closeMenu}>
+            <div className="rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 p-1.5 shadow-lg shadow-indigo-500/20 group-hover:shadow-indigo-500/40 transition-all duration-300 group-hover:scale-105">
+              <ImageIcon className="h-5 w-5 text-white" />
+            </div>
+            <span className="hidden font-bold tracking-tight sm:inline-block text-lg bg-clip-text text-transparent bg-gradient-to-r from-slate-900 via-indigo-800 to-slate-900 dark:from-white dark:via-indigo-200 dark:to-white">
               AI 图片工具箱
             </span>
           </Link>
           
-          <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
-            {NAV_LINKS.map((link) => (
+          <nav className="hidden lg:flex items-center space-x-1">
+            {NAV_LINKS.slice(0, 5).map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="transition-colors hover:text-foreground/80 text-foreground/60"
+                className="px-3 py-2 rounded-md text-sm font-medium text-muted-foreground transition-all duration-200 hover:bg-accent hover:text-primary relative group"
               >
-                {link.label}
+                {t(link.key)}
+                <span className="absolute inset-x-0 bottom-0 h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
               </Link>
             ))}
           </nav>
         </div>
 
         <div className="flex items-center gap-2">
+          <Link 
+            href={`/${switchLocale}`}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent hover:text-primary transition-colors"
+          >
+            <Globe className="h-4 w-4" />
+            <span className="uppercase">{switchLocale}</span>
+          </Link>
           <ThemeToggle />
           <button
-            className="inline-flex items-center justify-center rounded-md p-2 text-foreground/60 hover:bg-accent hover:text-foreground md:hidden focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+            className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground lg:hidden focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
             onClick={toggleMenu}
             aria-label="Toggle menu"
           >
@@ -65,16 +80,16 @@ export function Header() {
         </div>
 
         {isMenuOpen && (
-          <div className="absolute left-0 top-14 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:hidden animate-[fade-in_0.2s_ease-out]">
-            <nav className="container flex flex-col space-y-4 py-6">
+          <div className="absolute left-0 top-16 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80 lg:hidden animate-fade-in-up">
+            <nav className="container grid grid-cols-2 gap-2 p-4">
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm font-medium transition-colors hover:text-primary text-foreground/80"
+                  className="flex items-center justify-center p-3 rounded-xl text-sm font-medium transition-all hover:bg-accent hover:text-primary text-muted-foreground border border-transparent hover:border-border/50 hover:shadow-sm"
                   onClick={closeMenu}
                 >
-                  {link.label}
+                  {t(link.key)}
                 </Link>
               ))}
             </nav>

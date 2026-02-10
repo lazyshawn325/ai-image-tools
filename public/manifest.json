@@ -1,0 +1,16 @@
+{
+  "name": "AI 图片工具箱",
+  "short_name": "AI工具箱",
+  "description": "专业的AI图片处理工具箱：压缩、转换、裁剪、去背景、无损放大等一站式解决方案",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

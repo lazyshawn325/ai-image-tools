@@ -1,18 +1,18 @@
-import { WebsiteJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd";
-import { Hero } from "@/components/home/Hero";
-import { ToolsGrid } from "@/components/home/ToolsGrid";
-import { Features } from "@/components/home/Features";
+"use client";
 
-export default function Home() {
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+export default function RootPage() {
+  const router = useRouter();
+  
+  useEffect(() => {
+    router.replace('/zh');
+  }, [router]);
+
   return (
-    <>
-      <WebsiteJsonLd />
-      <OrganizationJsonLd />
-      <main className="min-h-screen bg-slate-50 dark:bg-slate-950">
-        <Hero />
-        <ToolsGrid />
-        <Features />
-      </main>
-    </>
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="animate-pulse text-muted-foreground">Loading...</div>
+    </div>
   );
 }

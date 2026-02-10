@@ -1,4 +1,5 @@
 import { Container } from "@/components/layout/Container";
+import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -84,9 +85,9 @@ export default function TermsPage() {
           <h2 className="text-xl font-semibold mb-4">7. 隐私保护</h2>
           <p className="text-gray-700 dark:text-gray-300 mb-4">
             您的隐私对我们很重要。请查阅我们的
-            <a href="/privacy" className="text-blue-600 hover:underline mx-1">
+            <Link href="/privacy" className="text-blue-600 hover:underline mx-1">
               隐私政策
-            </a>
+            </Link>
             了解我们如何收集、使用和保护您的信息。
           </p>
         </section>

@@ -1,0 +1,60 @@
+{
+  "Navigation": {
+    "home": "Home",
+    "compress": "Compress",
+    "convert": "Convert",
+    "resize": "Resize",
+    "upscale": "Upscale",
+    "crop": "Crop",
+    "rotate": "Rotate",
+    "filters": "Filters",
+    "collage": "Collage",
+    "exif": "EXIF",
+    "removeBg": "Remove BG",
+    "watermark": "Watermark",
+    "about": "About",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
+  "Hero": {
+    "badge": "v1.0 Live Now",
+    "title_prefix": "Unleash Creativity",
+    "title_suffix": "Infinite Possibilities",
+    "description": "All-in-one AI image toolbox. Lossless upscaling, smart background removal, format conversion. All processed locally in your browser—secure, fast, and free.",
+    "cta_primary": "Get Started",
+    "cta_secondary": "Learn More",
+    "feature_privacy": "Privacy First",
+    "feature_speed": "Blazing Fast",
+    "feature_free": "100% Free"
+  },
+  "Tools": {
+    "title": "Powerful Image Tools",
+    "subtitle": "Everything you need for image processing",
+    "compress_desc": "Smart compression to reduce file size while maintaining quality",
+    "convert_desc": "Convert between PNG, JPEG, WebP, GIF and more",
+    "resize_desc": "Resize images with custom dimensions or presets",
+    "upscale_desc": "AI-powered upscaling (2x/3x/4x) with clarity",
+    "removeBg_desc": "One-click AI background removal",
+    "crop_desc": "Crop images freely or with preset ratios",
+    "rotate_desc": "Rotate images and flip horizontally/vertically",
+    "filters_desc": "Adjust brightness, contrast, saturation, and apply filters",
+    "exif_desc": "View and clear image metadata (EXIF)",
+    "collage_desc": "Combine multiple images into one with layouts",
+    "qrcode_desc": "Generate custom QR codes with colors and logos",
+    "watermark_desc": "Add text or image watermarks to protect your work"
+  },
+  "Footer": {
+    "description": "Professional online image tools. Local processing for maximum privacy. Secure, fast, and free.",
+    "buyMeCoffee": "Buy me a coffee",
+    "copyright": "AI Image Tools. All rights reserved.",
+    "about": "About",
+    "legal": "Legal"
+  },
+  "Common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success"
+  }
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from 'next-intl';
 import { Card } from "@/components/ui/Card";
 import {
   ImageDown,
@@ -17,82 +18,19 @@ import {
   LayoutGrid,
 } from "lucide-react";
 
-const tools = [
-  {
-    title: "图片压缩",
-    description: "智能压缩图片，大幅减小文件体积，保持画质",
-    href: "/compress",
-    icon: <ImageDown className="w-8 h-8" />,
-    badge: "热门",
-  },
-  {
-    title: "格式转换",
-    description: "支持 PNG、JPEG、WebP、GIF 等格式互转",
-    href: "/convert",
-    icon: <FileImage className="w-8 h-8" />,
-  },
-  {
-    title: "尺寸调整",
-    description: "自定义图片尺寸，支持预设常用规格",
-    href: "/resize",
-    icon: <Maximize2 className="w-8 h-8" />,
-  },
-  {
-    title: "无损放大",
-    description: "AI 智能放大图片，保持清晰度，支持 2x/3x/4x",
-    href: "/upscale",
-    icon: <ZoomIn className="w-8 h-8" />,
-    badge: "AI",
-  },
-  {
-    title: "AI 去背景",
-    description: "一键智能抠图，自动移除图片背景",
-    href: "/remove-bg",
-    icon: <Wand2 className="w-8 h-8" />,
-    badge: "AI",
-  },
-  {
-    title: "图片裁剪",
-    description: "自由裁剪图片，支持多种预设比例",
-    href: "/crop",
-    icon: <Crop className="w-8 h-8" />,
-  },
-  {
-    title: "旋转翻转",
-    description: "旋转任意角度，支持水平/垂直翻转",
-    href: "/rotate",
-    icon: <RotateCw className="w-8 h-8" />,
-  },
-  {
-    title: "图片滤镜",
-    description: "调整亮度、对比度、饱和度，应用复古/黑白效果",
-    href: "/filters",
-    icon: <Palette className="w-8 h-8" />,
-  },
-  {
-    title: "EXIF 查看",
-    description: "查看图片元数据，支持一键清除隐私信息",
-    href: "/exif",
-    icon: <Info className="w-8 h-8" />,
-  },
-  {
-    title: "图片拼图",
-    description: "将多张图片拼接成一张，支持多种布局模板",
-    href: "/collage",
-    icon: <LayoutGrid className="w-8 h-8" />,
-  },
-  {
-    title: "二维码生成",
-    description: "生成个性化二维码，支持自定义颜色和尺寸",
-    href: "/qrcode",
-    icon: <QrCode className="w-8 h-8" />,
-  },
-  {
-    title: "水印工具",
-    description: "添加文字或图片水印，保护作品版权",
-    href: "/watermark",
-    icon: <Copyright className="w-8 h-8" />,
-  },
+const toolsConfig = [
+  { key: 'compress', href: '/compress', icon: ImageDown, badge: '热门' },
+  { key: 'convert', href: '/convert', icon: FileImage },
+  { key: 'resize', href: '/resize', icon: Maximize2 },
+  { key: 'upscale', href: '/upscale', icon: ZoomIn, badge: 'AI' },
+  { key: 'removeBg', href: '/remove-bg', icon: Wand2, badge: 'AI' },
+  { key: 'crop', href: '/crop', icon: Crop },
+  { key: 'rotate', href: '/rotate', icon: RotateCw },
+  { key: 'filters', href: '/filters', icon: Palette },
+  { key: 'exif', href: '/exif', icon: Info },
+  { key: 'collage', href: '/collage', icon: LayoutGrid },
+  { key: 'qrcode', href: '/qrcode', icon: QrCode },
+  { key: 'watermark', href: '/watermark', icon: Copyright },
 ];
 
 const container = {
@@ -111,15 +49,26 @@ const item = {
 };
 
 export function ToolsGrid() {
+  const t = useTranslations('Tools');
+  const tNav = useTranslations('Navigation');
+
+  const tools = toolsConfig.map(config => ({
+    title: tNav(config.key),
+    description: t(`${config.key}_desc`),
+    href: config.href,
+    icon: <config.icon className="w-6 h-6" />,
+    badge: config.badge,
+  }));
+
   return (
-    <section className="py-12 bg-slate-50 dark:bg-slate-900/50" id="tools">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-24 relative" id="tools">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
-            强大的图片处理工具
+          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            {t('title')}
           </h2>
-          <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">
-            涵盖您日常所需的各类图片处理功能
+          <p className="mt-4 text-lg text-muted-foreground">
+            {t('subtitle')}
           </p>
         </div>
         
@@ -127,18 +76,18 @@ export function ToolsGrid() {
           variants={container}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           {tools.map((tool) => (
-            <motion.div key={tool.href} variants={item}>
+            <motion.div key={tool.href} variants={item} className="h-full">
               <Card
                 title={tool.title}
                 description={tool.description}
                 href={tool.href}
                 icon={tool.icon}
                 badge={tool.badge}
-                className="h-full"
+                className="h-full glass-card hover:bg-white/40 dark:hover:bg-zinc-800/40 hover:scale-[1.02] hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 group !border-white/20 dark:!border-white/5"
               />
             </motion.div>
           ))}

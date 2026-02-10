@@ -73,7 +73,7 @@ export default function CollagePage() {
       isMounted = false;
       images.forEach(img => URL.revokeObjectURL(img.src));
     };
-  }, [files]);
+  }, [files, images]);
 
   useEffect(() => {
     const count = files.length;
@@ -86,7 +86,7 @@ export default function CollagePage() {
       else if (count === 3) setLayoutId("layout-1-2");
       else setLayoutId("horizontal");
     }
-  }, [files.length]);
+  }, [files.length, layoutId]);
 
   const drawImageCover = (ctx: CanvasRenderingContext2D, img: HTMLImageElement, x: number, y: number, w: number, h: number) => {
     const ratio = w / h;

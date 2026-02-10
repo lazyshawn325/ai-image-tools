@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "outline" | "ghost";
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "icon";
   loading?: boolean;
 }
 
@@ -28,19 +28,20 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variants = {
       primary:
-        "bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg hover:shadow-indigo-500/30 focus:ring-indigo-500 transition-all duration-300 hover:-translate-y-0.5",
+        "bg-primary text-primary-foreground shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all duration-300 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:brightness-110",
       secondary:
-        "bg-slate-100 text-slate-900 hover:bg-slate-200 focus:ring-slate-500 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 transition-all duration-300",
+        "bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:scale-[1.02] active:scale-95 transition-all duration-200",
       outline:
-        "border border-slate-300 text-slate-700 hover:bg-slate-50 focus:ring-slate-500 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800 transition-all duration-300",
+        "border border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-primary/50 transition-all duration-200",
       ghost:
-        "text-slate-700 hover:bg-slate-100 focus:ring-slate-500 dark:text-slate-300 dark:hover:bg-slate-800 transition-all duration-300",
+        "hover:bg-accent hover:text-accent-foreground transition-all duration-200",
     };
 
     const sizes = {
       sm: "px-3 py-1.5 text-sm",
       md: "px-4 py-2 text-base",
       lg: "px-6 py-3 text-lg",
+      icon: "p-2",
     };
 
     return (

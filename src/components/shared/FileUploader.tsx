@@ -1,8 +1,9 @@
 "use client";
 
 import { useCallback, useState, useRef } from "react";
-import { Upload, X, Image as ImageIcon } from "lucide-react";
+import { UploadCloud, X, FileImage } from "lucide-react";
 import { clsx } from "clsx";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface FileUploaderProps {
   accept?: string;
@@ -110,7 +111,9 @@ export function FileUploader({
 
   const removeFile = (index: number) => {
     const newFiles = files.filter((_, i) => i !== index);
-    URL.revokeObjectURL(files[index].preview);
+    if (files[index]) {
+      URL.revokeObjectURL(files[index].preview);
+    }
     setFiles(newFiles);
     onFilesSelected(newFiles.map((f) => f.file));
   };
@@ -120,16 +123,18 @@ export function FileUploader({
       {/* Drop Zone */}
       <div
         className={clsx(
-          "border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-200 ease-in-out",
+          "relative border-2 border-dashed rounded-2xl p-10 text-center cursor-pointer transition-all duration-300 ease-out group overflow-hidden",
           isDragging
-            ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 scale-[1.02] shadow-lg ring-4 ring-blue-500/10 animate-pulse"
-            : "border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-gray-50 dark:hover:bg-gray-800/50"
+            ? "border-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/20 scale-[1.01] shadow-xl shadow-indigo-500/10"
+            : "border-border hover:border-indigo-400 dark:hover:border-indigo-500/50 hover:bg-muted/30"
         )}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onClick={handleClick}
       >
+        <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,rgba(255,255,255,0.1),rgba(255,255,255,0.5))] pointer-events-none" />
+        
         <input
           ref={inputRef}
           type="file"
@@ -138,55 +143,80 @@ export function FileUploader({
           onChange={handleInputChange}
           className="hidden"
         />
-        <Upload className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-        <p className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-1">
-          点击或拖拽上传图片
-        </p>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          支持 {accept} 格式，最大 {formatSize(maxSize)}
-        </p>
+        
+        <div className="relative z-10 flex flex-col items-center justify-center space-y-4">
+          <div className={clsx(
+            "p-4 rounded-full transition-all duration-300",
+            isDragging ? "bg-indigo-100 text-indigo-600 scale-110" : "bg-muted text-muted-foreground group-hover:bg-indigo-50 group-hover:text-indigo-500 dark:group-hover:bg-indigo-900/30"
+          )}>
+            <UploadCloud className="w-10 h-10" />
+          </div>
+          
+          <div className="space-y-1">
+            <p className="text-xl font-semibold text-foreground">
+              点击或拖拽上传图片
+            </p>
+            <p className="text-sm text-muted-foreground">
+              支持 {accept} 格式，最大 {formatSize(maxSize)}
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* File List */}
-      {files.length > 0 && (
-        <div className="mt-4 space-y-3">
-          {files.map((file, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
-            >
-              {file.file.type.startsWith("image/") ? (
-                <img
-                  src={file.preview}
-                  alt={file.file.name}
-                  className="w-12 h-12 object-cover rounded"
-                />
-              ) : (
-                <div className="w-12 h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded">
-                  <ImageIcon className="w-6 h-6 text-gray-500" />
-                </div>
-              )}
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                  {file.file.name}
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {formatSize(file.file.size)}
-                </p>
-              </div>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  removeFile(index);
-                }}
-                className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
+      <AnimatePresence>
+        {files.length > 0 && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
+          >
+            {files.map((file, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="group relative aspect-square rounded-xl overflow-hidden border border-border bg-muted/30"
               >
-                <X className="w-5 h-5 text-gray-500" />
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
+                {file.file.type.startsWith("image/") ? (
+                  <img
+                    src={file.preview}
+                    alt={file.file.name}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center">
+                    <FileImage className="w-8 h-8 text-muted-foreground mb-2" />
+                    <span className="text-xs text-muted-foreground break-all line-clamp-2">
+                      {file.file.name}
+                    </span>
+                  </div>
+                )}
+                
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeFile(index);
+                    }}
+                    className="p-2 bg-white/10 backdrop-blur-md rounded-full text-white hover:bg-white/20 transition-colors transform hover:scale-110"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+                
+                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                  <p className="text-xs text-white truncate px-1">
+                    {formatSize(file.file.size)}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
