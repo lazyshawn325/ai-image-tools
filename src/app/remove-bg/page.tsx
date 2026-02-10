@@ -7,7 +7,11 @@ import { useToast } from "@/components/ui/Toast";
 import { Button } from "@/components/ui/Button";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
 
+import { SoftwareApplicationJsonLd } from "@/components/seo/JsonLd";
+import { SEOContent } from "@/components/seo/SEOContent";
+
 interface ProcessedImage {
+
   original: string;
   result: string;
   width: number;
@@ -15,7 +19,40 @@ interface ProcessedImage {
 }
 
 export default function RemoveBackgroundPage() {
+  const seoData = {
+    title: "AI 智能去背景 - 免费在线图片抠图工具",
+    description: "基于先进 AI 模型的在线去背景工具，一键自动移除图片背景。采用 WebAssembly 技术，所有处理均在浏览器本地完成，保护您的隐私。支持发丝级精细抠图，适合电商主图、证件照制作、设计素材处理等多种场景。",
+    features: [
+      "🤖 智能识别：使用 u2netp 深度学习模型，精准识别人物、物体和边缘",
+      "🛡️ 隐私保护：所有计算均在本地浏览器完成，图片无需上传到云端",
+      "⚡️ 实时处理：利用 ONNX Runtime Web 加速，无需等待服务器排队",
+      "✨ 精细抠图：支持处理复杂背景和半透明物体（如头发、婚纱）",
+      "🆓 永久免费：无限制使用次数，无水印导出高清单图"
+    ],
+    howToUse: [
+      "点击上传区域或直接拖拽图片到页面中",
+      "系统自动加载 AI 模型并开始分析图片（首次加载可能需要几秒）",
+      "等待处理进度条完成，预览抠图效果",
+      "点击“下载 PNG 图片”保存透明背景结果，或点击“清除”处理下一张"
+    ],
+    faq: [
+      {
+        question: "去背景后的图片是什么格式？",
+        answer: "为了支持透明背景，处理后的图片将自动保存为 PNG 格式。"
+      },
+      {
+        question: "为什么第一次使用加载比较慢？",
+        answer: "首次使用时需要下载 AI 模型文件（约 40MB）到您的浏览器缓存中。下载完成后，后续使用将非常快速，甚至可以离线使用。"
+      },
+      {
+        question: "处理大图片会卡顿吗？",
+        answer: "为了保证性能，超大图片会被自动压缩到适中尺寸进行 AI 推理，然后再还原到原始分辨率，通常不会造成明显卡顿。"
+      }
+    ]
+  };
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [processed, setProcessed] = useState<ProcessedImage | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -230,7 +267,14 @@ export default function RemoveBackgroundPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <>
+      <SoftwareApplicationJsonLd
+        name="AI 智能去背景工具"
+        description="免费在线 AI 抠图工具，一键移除图片背景"
+        url="https://ai-image-tools-h41u.vercel.app/remove-bg"
+      />
+      <div className="max-w-6xl mx-auto px-4 py-8">
+
       <AdBannerAuto slot={process.env.NEXT_PUBLIC_AD_SLOT_BANNER} />
       <h1 className="text-3xl font-bold text-center mb-2">AI 智能去背景</h1>
       <p className="text-gray-600 dark:text-gray-400 text-center mb-8">
@@ -359,29 +403,9 @@ export default function RemoveBackgroundPage() {
         </div>
       )}
 
-      <div className="mt-12 grid md:grid-cols-3 gap-6 text-center">
-        <div className="p-6">
-          <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">1</span>
-          </div>
-          <h3 className="font-medium mb-2">上传图片</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">支持拖拽上传或点击选择图片文件</p>
-        </div>
-        <div className="p-6">
-          <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">2</span>
-          </div>
-          <h3 className="font-medium mb-2">AI 处理</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">AI 自动识别主体，智能移除背景</p>
-        </div>
-        <div className="p-6">
-          <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">3</span>
-          </div>
-          <h3 className="font-medium mb-2">下载结果</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">获取透明背景 PNG 图片</p>
-        </div>
       </div>
-    </div>
+      <SEOContent {...seoData} />
+    </>
   );
 }
+

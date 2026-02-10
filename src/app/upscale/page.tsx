@@ -7,8 +7,11 @@ import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
+import { SoftwareApplicationJsonLd } from "@/components/seo/JsonLd";
+import { SEOContent } from "@/components/seo/SEOContent";
 
 interface UpscaledImage {
+
   original: File;
   previewOriginal: string;
   previewUpscaled: string;
@@ -24,7 +27,40 @@ type ScaleOption = 2 | 3 | 4;
 type Algorithm = "smooth" | "sharp";
 
 export default function UpscalePage() {
+  const seoData = {
+    title: "图片无损放大 - 免费在线图片画质增强工具",
+    description: "采用先进的图像处理算法，免费在线放大图片尺寸。支持 2倍、3倍、4倍无损放大，提供平滑（Smooth）和锐利（Sharp）两种算法模式，有效消除锯齿和模糊。完全在浏览器本地运行，保护隐私。",
+    features: [
+      "🔍 无损放大：智能插值算法，放大图片同时保持边缘清晰，减少锯齿",
+      "⚙️ 多种模式：提供 Smooth（适合人像）和 Sharp（适合插画/文字）两种算法",
+      "🚀 本地处理：利用 Canvas API 和 WebAssembly 技术，所有计算在本地完成",
+      "👀 实时对比：提供处理前后效果对比滑块，直观感受画质提升",
+      "📱 全平台支持：兼容电脑、平板和手机浏览器，随时随地使用"
+    ],
+    howToUse: [
+      "上传需要放大的图片（支持 JPG, PNG 等常见格式）",
+      "选择放大倍数（2x, 3x, 4x）和处理算法（平滑或锐利）",
+      "点击“开始放大”按钮，系统将自动进行像素增强处理",
+      "使用对比滑块查看效果，满意后点击“下载图片”保存结果"
+    ],
+    faq: [
+      {
+        question: "无损放大是真的无损吗？",
+        answer: "“无损”是指在放大过程中尽可能保留原始细节并减少失真。实际上，从低分辨率生成高分辨率必然涉及像素预测，我们使用优化的算法使结果尽可能接近无损效果。"
+      },
+      {
+        question: "平滑（Smooth）和锐利（Sharp）有什么区别？",
+        answer: "平滑模式适合照片、人像等自然图像，能减少噪点；锐利模式适合动漫、插画、文字截图，能保持边缘锋利清晰。"
+      },
+      {
+        question: "为什么处理速度有时候会变慢？",
+        answer: "处理速度取决于图片原始尺寸和放大倍数。例如将 1000px 图片放大 4 倍会生成 4000px 的大图，计算量呈指数级增长，请耐心等待。"
+      }
+    ]
+  };
+
   const [file, setFile] = useState<File | null>(null);
+
   const [scale, setScale] = useState<ScaleOption>(2);
   const [algorithm, setAlgorithm] = useState<Algorithm>("sharp");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -217,8 +253,15 @@ export default function UpscalePage() {
   }, [isDragging]);
 
   return (
-    <Container className="py-8">
+    <>
+      <SoftwareApplicationJsonLd
+        name="图片无损放大工具"
+        description="免费在线图片无损放大，支持 2x/3x/4x 放大"
+        url="https://ai-image-tools-h41u.vercel.app/upscale"
+      />
+      <Container className="py-8">
       <div className="max-w-5xl mx-auto">
+
         <AdBannerAuto slot={process.env.NEXT_PUBLIC_AD_SLOT_BANNER} />
         
         <div className="mb-8 text-center">
@@ -421,5 +464,8 @@ export default function UpscalePage() {
         )}
       </div>
     </Container>
+    <SEOContent {...seoData} />
+    </>
   );
 }
+
