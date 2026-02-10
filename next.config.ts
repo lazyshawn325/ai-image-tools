@@ -12,7 +12,6 @@ const withPWA = require("next-pwa")({
 const withNextIntl = require("next-intl/plugin")("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
-  output: "standalone",
   reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: true,
