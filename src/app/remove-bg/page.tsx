@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef } from "react";
 import * as ort from "onnxruntime-web";
 import { Upload, Loader2 } from "lucide-react";
+import { useToast } from "@/components/ui/Toast";
 import { Button } from "@/components/ui/Button";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
 
@@ -21,6 +22,7 @@ export default function RemoveBackgroundPage() {
   const [progress, setProgress] = useState<string>("");
   const [error, setError] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { success, error: toastError } = useToast();
 
   ort.env.wasm.wasmPaths = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.24.1/dist/";
 
@@ -29,12 +31,16 @@ export default function RemoveBackgroundPage() {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      setError("请选择图片文件");
+      const msg = "请选择图片文件";
+      setError(msg);
+      toastError(msg);
       return;
     }
 
     if (file.size > 10 * 1024 * 1024) {
-      setError("图片大小不能超过 10MB");
+      const msg = "图片大小不能超过 10MB";
+      setError(msg);
+      toastError(msg);
       return;
     }
 
@@ -42,14 +48,16 @@ export default function RemoveBackgroundPage() {
     setSelectedFile(file);
     setPreviewUrl(URL.createObjectURL(file));
     setProcessed(null);
-  }, []);
+  }, [toastError]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     if (file && file.type.startsWith("image/")) {
       if (file.size > 10 * 1024 * 1024) {
-        setError("图片大小不能超过 10MB");
+        const msg = "图片大小不能超过 10MB";
+        setError(msg);
+        toastError(msg);
         return;
       }
       setError("");
@@ -57,7 +65,7 @@ export default function RemoveBackgroundPage() {
       setPreviewUrl(URL.createObjectURL(file));
       setProcessed(null);
     }
-  }, []);
+  }, [toastError]);
 
   const preprocessImage = async (imgElement: HTMLImageElement): Promise<Float32Array> => {
     const targetSize = 320;
@@ -191,9 +199,12 @@ export default function RemoveBackgroundPage() {
 
       setProgress("完成！");
       session.release();
+      success("AI 抠图完成");
     } catch (err) {
       console.error("处理失败:", err);
-      setError("处理失败，请重试。如果问题持续，请尝试使用较小的图片。");
+      const msg = "处理失败，请重试。如果问题持续，请尝试使用较小的图片。";
+      setError(msg);
+      toastError(msg);
     } finally {
       setIsProcessing(false);
     }

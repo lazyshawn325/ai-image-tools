@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { Download } from "lucide-react";
+import { useToast } from "@/components/ui/Toast";
 import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
@@ -57,6 +58,7 @@ export default function ConvertPage() {
   const [isConverting, setIsConverting] = useState(false);
   const [results, setResults] = useState<ConvertedImage[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const { success, error: toastError } = useToast();
 
   const formatSize = (bytes: number) => {
     if (bytes < 1024) return bytes + " B";
@@ -88,12 +90,15 @@ export default function ConvertPage() {
         });
       }
       setResults(newResults);
+      success("所有图片转换完成");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "转换失败");
+      const msg = err instanceof Error ? err.message : "转换失败";
+      setError(msg);
+      toastError(msg);
     } finally {
       setIsConverting(false);
     }
-  }, [files, targetFormat, quality]);
+  }, [files, targetFormat, quality, success, toastError]);
 
   const downloadImage = (result: ConvertedImage) => {
     const url = URL.createObjectURL(result.converted);

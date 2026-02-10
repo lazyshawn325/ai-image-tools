@@ -9,6 +9,7 @@ import {
   FlipVertical,
   Undo2
 } from "lucide-react";
+import { useToast } from "@/components/ui/Toast";
 import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
@@ -21,6 +22,7 @@ export default function RotatePage() {
   const [flipH, setFlipH] = useState(false);
   const [flipV, setFlipV] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const { success, error: toastError } = useToast();
 
   useEffect(() => {
     return () => {
@@ -96,10 +98,12 @@ export default function RotatePage() {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         setIsProcessing(false);
+        success("旋转图片下载开始");
       }, file.type);
 
     } catch (error) {
       console.error("Error processing image:", error);
+      toastError(error instanceof Error ? error.message : "旋转失败");
       setIsProcessing(false);
     }
   };

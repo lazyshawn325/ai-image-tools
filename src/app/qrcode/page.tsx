@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import QRCode from 'qrcode';
 import { RefreshCw, Image as ImageIcon, FileCode } from 'lucide-react';
+import { useToast } from "@/components/ui/Toast";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
 
 export default function QRCodePage() {
@@ -14,6 +15,7 @@ export default function QRCodePage() {
   const [dataUrl, setDataUrl] = useState('');
   const [svgString, setSvgString] = useState('');
   const [, setLoading] = useState(false);
+  const { success, error: toastError } = useToast();
 
   const generateQRCode = useCallback(async () => {
     try {
@@ -35,10 +37,11 @@ export default function QRCodePage() {
       setSvgString(svg);
     } catch (err) {
       console.error(err);
+      toastError("二维码生成失败");
     } finally {
       setLoading(false);
     }
-  }, [text, size, fgColor, bgColor, level]);
+  }, [text, size, fgColor, bgColor, level, toastError]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -56,6 +59,7 @@ export default function QRCodePage() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    success("二维码(PNG)下载开始");
   };
 
   const downloadSVG = () => {
@@ -69,6 +73,7 @@ export default function QRCodePage() {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+    success("二维码(SVG)下载开始");
   };
 
   return (

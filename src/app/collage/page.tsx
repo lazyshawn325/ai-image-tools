@@ -3,6 +3,7 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Download, LayoutGrid, Grid2X2, Grid3X3, Rows, Columns } from "lucide-react";
+import { useToast } from "@/components/ui/Toast";
 import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
@@ -34,6 +35,7 @@ export default function CollagePage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [swapSourceIndex, setSwapSourceIndex] = useState<number | null>(null);
+  const { success, error: toastError } = useToast();
 
   useEffect(() => {
     if (files.length === 0) {
@@ -250,15 +252,16 @@ export default function CollagePage() {
     link.download = `collage_${Date.now()}.png`;
     link.href = canvasRef.current.toDataURL("image/png");
     link.click();
+    success("拼图下载开始");
   };
 
   const handleFilesSelected = (selectedFiles: File[]) => {
     if (selectedFiles.length < 2) {
-      alert("请至少选择2张图片");
+      toastError("请至少选择2张图片");
       return;
     }
     if (selectedFiles.length > 9) {
-      alert("最多支持9张图片");
+      toastError("最多支持9张图片");
       setFiles(selectedFiles.slice(0, 9));
     } else {
       setFiles(selectedFiles);

@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { Download, RotateCcw, Wand2, Image as ImageIcon } from "lucide-react";
+import { useToast } from "@/components/ui/Toast";
 import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
@@ -54,6 +55,7 @@ export default function FiltersPage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [settings, setSettings] = useState<FilterSettings>(DEFAULT_SETTINGS);
   const [isProcessing, setIsProcessing] = useState(false);
+  const { success, error: toastError } = useToast();
 
   const getFilterString = (s: FilterSettings) => {
     return `brightness(${s.brightness}%) contrast(${s.contrast}%) saturate(${s.saturate}%) grayscale(${s.grayscale}%) blur(${s.blur}px) sepia(${s.sepia}%)`;
@@ -104,15 +106,19 @@ export default function FiltersPage() {
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+            success("滤镜图片下载开始");
+          } else {
+            toastError("滤镜图片生成失败");
           }
         }, file.type);
       }
     } catch (error) {
       console.error("Failed to process image", error);
+      toastError("处理图片失败");
     } finally {
       setIsProcessing(false);
     }
-  }, [file, previewUrl, settings]);
+  }, [file, previewUrl, settings, success, toastError]);
 
   return (
     <Container className="py-8">

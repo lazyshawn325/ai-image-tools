@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Download, Crop as CropIcon, Monitor, Square, Smartphone } from "lucide-react";
+import { useToast } from "@/components/ui/Toast";
 import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
@@ -39,6 +40,7 @@ export default function CropPage() {
   const [activeHandle, setActiveHandle] = useState<string | null>(null);
   const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
   const [startCrop, setStartCrop] = useState<CropArea | null>(null);
+  const { success, error: toastError } = useToast();
 
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -242,7 +244,10 @@ export default function CropPage() {
     if (!canvas || !file) return;
 
     canvas.toBlob((blob) => {
-      if (!blob) return;
+      if (!blob) {
+        toastError("裁剪图片生成失败");
+        return;
+      }
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -252,6 +257,7 @@ export default function CropPage() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+      success("裁剪图片下载开始");
     });
   };
 

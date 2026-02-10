@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { Download, ZoomIn, MoveHorizontal, Zap, Image as ImageIcon } from "lucide-react";
+import { useToast } from "@/components/ui/Toast";
 import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
@@ -29,6 +30,7 @@ export default function UpscalePage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [result, setResult] = useState<UpscaledImage | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { success, error: toastError } = useToast();
   const [sliderPosition, setSliderPosition] = useState(50);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -168,12 +170,15 @@ export default function UpscalePage() {
       }
       
       setResult(res);
+      success("图片无损放大完成");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "处理失败");
+      const msg = err instanceof Error ? err.message : "处理失败";
+      setError(msg);
+      toastError(msg);
     } finally {
       setIsProcessing(false);
     }
-  }, [file, scale, algorithm, result]);
+  }, [file, scale, algorithm, result, success, toastError]);
 
   const downloadResult = () => {
     if (!result) return;

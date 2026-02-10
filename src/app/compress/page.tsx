@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { Download } from "lucide-react";
 import imageCompression from "browser-image-compression";
+import { useToast } from "@/components/ui/Toast";
 import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
@@ -24,6 +25,7 @@ export default function CompressPage() {
   const [isCompressing, setIsCompressing] = useState(false);
   const [results, setResults] = useState<CompressedImage[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const { success, error: toastError } = useToast();
 
   const formatSize = (bytes: number) => {
     if (bytes < 1024) return bytes + " B";
@@ -59,12 +61,15 @@ export default function CompressPage() {
         });
       }
       setResults(newResults);
+      success("所有图片压缩完成");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "压缩失败");
+      const errorMessage = err instanceof Error ? err.message : "压缩失败";
+      setError(errorMessage);
+      toastError(errorMessage);
     } finally {
       setIsCompressing(false);
     }
-  }, [files, quality, maxWidth, maxHeight]);
+  }, [files, quality, maxWidth, maxHeight, success, toastError]);
 
   const downloadImage = (result: CompressedImage) => {
     const url = URL.createObjectURL(result.compressed);

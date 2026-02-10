@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Trash2, MapPin, Camera, Image as ImageIcon, Info } from "lucide-react";
 import EXIF from "exif-js";
+import { useToast } from "@/components/ui/Toast";
 import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
@@ -37,6 +38,7 @@ interface ProcessedImage {
 export default function ExifPage() {
   const [selectedImage, setSelectedImage] = useState<ProcessedImage | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { success, error: toastError } = useToast();
 
   const convertDMSToDD = (dms: number[], ref: string) => {
     if (!dms || dms.length < 3) return null;
@@ -92,7 +94,9 @@ export default function ExifPage() {
       });
     } catch (err) {
       console.error(err);
-      setError("读取图片信息失败");
+      const msg = "读取图片信息失败";
+      setError(msg);
+      toastError(msg);
     }
   };
 
@@ -122,10 +126,13 @@ export default function ExifPage() {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+        success("清除EXIF并下载开始");
       }, selectedImage.file.type, 1.0);
     } catch (err) {
       console.error(err);
-      setError("清除EXIF失败");
+      const msg = "清除EXIF失败";
+      setError(msg);
+      toastError(msg);
     }
   };
 

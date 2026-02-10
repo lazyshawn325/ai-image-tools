@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { Download, Link, Unlink } from "lucide-react";
+import { useToast } from "@/components/ui/Toast";
 import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
@@ -65,6 +66,7 @@ export default function ResizePage() {
   const [isResizing, setIsResizing] = useState(false);
   const [results, setResults] = useState<ResizedImage[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const { success, error: toastError } = useToast();
 
   // Get original image dimensions
   useEffect(() => {
@@ -127,12 +129,15 @@ export default function ResizePage() {
         });
       }
       setResults(newResults);
+      success("所有图片尺寸调整完成");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "调整失败");
+      const msg = err instanceof Error ? err.message : "调整失败";
+      setError(msg);
+      toastError(msg);
     } finally {
       setIsResizing(false);
     }
-  }, [files, targetWidth, targetHeight]);
+  }, [files, targetWidth, targetHeight, success, toastError]);
 
   const downloadImage = (result: ResizedImage) => {
     const url = URL.createObjectURL(result.resized);

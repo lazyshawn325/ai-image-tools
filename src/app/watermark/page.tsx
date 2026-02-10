@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import { Upload, Type, Image as ImageIcon, Download, X } from "lucide-react";
+import { useToast } from "@/components/ui/Toast";
 import { Button } from "@/components/ui/Button";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
 
@@ -34,6 +35,7 @@ export default function WatermarkPage() {
   const [watermarkImageFile, setWatermarkImageFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const watermarkInputRef = useRef<HTMLInputElement>(null);
+  const { success, error: toastError } = useToast();
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -91,43 +93,55 @@ export default function WatermarkPage() {
   const applyWatermark = async () => {
     if (!selectedFile) return;
 
-    const img = new Image();
-    img.src = previewUrl;
-    await new Promise((resolve) => { img.onload = resolve; });
+    try {
+      const img = new Image();
+      img.src = previewUrl;
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+      });
 
-    const canvas = document.createElement("canvas");
-    canvas.width = img.width;
-    canvas.height = img.height;
-    const ctx = canvas.getContext("2d")!;
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext("2d")!;
 
-    ctx.drawImage(img, 0, 0);
+      ctx.drawImage(img, 0, 0);
 
-    ctx.save();
-    ctx.globalAlpha = settings.opacity;
+      ctx.save();
+      ctx.globalAlpha = settings.opacity;
 
-    if (settings.type === "text") {
-      ctx.font = `${settings.fontSize}px Arial`;
-      ctx.fillStyle = settings.color;
-      const metrics = ctx.measureText(settings.text);
-      const pos = getPosition(canvas.width, canvas.height, metrics.width, settings.fontSize);
-      ctx.fillText(settings.text, pos.x, pos.y);
-    } else if (settings.type === "image" && settings.watermarkImage) {
-      const wmImg = new Image();
-      wmImg.src = settings.watermarkImage;
-      await new Promise((resolve) => { wmImg.onload = resolve; });
+      if (settings.type === "text") {
+        ctx.font = `${settings.fontSize}px Arial`;
+        ctx.fillStyle = settings.color;
+        const metrics = ctx.measureText(settings.text);
+        const pos = getPosition(canvas.width, canvas.height, metrics.width, settings.fontSize);
+        ctx.fillText(settings.text, pos.x, pos.y);
+      } else if (settings.type === "image" && settings.watermarkImage) {
+        const wmImg = new Image();
+        wmImg.src = settings.watermarkImage;
+        await new Promise((resolve, reject) => {
+          wmImg.onload = resolve;
+          wmImg.onerror = reject;
+        });
 
-      const wmWidth = img.width * settings.scale;
-      const wmHeight = (wmImg.height / wmImg.width) * wmWidth;
-      const pos = getPosition(canvas.width, canvas.height, wmWidth, wmHeight);
+        const wmWidth = img.width * settings.scale;
+        const wmHeight = (wmImg.height / wmImg.width) * wmWidth;
+        const pos = getPosition(canvas.width, canvas.height, wmWidth, wmHeight);
 
-      ctx.translate(pos.x + wmWidth / 2, pos.y - wmHeight / 2);
-      ctx.rotate((settings.rotate * Math.PI) / 180);
-      ctx.drawImage(wmImg, -wmWidth / 2, -wmHeight / 2, wmWidth, wmHeight);
+        ctx.translate(pos.x + wmWidth / 2, pos.y - wmHeight / 2);
+        ctx.rotate((settings.rotate * Math.PI) / 180);
+        ctx.drawImage(wmImg, -wmWidth / 2, -wmHeight / 2, wmWidth, wmHeight);
+      }
+
+      ctx.restore();
+
+      setResultUrl(canvas.toDataURL("image/png"));
+      success("水印添加完成");
+    } catch (error) {
+      console.error(error);
+      toastError("水印添加失败");
     }
-
-    ctx.restore();
-
-    setResultUrl(canvas.toDataURL("image/png"));
   };
 
   const downloadResult = () => {
@@ -136,6 +150,7 @@ export default function WatermarkPage() {
     link.href = resultUrl;
     link.download = `watermarked-${Date.now()}.png`;
     link.click();
+    success("图片下载开始");
   };
 
   const clearAll = () => {
