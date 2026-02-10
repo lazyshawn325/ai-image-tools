@@ -28,37 +28,46 @@ export function Card({
   const content = (
     <div
       className={clsx(
-        "relative p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700",
-        "transition-all duration-300 ease-out",
+        "relative p-6 rounded-2xl border transition-all duration-300 ease-out h-full",
+        "bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm",
+        "border-slate-200 dark:border-slate-800",
         "group",
         (href || onClick) &&
-          "cursor-pointer hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-400 dark:hover:border-blue-500 hover:-translate-y-2",
+          "cursor-pointer hover:shadow-2xl hover:shadow-indigo-500/10 hover:border-indigo-500/30 dark:hover:border-indigo-400/30 hover:-translate-y-1",
         className
       )}
       onClick={onClick}
       style={style}
     >
       {badge && (
-        <span className="absolute top-3 right-3 px-2 py-1 text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 rounded-full">
+        <span className="absolute top-3 right-3 px-2 py-1 text-xs font-medium bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300 rounded-full">
           {badge}
         </span>
       )}
-      {icon && (
-        <div className="mb-4 w-12 h-12 flex items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 transition-transform duration-300 group-hover:scale-110">
-          {icon}
-        </div>
-      )}
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        {title}
-      </h3>
-      {description && (
-        <p className="text-sm text-gray-600 dark:text-gray-400">{description}</p>
-      )}
+      <div className="flex flex-col h-full">
+        {icon && (
+          <div className="mb-5 w-14 h-14 flex items-center justify-center rounded-2xl bg-indigo-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 transition-all duration-300 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white shadow-sm group-hover:shadow-indigo-500/30">
+            {icon}
+          </div>
+        )}
+        <h3 className="text-xl font-bold text-slate-900 dark:text-slate-50 mb-3 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+          {title}
+        </h3>
+        {description && (
+          <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm flex-grow">
+            {description}
+          </p>
+        )}
+      </div>
     </div>
   );
 
   if (href) {
-    return <Link href={href}>{content}</Link>;
+    return (
+      <Link href={href} className="block h-full">
+        {content}
+      </Link>
+    );
   }
 
   return content;
