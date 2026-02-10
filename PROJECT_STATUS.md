@@ -224,7 +224,18 @@ git push
 
 ## 9. 更新日志
 
+### 2026-02-10 (第四次更新 - SEO 专项优化)
+- 🚀 **SEO 基础设施修复**:
+  - 修正 `robots.txt` 和 `sitemap.xml` 域名配置，使用 `NEXT_PUBLIC_SITE_URL` 环境变量
+- 📝 **高价值内容注入**:
+  - 新增 `SEOContent` 组件，支持结构化文本展示
+  - 为 `/compress`, `/remove-bg`, `/upscale` 页面添加 300+ 字专业文案 (功能/指南/FAQ)
+- 🔍 **Schema 结构化数据**:
+  - 为工具页面添加 `SoftwareApplication` Schema，提升搜索展示效果
+- ✅ **构建验证通过**: 所有页面无 ESLint 错误，生产构建成功
+
 ### 2026-02-10 (第三次更新)
+
 - 全站集成 Toast 通知系统，提升用户交互体验
 - 优化所有工具页面的错误处理和成功提示
 
