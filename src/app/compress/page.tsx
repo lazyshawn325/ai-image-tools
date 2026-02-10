@@ -17,8 +17,44 @@ interface CompressedImage {
   preview: string;
 }
 
+import { SoftwareApplicationJsonLd } from "@/components/seo/JsonLd";
+import { SEOContent } from "@/components/seo/SEOContent";
+
 export default function CompressPage() {
+  const seoData = {
+    title: "图片压缩 - 免费在线图片压缩工具",
+    description: "专业的在线图片压缩工具，支持 JPG、PNG、WebP 等格式。使用浏览器本地压缩技术，无需上传服务器，保护您的隐私安全。支持批量处理，可自定义压缩质量和尺寸，一键打包下载。",
+    features: [
+      "🛡️ 隐私安全：所有处理均在浏览器本地完成，图片无需上传服务器",
+      "⚡️ 极速处理：利用 WebAssembly 技术，压缩速度快，即开即用",
+      "📦 批量操作：支持同时选择多张图片进行压缩，大大提高效率",
+      "🎛️ 自定义参数：可自由调节压缩质量、最大宽度和高度，满足不同场景需求",
+      "💾 一键下载：支持单张下载或打包为 ZIP 文件下载"
+    ],
+    howToUse: [
+      "点击上传区域或直接拖拽图片到网页中",
+      "根据需求调整压缩质量（Quality）和尺寸限制",
+      "点击“开始压缩”按钮，等待处理完成",
+      "预览压缩效果，点击“下载”保存单张图片，或“全部下载”保存所有结果"
+    ],
+    faq: [
+      {
+        question: "图片会被上传到服务器吗？",
+        answer: "不会。本工具使用浏览器本地压缩技术，所有图片处理都在您的设备上完成，绝对安全。"
+      },
+      {
+        question: "支持哪些图片格式？",
+        answer: "支持常见的图片格式，包括 JPG、JPEG、PNG、WebP、BMP 等。"
+      },
+      {
+        question: "压缩后的图片清晰度如何？",
+        answer: "您可以通过调节“质量”参数来平衡清晰度和文件大小。通常 80% 的质量可以在肉眼几乎看不出区别的情况下大幅减小体积。"
+      }
+    ]
+  };
+
   const [files, setFiles] = useState<File[]>([]);
+
   const [quality, setQuality] = useState(80);
   const [maxWidth, setMaxWidth] = useState(1920);
   const [maxHeight, setMaxHeight] = useState(1080);
@@ -87,7 +123,14 @@ export default function CompressPage() {
   };
 
   return (
-    <Container className="py-8">
+    <>
+      <SoftwareApplicationJsonLd
+        name="图片压缩工具"
+        description="免费在线图片压缩工具，支持批量处理，保护隐私"
+        url="https://ai-image-tools-h41u.vercel.app/compress"
+      />
+      <Container className="py-8">
+
       <div className="max-w-4xl mx-auto">
         <AdBannerAuto slot={process.env.NEXT_PUBLIC_AD_SLOT_BANNER} />
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -222,6 +265,9 @@ export default function CompressPage() {
           </div>
         )}
       </div>
-    </Container>
+      </Container>
+      <SEOContent {...seoData} />
+    </>
   );
 }
+
