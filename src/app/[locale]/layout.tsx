@@ -9,6 +9,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { ToastProvider } from "@/components/ui/Toast";
+import { routing } from '@/i18n/routing';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,6 +20,10 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({locale}));
+}
 
 export const viewport: Viewport = {
   width: "device-width",
