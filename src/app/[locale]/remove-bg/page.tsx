@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
-import * as ort from "onnxruntime-web";
+import type * as ORT from "onnxruntime-web";
 import { Upload, Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/Toast";
 import { Button } from "@/components/ui/Button";
@@ -60,8 +60,6 @@ export default function RemoveBackgroundPage() {
   const [error, setError] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { success, error: toastError } = useToast();
-
-  ort.env.wasm.wasmPaths = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.24.1/dist/";
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -193,6 +191,10 @@ export default function RemoveBackgroundPage() {
       const inputData = await preprocessImage(img);
 
       setProgress("正在加载 AI 模型...");
+      // Dynamically import onnxruntime-web to avoid SSR issues
+      const ort = (await import("onnxruntime-web")) as any;
+      ort.env.wasm.wasmPaths = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.24.1/dist/";
+
       const session = await ort.InferenceSession.create(
         "https://huggingface.co/park168/ai-removebg-model/resolve/main/u2netp.onnx",
         {
