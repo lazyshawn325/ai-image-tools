@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 export function DonationButton({ variant = "default" }: { variant?: "default" | "minimal" | "floating" }) {
   const t = useTranslations("Navigation");
-  const donationUrl = "https://www.buymeacoffee.com/lazyshawn"; 
+  const donationUrl = "https://www.buymeacoffee.com/andojbk7"; 
 
   if (variant === "minimal") {
     return (

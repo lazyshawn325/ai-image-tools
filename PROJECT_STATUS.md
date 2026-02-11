@@ -245,7 +245,7 @@ git push
 - ⚡ **增长黑客 (Growth Hacking)**:
   - **社交分享**: 在工具结果页增加精美的分享组件 (ShareButtons)，支持 Twitter/Facebook/链接复制。
   - **用户留存**: 新增浮动式“历史记录”面板 (HistoryPanel)，自动保存用户操作记录，打造工具台体验。
-  - **打赏机制**: 集成 "Buy Me a Coffee" 按钮 (浮动+页脚)，增加非广告收入来源。
+  - **打赏机制**: 集成 "Buy Me a Coffee" 按钮 (浮动+页脚)，链接已更新为您的真实收款地址 `buymeacoffee.com/andojbk7`。
 - 🕸️ **SEO 流量矩阵 (Programmatic SEO)**:
   - **格式专用页**: 实现了动态路由 `/convert/[slug]`，自动生成所有格式组合的落地页（如 `/convert/webp-to-png`）。
   - **动态 TDK**: 每个专用页都有独立的 Title、Description，精准覆盖长尾关键词。
