@@ -224,6 +224,23 @@ git push
 
 ## 9. 更新日志
 
+### 2026-02-11 (第六次更新 - 核心修复与体验升级)
+- 🐛 **严重 BUG 修复**:
+  - **ONNX Runtime 崩溃修复**: 将 AI 去背景模型的加载改为动态导入 (Dynamic Import)，彻底解决了 Vercel 部署时的 "Server-side exception" 问题。
+  - **构建失败修复**: 解决了 Next.js SSG 构建时的 "Locale is required" 错误。
+    - 重构所有 12 个工具页面为 **Server Wrapper + Client Component** 模式。
+    - 在所有 Layout 和 Page 中正确实施 `setRequestLocale`。
+  - **语言切换修复**: 修复了语言切换按钮导致路径丢失的问题，现在使用 `next-intl` 的 `Link` 组件保留当前路径。
+
+- 🎨 **视觉体验升级 (UI 2.0)**:
+  - **极光背景 (Aurora)**: 首页增加动态流动的蓝紫色极光背景。
+  - **聚光灯卡片 (Spotlight)**: 工具卡片增加鼠标跟随光圈效果，提升科技感。
+  - **按钮流光**: CTA 按钮增加扫光动画。
+  - **滚动条美化**: 全局自定义细长滚动条。
+
+- 📝 **文档更新**:
+  - 新增 `docs/ARCHITECTURE.md`: 记录了解决 SSG 构建问题的架构模式和 ONNX 动态加载方案，方便后续维护。
+
 ### 2026-02-10 (第五次更新 - UI 视觉升级)
 - 🎨 **Modern SaaS 设计重构**:
   - 全局引入 **Glassmorphism (磨砂玻璃)** 和 **Dot Pattern (点阵背景)**
