@@ -246,6 +246,11 @@ git push
   - **社交分享**: 在工具结果页增加精美的分享组件 (ShareButtons)，支持 Twitter/Facebook/链接复制。
   - **用户留存**: 新增浮动式“历史记录”面板 (HistoryPanel)，自动保存用户操作记录，打造工具台体验。
   - **打赏机制**: 集成 "Buy Me a Coffee" 按钮 (浮动+页脚)，增加非广告收入来源。
+- 🕸️ **SEO 流量矩阵 (Programmatic SEO)**:
+  - **格式专用页**: 实现了动态路由 `/convert/[slug]`，自动生成所有格式组合的落地页（如 `/convert/webp-to-png`）。
+  - **动态 TDK**: 每个专用页都有独立的 Title、Description，精准覆盖长尾关键词。
+  - **面包屑导航**: 全站增加 Schema.org 兼容的面包屑导航，提升搜索展示效果。
+  - **Sitemap**: 自动将所有生成的动态页面加入 `sitemap.xml`，确保收录。
 
 ### 2026-02-11 (第六次更新 - 核心修复与体验升级)
 - 🐛 **严重 BUG 修复**:

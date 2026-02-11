@@ -10,6 +10,7 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { ToastProvider } from "@/components/ui/Toast";
 import { routing } from '@/i18n/routing';
+import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -106,7 +107,10 @@ export default async function LocaleLayout({
           <ThemeProvider>
             <ToastProvider>
               <Header />
-              <main className="flex-1">{children}</main>
+              <main className="flex-1">
+                <Breadcrumbs />
+                {children}
+              </main>
               <Footer />
               <GoogleAnalytics />
             </ToastProvider>

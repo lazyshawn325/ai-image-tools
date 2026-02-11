@@ -19,6 +19,12 @@ interface ConvertedImage {
   format: ImageFormat;
 }
 
+interface ConvertPageProps {
+  initialTarget?: string;
+  titleOverride?: string;
+  descriptionOverride?: string;
+}
+
 const formats: { value: ImageFormat; label: string }[] = [
   { value: "png", label: "PNG" },
   { value: "jpeg", label: "JPEG" },
@@ -53,10 +59,10 @@ function convertImage(
   });
 }
 
-export default function ConvertPage() {
+export default function ConvertPage({ initialTarget, titleOverride, descriptionOverride }: ConvertPageProps) {
   const t = useTranslations("Convert");
   const [files, setFiles] = useState<File[]>([]);
-  const [targetFormat, setTargetFormat] = useState<ImageFormat>("png");
+  const [targetFormat, setTargetFormat] = useState<ImageFormat>((initialTarget as ImageFormat) || "png");
   const [quality, setQuality] = useState(90);
   const [isConverting, setIsConverting] = useState(false);
   const [results, setResults] = useState<ConvertedImage[]>([]);
@@ -128,10 +134,10 @@ export default function ConvertPage() {
       <div className="max-w-4xl mx-auto">
         <AdBannerAuto slot={process.env.NEXT_PUBLIC_AD_SLOT_BANNER} />
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          {t("title")}
+          {titleOverride || t("title")}
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mb-8">
-          {t("description")}
+          {descriptionOverride || t("description")}
         </p>
 
         {/* Upload Area */}

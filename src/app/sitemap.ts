@@ -1,7 +1,16 @@
 import { MetadataRoute } from "next";
+import { generateConvertPairs } from "@/config/seo-matrix";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ai-image-tools-h41u.vercel.app";
+  
+  const convertPairs = generateConvertPairs();
+  const convertRoutes = convertPairs.map(pair => ({
+    url: `${baseUrl}/convert/${pair.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
 
   return [
     {
@@ -112,5 +121,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly",
       priority: 0.3,
     },
+    ...convertRoutes,
   ];
 }
