@@ -8,6 +8,7 @@ import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
+import { RelatedTools } from "@/components/shared/RelatedTools";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 
@@ -290,6 +291,8 @@ export default function CompressPage() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        <RelatedTools currentTool="compress" />
       </div>
     </Container>
   );

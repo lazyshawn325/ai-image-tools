@@ -6,6 +6,7 @@ import { Upload, Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/Toast";
 import { Button } from "@/components/ui/Button";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
+import { RelatedTools } from "@/components/shared/RelatedTools";
 
 import { SoftwareApplicationJsonLd } from "@/components/seo/JsonLd";
 import { SEOContent } from "@/components/seo/SEOContent";
@@ -381,6 +382,8 @@ export default function RemoveBackgroundPage() {
           </div>
         </div>
       )}
+
+      <RelatedTools currentTool="removeBg" />
 
       </div>
       <SEOContent {...seoData} />

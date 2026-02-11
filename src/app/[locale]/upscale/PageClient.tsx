@@ -7,6 +7,7 @@ import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
+import { RelatedTools } from "@/components/shared/RelatedTools";
 import { SoftwareApplicationJsonLd } from "@/components/seo/JsonLd";
 import { SEOContent } from "@/components/seo/SEOContent";
 import { useTranslations } from "next-intl";
@@ -442,6 +443,8 @@ export default function UpscalePage() {
             {error}
           </div>
         )}
+
+        <RelatedTools currentTool="upscale" />
       </div>
     </Container>
     <SEOContent {...seoData} />
