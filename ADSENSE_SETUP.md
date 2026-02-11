@@ -29,6 +29,7 @@ AdSense 会给你一段验证代码，类似：
 
 1. 复制 `ca-pub-XXXXXXXXXXXXXXXX` 这个 Publisher ID
 2. 在 Vercel 中配置环境变量
+3. **重要：** 确保 `public/ads.txt` 文件包含你的 Publisher ID 信息（本项目已自动生成，请确认内容正确）
 
 ## 第3步：在 Vercel 配置环境变量
 

@@ -238,6 +238,8 @@ git push
     - **UI 交互**: 按钮、提示、错误信息、加载状态全部国际化。
     - **动态内容**: FAQ、Terms、Features 等长文本内容均提取至 JSON 配置文件。
   - **组件升级**: `FileUploader` 等共享组件支持传入自定义翻译文案。
+- 💰 **AdSense 优化**:
+  - **ads.txt**: 自动创建了 `public/ads.txt` 文件，包含了正确的 Publisher ID，这是 AdSense 审核和收益的关键。
 
 ### 2026-02-11 (第六次更新 - 核心修复与体验升级)
 - 🐛 **严重 BUG 修复**:
