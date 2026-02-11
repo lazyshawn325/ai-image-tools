@@ -224,14 +224,20 @@ git push
 
 ## 9. 更新日志
 
-### 2026-02-12 (第七次更新 - 紧急修复)
+### 2026-02-12 (第七次更新 - 紧急修复与全站国际化)
 - 🐛 **BUG 修复**:
   - **语言切换失效**: 修复了点击切换语言按钮无法从英文切回中文的问题。
     - 原因：`as-needed` 模式下默认语言无前缀，且未强制更新 `NEXT_LOCALE` Cookie，导致中间件根据浏览器首选语言（英文）再次重定向。
     - 修复：切换时显式设置 `NEXT_LOCALE` Cookie 并使用 `router.replace` 刷新路由。
-- 🌍 **国际化完善**:
-  - **全站汉化/英化**: 修复了 Features、Privacy Policy、Image Filters 等页面的硬编码中文，实现了完整的中英文切换。
-  - **组件国际化**: `FileUploader` 组件现在支持自定义提示文案，并根据当前语言自动切换默认提示。
+- 🌍 **全站国际化 (i18n) 完成**:
+  - **覆盖所有页面**: 彻底移除了所有 12 个工具页面及 5 个信息页面的硬编码中文。
+    - 工具：Compress, Convert, Resize, Crop, Upscale, RemoveBG, Watermark, Collage, Rotate, Exif, QRCode, Filters。
+    - 信息：About, Contact, FAQ, Terms, Privacy。
+  - **深度本地化**:
+    - **SEO Metadata**: 所有页面的标题、描述、关键词均支持中英双语。
+    - **UI 交互**: 按钮、提示、错误信息、加载状态全部国际化。
+    - **动态内容**: FAQ、Terms、Features 等长文本内容均提取至 JSON 配置文件。
+  - **组件升级**: `FileUploader` 等共享组件支持传入自定义翻译文案。
 
 ### 2026-02-11 (第六次更新 - 核心修复与体验升级)
 - 🐛 **严重 BUG 修复**:

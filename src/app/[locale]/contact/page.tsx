@@ -2,13 +2,18 @@ import { Container } from "@/components/layout/Container";
 import type { Metadata } from "next";
 import { Mail, Github, MessageCircle, HelpCircle } from "lucide-react";
 import Link from "next/link";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 
-export const metadata: Metadata = {
-  title: "联系我们 - AI 图片工具箱",
-  description: "有任何问题、建议或反馈？欢迎联系 AI 图片工具箱团队。我们可以通过邮件或 GitHub 接收您的反馈。",
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "Contact" });
+
+  return {
+    title: t("meta_title"),
+    description: t("meta_desc"),
+  };
+}
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -21,6 +26,7 @@ export default async function ContactPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "Contact" });
 
   return (
     <Container className="py-12">
@@ -28,11 +34,10 @@ export default async function ContactPage({
 
         <div className="text-center mb-12">
           <h1 className="text-3xl font-bold mb-4 text-gray-900 dark:text-gray-100">
-            联系我们
+            {t("title")}
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            我们非常重视您的反馈。无论是功能建议、Bug 报告，还是单纯的问候，
-            我们都乐意听到您的声音。
+            {t("description")}
           </p>
         </div>
 
@@ -42,10 +47,10 @@ export default async function ContactPage({
               <Mail className="w-6 h-6" />
             </div>
             <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
-              邮箱联系
+              {t("email_title")}
             </h3>
             <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
-              直接发送邮件给我们
+              {t("email_desc")}
             </p>
             <a
               href="mailto:contact@ai-image-tools.com"
@@ -60,10 +65,10 @@ export default async function ContactPage({
               <Github className="w-6 h-6" />
             </div>
             <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
-              GitHub
+              {t("github_title")}
             </h3>
             <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
-              查看源码或贡献代码
+              {t("github_desc")}
             </p>
             <a
               href="https://github.com/lazyshawn325/ai-image-tools"
@@ -71,7 +76,7 @@ export default async function ContactPage({
               rel="noopener noreferrer"
               className="text-blue-600 dark:text-blue-400 hover:underline text-sm font-medium"
             >
-              访问 GitHub 仓库
+              {t("visit_github")}
             </a>
           </div>
 
@@ -80,10 +85,10 @@ export default async function ContactPage({
               <MessageCircle className="w-6 h-6" />
             </div>
             <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
-              反馈建议
+              {t("feedback_title")}
             </h3>
             <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
-              提交 Bug 或功能请求
+              {t("feedback_desc")}
             </p>
             <a
               href="https://github.com/lazyshawn325/ai-image-tools/issues"
@@ -91,7 +96,7 @@ export default async function ContactPage({
               rel="noopener noreferrer"
               className="text-blue-600 dark:text-blue-400 hover:underline text-sm font-medium"
             >
-              去 GitHub 提 Issue
+              {t("submit_issue")}
             </a>
           </div>
         </div>
@@ -103,10 +108,10 @@ export default async function ContactPage({
             </div>
             <div className="text-center sm:text-left">
               <h3 className="font-semibold text-gray-900 dark:text-gray-100">
-                遇到常见问题？
+                {t("faq_title")}
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                查看常见问题解答，快速找到帮助。
+                {t("faq_desc")}
               </p>
             </div>
           </div>
@@ -114,7 +119,7 @@ export default async function ContactPage({
             href="/faq"
             className="px-6 py-2 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm font-medium rounded-md shadow-sm border border-gray-200 dark:border-gray-600 transition-colors"
           >
-            查看 FAQ
+            {t("view_faq")}
           </Link>
         </div>
       </div>

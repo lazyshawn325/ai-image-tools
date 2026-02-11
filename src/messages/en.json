@@ -70,6 +70,528 @@
     "free_title": "Completely Free",
     "free_desc": "No registration, no hidden fees. All features are free forever, dedicated to providing the best tool experience."
   },
+  "Compress": {
+    "meta_title": "Image Compressor - AI Image Tools",
+    "meta_desc": "Free online image compressor. Smartly reduce image size while maintaining quality. Supports JPEG, PNG, WebP. Secure local processing.",
+    "meta_keywords": "image compressor, compress image, image optimization, reduce image size, free tool",
+    "title": "Smart Image Compressor",
+    "description": "Powerful browser-based compression engine. Reduce file size significantly while maintaining best quality. All processing happens locally on your device.",
+    "settings_title": "Compression Settings",
+    "quality": "Quality",
+    "smaller_size": "Smaller Size",
+    "better_quality": "Better Quality",
+    "max_width": "Max Width (px)",
+    "max_height": "Max Height (px)",
+    "processing": "Processing...",
+    "start_compress": "Start Compression",
+    "results_title": "Results ({count})",
+    "download_all": "Download All",
+    "success_all_completed": "All images compressed successfully",
+    "error_compress_failed": "Compression failed"
+  },
+  "Convert": {
+    "meta_title": "Image Converter - AI Image Tools",
+    "meta_desc": "Free online image converter. Convert between PNG, JPEG, WebP, GIF. Secure local processing, no upload required.",
+    "meta_keywords": "image converter, png to jpg, image conversion, webp converter, free tool",
+    "title": "Image Converter",
+    "description": "Convert images to PNG, JPEG, WebP, or GIF format.",
+    "options_title": "Conversion Options",
+    "target_format": "Target Format",
+    "quality": "Quality: {quality}%",
+    "converting": "Converting...",
+    "start_convert": "Start Conversion",
+    "results_title": "Conversion Results",
+    "download_all": "Download All",
+    "success_all_completed": "All images converted successfully",
+    "error_convert_failed": "Conversion failed",
+    "error_load_failed": "Failed to load image"
+  },
+  "Resize": {
+    "meta_title": "Image Resizer - AI Image Tools",
+    "meta_desc": "Free online image resizer. Resize images with custom dimensions or presets. Secure local processing.",
+    "meta_keywords": "image resizer, resize image, image scaling, social media size, free tool",
+    "title": "Image Resizer",
+    "description": "Resize images with presets or custom dimensions.",
+    "settings_title": "Resize Settings",
+    "original_size": "Original: {width} x {height} px",
+    "presets_title": "Presets",
+    "preset_wechat": "WeChat Avatar",
+    "preset_weibo": "Weibo Cover",
+    "preset_taobao": "Taobao Main",
+    "width_px": "Width (px)",
+    "height_px": "Height (px)",
+    "lock_ratio": "Lock Aspect Ratio",
+    "unlock_ratio": "Unlock Aspect Ratio",
+    "resizing": "Resizing...",
+    "start_resize": "Start Resizing",
+    "results_title": "Resize Results",
+    "download_all": "Download All",
+    "success_all_completed": "All images resized successfully",
+    "error_resize_failed": "Resize failed",
+    "error_load_failed": "Failed to load image"
+  },
+  "Crop": {
+    "meta_title": "Image Cropper - AI Image Tools",
+    "meta_desc": "Free online image cropper. Crop images freely or with fixed ratios (1:1, 4:3, 16:9). Secure local processing.",
+    "meta_keywords": "image cropper, crop image, image editing, free tool",
+    "title": "Image Cropper",
+    "description": "Crop images freely or with fixed aspect ratios.",
+    "aspect_ratio": "Aspect Ratio",
+    "ratio_free": "Free",
+    "preview": "Preview",
+    "reupload": "Re-upload",
+    "download": "Download Image",
+    "error_generate_failed": "Failed to generate cropped image",
+    "success_download_started": "Download started"
+  },
+  "Upscale": {
+    "meta_title": "Image Upscaler - Free Online Image Enhancer",
+    "meta_desc": "Free online image upscaler. Enhance image quality with advanced algorithms. Supports 2x/3x/4x lossless upscaling with Smooth and Sharp modes. Secure local processing.",
+    "meta_keywords": "image upscaler, image enhancer, photo enlarge, ai upscaling, free tool",
+    "title": "Image Upscaler",
+    "description": "Enhance image quality with smart algorithms. Supports 2x/3x/4x upscaling with clear details.",
+    "settings_title": "Upscale Settings",
+    "scale_factor": "Scale Factor",
+    "algorithm": "Algorithm",
+    "algo_smooth": "Smooth",
+    "algo_smooth_desc": "Best for photos/portraits",
+    "algo_sharp": "Sharp",
+    "algo_sharp_desc": "Best for text/illustrations",
+    "original_size": "Original Size:",
+    "upscaled_size": "Upscaled Size:",
+    "processing": "Processing...",
+    "start_upscale": "Start Upscale",
+    "download_image": "Download Image",
+    "preview_hint": "Click \"Start Upscale\" to preview",
+    "original_stretched": "Original (Stretched)",
+    "processed": "Processed",
+    "original": "Original",
+    "drag_compare": "Drag slider to compare",
+    "error_canvas_context": "Failed to create Canvas context",
+    "error_temp_canvas": "Failed to create temp Canvas",
+    "error_generate_failed": "Failed to generate image",
+    "error_load_failed": "Failed to load image",
+    "success_completed": "Image upscaled successfully",
+    "error_failed": "Processing failed",
+    "SEO": {
+      "title": "Image Upscaler - Free Online Image Enhancer",
+      "description": "Free online image upscaler using advanced algorithms. Upscale images by 2x, 3x, 4x with Smooth and Sharp modes. All processing is done locally in your browser for privacy.",
+      "features": [
+        "🔍 Lossless Upscaling: Smart interpolation to enlarge images while keeping edges sharp",
+        "⚙️ Multiple Modes: Smooth (for portraits) and Sharp (for text/art) algorithms",
+        "🚀 Local Processing: Powered by WebAssembly, images never leave your device",
+        "👀 Real-time Comparison: Compare before/after results with a slider",
+        "📱 Cross-Platform: Works on desktop, tablet, and mobile browsers"
+      ],
+      "howToUse": [
+        "Upload the image you want to upscale (JPG, PNG supported)",
+        "Select scale factor (2x, 3x, 4x) and algorithm (Smooth or Sharp)",
+        "Click 'Start Upscale' to begin enhancement",
+        "Use the slider to compare results, then click 'Download Image' to save"
+      ],
+      "faq": [
+        {
+          "question": "Is it really lossless?",
+          "answer": "Lossless means we try to preserve as much detail as possible. Generating high-res from low-res involves prediction, and our algorithms minimize artifacts."
+        },
+        {
+          "question": "Difference between Smooth and Sharp?",
+          "answer": "Smooth is better for photos to reduce noise. Sharp is better for text, line art, and illustrations to keep edges crisp."
+        },
+        {
+          "question": "Why is it slow sometimes?",
+          "answer": "Processing speed depends on image size and scale factor. 4x upscaling a large image requires significant computation."
+        }
+      ]
+    }
+  },
+  "RemoveBg": {
+    "meta_title": "AI Background Remover - Free Online Tool | AI Image Tools",
+    "meta_desc": "Free AI background remover. Remove backgrounds automatically in one click. 100% private, local processing. Supports people, products, and objects.",
+    "meta_keywords": "remove background, bg remover, ai background removal, transparent background, free tool",
+    "title": "AI Background Remover",
+    "description": "One-click AI background removal. Processed entirely in your browser for 100% privacy.",
+    "upload_hint": "Supports JPG, PNG, max 10MB",
+    "error_select_file": "Please select an image file",
+    "error_file_size": "Image size cannot exceed 10MB",
+    "preview": "Preview",
+    "clear": "Clear",
+    "loading_model": "Loading model...",
+    "preprocessing": "Preprocessing image...",
+    "loading_ai": "Loading AI model...",
+    "processing_ai": "Processing AI...",
+    "generating": "Generating result...",
+    "completed": "Done!",
+    "success_completed": "Background removed",
+    "error_failed": "Failed. Please retry or use a smaller image.",
+    "original": "Original",
+    "result": "Result",
+    "download": "Download PNG",
+    "process_new": "Process New Image",
+    "start_process": "Start Removal",
+    "SEO": {
+      "title": "AI Background Remover - Free Online Tool",
+      "description": "Remove image backgrounds instantly with AI. Uses WebAssembly for secure, local processing. Perfect for e-commerce, portraits, and design assets.",
+      "features": [
+        "🤖 AI Powered: Uses u2netp deep learning model for precise detection",
+        "🛡️ Privacy First: All processing happens in your browser",
+        "⚡️ Real-time: Accelerated by ONNX Runtime Web",
+        "✨ High Precision: Handles complex edges like hair and transparent objects",
+        "🆓 Free Forever: Unlimited use, no watermarks"
+      ],
+      "howToUse": [
+        "Click or drag to upload an image",
+        "Wait for the AI model to load and process (first time may take seconds)",
+        "Preview the result with transparency",
+        "Download the PNG image or clear to start over"
+      ],
+      "faq": [
+        {
+          "question": "What is the output format?",
+          "answer": "The processed image is saved as PNG to support transparency."
+        },
+        {
+          "question": "Why is the first load slow?",
+          "answer": "The AI model (approx 40MB) needs to be downloaded to your browser cache on first use. Subsequent uses will be instant."
+        },
+        {
+          "question": "Does it work on large images?",
+          "answer": "Large images are automatically resized for AI processing to ensure performance, then restored to original resolution."
+        }
+      ]
+    }
+  },
+  "Watermark": {
+    "meta_title": "Watermark Tool - Add Text & Image Watermarks | AI Image Tools",
+    "meta_desc": "Free online watermark tool. Add text or image watermarks with custom position, opacity, and size. Secure local processing.",
+    "meta_keywords": "watermark image, add watermark, text watermark, logo watermark, protect image, free tool",
+    "title": "Watermark Tool",
+    "description": "Add text or image watermarks to protect your work.",
+    "success_added": "Watermark added successfully",
+    "error_failed": "Failed to add watermark",
+    "download_started": "Download started",
+    "upload_hint": "Supports JPG, PNG",
+    "preview_result": "Result Preview",
+    "preview_original": "Original Preview",
+    "clear": "Clear",
+    "apply": "Apply Watermark",
+    "download": "Download Image",
+    "edit": "Edit",
+    "settings": "Watermark Settings",
+    "type": "Type",
+    "type_text": "Text",
+    "type_image": "Image",
+    "text_content": "Watermark Text",
+    "font_size": "Font Size",
+    "text_color": "Text Color",
+    "image_upload": "Watermark Image",
+    "change_image": "Change Image",
+    "select_image": "Select Image",
+    "scale": "Scale",
+    "rotate": "Rotation",
+    "opacity": "Opacity",
+    "position": "Position",
+    "pos_tl": "Top Left",
+    "pos_tr": "Top Right",
+    "pos_bl": "Bottom Left",
+    "pos_br": "Bottom Right",
+    "pos_center": "Center"
+  },
+  "Collage": {
+    "meta_title": "Image Collage Maker - Free Online Photo Grid",
+    "meta_desc": "Free online image collage maker. Combine images horizontally, vertically, or in grids. Custom spacing and background colors. Secure local processing.",
+    "meta_keywords": "image collage, photo grid, photo joiner, stitch images, free tool",
+    "title": "Image Collage",
+    "description": "Create photo collages with various layouts, spacing, and backgrounds.",
+    "layout_horizontal": "Horizontal",
+    "layout_vertical": "Vertical",
+    "layout_grid_2x2": "2x2 Grid",
+    "layout_grid_3x3": "3x3 Grid",
+    "layout_1_2": "1 Left 2 Right",
+    "layout_2_1": "2 Left 1 Right",
+    "download_started": "Download started",
+    "error_min_images": "Select at least 2 images",
+    "error_max_images": "Max 9 images supported",
+    "generating_preview": "Generating preview...",
+    "swap_hint": "Click two images to swap positions",
+    "select_layout": "Select Layout",
+    "need_images": "Need {count} images",
+    "need_images_range": "Need {min}-{max} images",
+    "gap": "Gap",
+    "bg_color": "Background",
+    "color_white": "White",
+    "color_black": "Black",
+    "restart": "Restart",
+    "download": "Download Image"
+  },
+  "Rotate": {
+    "meta_title": "Rotate & Flip Image - AI Image Tools",
+    "meta_desc": "Free online image rotator and flipper. Rotate images to any angle, flip horizontally or vertically. Secure local processing.",
+    "meta_keywords": "rotate image, flip image, online rotator, image editor, free tool",
+    "title": "Rotate & Flip Image",
+    "description": "Rotate image angle, flip horizontally/vertically with real-time preview.",
+    "rotate_left_90": "Rotate Left 90°",
+    "rotate_right_90": "Rotate Right 90°",
+    "flip_h": "Flip Horizontal",
+    "flip_v": "Flip Vertical",
+    "reset": "Reset",
+    "reupload": "Re-upload",
+    "rotation_angle": "Rotation Angle",
+    "download": "Download Image",
+    "success_download": "Download started",
+    "error_failed": "Rotate failed",
+    "error_canvas": "Could not get canvas context"
+  },
+  "Exif": {
+    "meta_title": "EXIF Viewer - View & Clear Image Metadata",
+    "meta_desc": "Free online EXIF viewer. View and clear image metadata (camera settings, GPS, etc.). 100% private, local processing.",
+    "meta_keywords": "exif viewer, image metadata, camera info, clear exif, privacy tool",
+    "title": "EXIF Viewer",
+    "description": "View and edit image EXIF metadata online. Check camera settings, GPS location, etc.",
+    "error_read": "Failed to read image info",
+    "success_clear": "EXIF cleared, download started",
+    "error_clear": "Failed to clear EXIF",
+    "unknown": "Unknown",
+    "view_map": "View on Map",
+    "clear_download": "Clear & Download",
+    "no_exif": "No EXIF data found",
+    "camera_info": "Camera Info",
+    "make": "Manufacturer",
+    "model": "Model",
+    "datetime": "Date Taken",
+    "exposure": "Exposure Time",
+    "aperture": "Aperture",
+    "iso": "ISO Speed",
+    "focal_length": "Focal Length",
+    "image_params": "Image Params",
+    "width": "Width",
+    "height": "Height",
+    "color_space": "Color Space",
+    "orientation": "Orientation",
+    "gps": "GPS Location",
+    "latitude": "Latitude",
+    "longitude": "Longitude"
+  },
+  "QRCode": {
+    "meta_title": "QR Code Generator - Create Custom QR Codes | AI Image Tools",
+    "meta_desc": "Free online QR code generator. Custom colors, size, error correction. Download as SVG or PNG. Fast URL/text to QR code.",
+    "meta_keywords": "qr code generator, online qr code, create qr code, custom qr code, free tool",
+    "title": "QR Code Generator",
+    "description": "Generate custom QR codes online with adjustable colors, size, and error correction.",
+    "input_label": "Content",
+    "input_placeholder": "Enter URL or text...",
+    "size": "Size (px)",
+    "level": "Error Correction",
+    "level_l": "Low (7%)",
+    "level_m": "Medium (15%)",
+    "level_q": "High (25%)",
+    "level_h": "Highest (30%)",
+    "fg_color": "Foreground",
+    "bg_color": "Background",
+    "error_failed": "Generation failed",
+    "success_png": "PNG download started",
+    "success_svg": "SVG download started"
+  },
+  "About": {
+    "meta_title": "About Us - AI Image Tools",
+    "meta_desc": "Learn about AI Image Tools' mission, technology, and free online image processing services. Secure, efficient, local processing.",
+    "title": "About Us",
+    "description": "AI Image Tools is a platform focused on providing efficient, secure, and convenient online image processing services.",
+    "mission_title": "Our Mission",
+    "mission_content": "In this digital age, image processing has become a daily need. Our mission is to break the barriers of professional software and use advanced Web technology to provide <strong class=\"text-indigo-600 dark:text-indigo-400\">free, secure, and efficient</strong> image processing tools for every user. Whether you are a designer, developer, or casual user, you can easily get your work done here without worrying about privacy leaks or complex installation processes.",
+    "features_title": "Core Advantages",
+    "feature_local_title": "Local Processing, Privacy Assured",
+    "feature_local_desc": "All image processing is done in your browser, no upload to server. Your data never leaves your device, completely eliminating privacy risks.",
+    "feature_free_title": "Completely Free, No Hidden Costs",
+    "feature_free_desc": "We promise all basic features are free forever. No paywalls, no limits, making quality tools accessible to everyone.",
+    "feature_no_login_title": "No Registration Required",
+    "feature_no_login_desc": "Say goodbye to tedious registration processes. Open the website and use all features instantly, saving your time and improving efficiency.",
+    "feature_fast_title": "Blazing Fast Experience",
+    "feature_fast_desc": "Powered by WebAssembly, image processing speed rivals native software. No waiting for uploads/downloads, millisecond-level response.",
+    "tech_title": "Technology",
+    "tech_desc": "AI Image Tools uses cutting-edge frontend stack to ensure best performance and user experience:",
+    "tech_list": [
+      "<strong>WebAssembly (Wasm):</strong> Runs high-performance code directly in the browser, achieving near-native speeds.",
+      "<strong>ONNX Runtime Web:</strong> Runs AI models directly in the browser for real-time background removal without backend APIs.",
+      "<strong>Modern Web Workers:</strong> Uses multi-threading to ensure smooth UI even when processing large images.",
+      "<strong>PWA Support:</strong> Supports offline access and installation to desktop, providing a native app-like experience."
+    ],
+    "functions_title": "Features List"
+  },
+  "Contact": {
+    "meta_title": "Contact Us - AI Image Tools",
+    "meta_desc": "Questions or feedback? Contact the AI Image Tools team via email or GitHub.",
+    "title": "Contact Us",
+    "description": "We value your feedback. Whether it's a feature suggestion, bug report, or just a greeting, we'd love to hear from you.",
+    "email_title": "Email Us",
+    "email_desc": "Send us an email directly",
+    "github_title": "GitHub",
+    "github_desc": "View source or contribute",
+    "visit_github": "Visit GitHub Repo",
+    "feedback_title": "Feedback",
+    "feedback_desc": "Submit bugs or feature requests",
+    "submit_issue": "Submit Issue on GitHub",
+    "faq_title": "Having Issues?",
+    "faq_desc": "Check our FAQ for quick help.",
+    "view_faq": "View FAQ"
+  },
+  "FAQ": {
+    "meta_title": "FAQ - AI Image Tools",
+    "meta_desc": "Common questions about AI Image Tools. Learn about image compression, privacy, supported formats, and AI background removal.",
+    "meta_keywords": "faq, questions, image compression guide, privacy policy, supported formats",
+    "title": "Frequently Asked Questions",
+    "description": "Here are the most common questions about AI Image Tools. If you can't find an answer, feel free to contact us.",
+    "items": [
+      {
+        "question": "How does image compression work? Does it affect quality?",
+        "answer": "Our smart compression algorithm reduces file size by optimizing image encoding and removing redundant metadata. For lossy compression, we reduce data within a range invisible to the naked eye; for lossless compression, quality remains unaffected."
+      },
+      {
+        "question": "Are my images uploaded to a server?",
+        "answer": "No. We promise that all image processing is done locally in your browser (Local Processing). Your image data never leaves your device, ensuring 100% privacy."
+      },
+      {
+        "question": "Which image formats are supported?",
+        "answer": "We currently support compression and conversion for common formats like JPG, PNG, WebP, AVIF, GIF. Specific supported formats depend on the tool you use."
+      },
+      {
+        "question": "Is there a file size limit?",
+        "answer": "Since processing is local, there is no strict limit, but it depends on your device's memory. We generally recommend images under 50MB for smooth browser performance."
+      },
+      {
+        "question": "How does AI background removal work?",
+        "answer": "We use advanced computer vision models (like RMBG or U2Net) running directly in the browser via WebAssembly. The model automatically identifies the subject and separates it from the background."
+      },
+      {
+        "question": "Can I process images in batch?",
+        "answer": "Yes, we support batch processing. You can select multiple images at once for compression, format conversion, or resizing, and download them all with one click."
+      },
+      {
+        "question": "Is this tool free?",
+        "answer": "Yes, all basic functions of AI Image Tools are completely free to use, with no registration required and no hidden fees."
+      },
+      {
+        "question": "Can I use it offline?",
+        "answer": "Yes. Our website uses PWA (Progressive Web App) technology. Once you've visited and loaded resources, most local processing functions work offline."
+      },
+      {
+        "question": "Can compressed images be used for printing?",
+        "answer": "Depends on your settings. If you choose 'High Quality' or 'Lossless', compressed images are suitable for printing. High compression modes are recommended for screen use only."
+      },
+      {
+        "question": "Why is it slow with large images?",
+        "answer": "Because all calculations happen on your device's CPU/GPU. Processing high-resolution images requires significant resources, speed depends on your device performance."
+      },
+      {
+        "question": "Why use WebP format?",
+        "answer": "WebP is a modern image format from Google. It reduces file size by 20-30% compared to JPG/PNG while maintaining quality, perfect for web speed."
+      },
+      {
+        "question": "Does compression keep EXIF data?",
+        "answer": "By default, we remove EXIF data (camera info, GPS) to minimize size and protect privacy. You may be able to toggle this in settings if supported."
+      },
+      {
+        "question": "Which browsers are supported?",
+        "answer": "We recommend the latest Chrome, Edge, Firefox, or Safari. Due to WebAssembly usage, very old browsers (like IE) may not work."
+      },
+      {
+        "question": "Does it work on mobile?",
+        "answer": "Yes. Our responsive design works perfectly on iOS and Android browsers, so you can process images on your phone anytime."
+      }
+    ]
+  },
+  "Terms": {
+    "meta_title": "Terms of Use - AI Image Tools",
+    "meta_desc": "Terms of service and usage agreement for AI Image Tools.",
+    "title": "Terms of Use",
+    "last_updated": "Last Updated: December 2024",
+    "sections": [
+      {
+        "title": "1. Service Description",
+        "content": [
+          "AI Image Tools (hereinafter \"this website\") is a free online image processing toolkit providing compression, conversion, resizing, QR code generation, AI background removal, and watermarking.",
+          "All processing is done locally in your browser; we do not upload, store, or access your images."
+        ]
+      },
+      {
+        "title": "2. Conditions of Use",
+        "content": [
+          "By using this website, you agree to:",
+          "Comply with all applicable laws and regulations",
+          "Not use the service for illegal or unauthorized purposes",
+          "Not attempt to disrupt or interfere with the website operation",
+          "Take full responsibility for all content processed using this service"
+        ]
+      },
+      {
+        "title": "3. Intellectual Property",
+        "content": [
+          "All content on this website, including text, graphics, logos, icons, images, code, is protected by copyright and intellectual property laws.",
+          "You retain rights to your processed images. You must ensure you have the right to process uploaded images and are responsible for any infringement."
+        ]
+      },
+      {
+        "title": "4. Disclaimer",
+        "content": [
+          "This website is provided on an \"AS IS\" and \"AS AVAILABLE\" basis without warranties.",
+          "We do not guarantee uninterrupted or error-free service",
+          "We do not guarantee the accuracy or suitability of results",
+          "AI features may not produce perfect results in all cases",
+          "We are not liable for any direct or indirect damages from using this service"
+        ]
+      },
+      {
+        "title": "5. Service Changes",
+        "content": [
+          "We reserve the right to modify or discontinue the service (or any part thereof) at any time without notice.",
+          "We may add, modify, or remove features."
+        ]
+      },
+      {
+        "title": "6. Advertising",
+        "content": [
+          "This website may display third-party ads. These are provided by ad networks, and advertisers are responsible for their content."
+        ]
+      },
+      {
+        "title": "7. Privacy",
+        "content": [
+          "Your privacy is important to us. Please review our"
+        ],
+        "link": "Privacy Policy",
+        "content_after": "to understand how we collect and protect your information."
+      },
+      {
+        "title": "8. Amendments",
+        "content": [
+          "We reserve the right to modify these terms. Changes are effective upon posting. Continued use constitutes acceptance."
+        ]
+      },
+      {
+        "title": "9. Governing Law",
+        "content": [
+          "These terms are governed by the laws of the People's Republic of China."
+        ]
+      },
+      {
+        "title": "10. Contact",
+        "content": [
+          "If you have questions about these terms, please contact us:",
+          "Email: contact@example.com"
+        ]
+      }
+    ]
+  },
+  "Global": {
+    "meta_title": "AI Image Tools - Free Online Image Processor",
+    "meta_desc": "Free online image tools including compression, conversion, resizing, QR codes, AI background removal. 100% local processing for privacy.",
+    "apple_title": "AI Tools"
+  },
+  "NotFound": {
+    "title": "Page Not Found",
+    "description": "Sorry, the page you are looking for does not exist or has been moved.",
+    "back_home": "Back to Home"
+  },
   "Filters": {
     "meta_title": "Image Filters - AI Image Tools",
     "meta_desc": "Free online photo filter tool. Adjust brightness, contrast, saturation, and apply presets. Real-time preview, secure local processing.",

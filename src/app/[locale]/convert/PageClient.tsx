@@ -7,6 +7,7 @@ import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
+import { useTranslations } from "next-intl";
 
 type ImageFormat = "png" | "jpeg" | "webp" | "gif";
 
@@ -40,18 +41,19 @@ function convertImage(
       ctx?.drawImage(img, 0, 0);
 
       canvas.toBlob(
-        (blob) => (blob ? resolve(blob) : reject(new Error("转换失败"))),
+        (blob) => (blob ? resolve(blob) : reject(new Error("Convert failed"))),
         `image/${targetFormat}`,
         quality
       );
     };
 
-    img.onerror = () => reject(new Error("图片加载失败"));
+    img.onerror = () => reject(new Error("Image load failed"));
     img.src = URL.createObjectURL(file);
   });
 }
 
 export default function ConvertPage() {
+  const t = useTranslations("Convert");
   const [files, setFiles] = useState<File[]>([]);
   const [targetFormat, setTargetFormat] = useState<ImageFormat>("png");
   const [quality, setQuality] = useState(90);
@@ -90,15 +92,19 @@ export default function ConvertPage() {
         });
       }
       setResults(newResults);
-      success("所有图片转换完成");
+      success(t("success_all_completed"));
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "转换失败";
-      setError(msg);
-      toastError(msg);
+      const msg = err instanceof Error ? err.message : t("error_convert_failed");
+      // Translate known errors
+      const displayMsg = msg === "Convert failed" ? t("error_convert_failed") : 
+                         msg === "Image load failed" ? t("error_load_failed") : msg;
+      
+      setError(displayMsg);
+      toastError(displayMsg);
     } finally {
       setIsConverting(false);
     }
-  }, [files, targetFormat, quality, success, toastError]);
+  }, [files, targetFormat, quality, success, toastError, t]);
 
   const downloadImage = (result: ConvertedImage) => {
     const url = URL.createObjectURL(result.converted);
@@ -121,10 +127,10 @@ export default function ConvertPage() {
       <div className="max-w-4xl mx-auto">
         <AdBannerAuto slot={process.env.NEXT_PUBLIC_AD_SLOT_BANNER} />
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          格式转换
+          {t("title")}
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mb-8">
-          将图片转换为 PNG、JPEG、WebP 或 GIF 格式
+          {t("description")}
         </p>
 
         {/* Upload Area */}
@@ -140,12 +146,12 @@ export default function ConvertPage() {
         {files.length > 0 && (
           <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 mb-6">
             <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-              转换选项
+              {t("options_title")}
             </h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  目标格式
+                  {t("target_format")}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {formats.map((format) => (
@@ -167,7 +173,7 @@ export default function ConvertPage() {
               {targetFormat === "jpeg" && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    质量: {quality}%
+                    {t("quality", { quality })}
                   </label>
                   <input
                     type="range"
@@ -186,7 +192,7 @@ export default function ConvertPage() {
               loading={isConverting}
               className="mt-6"
             >
-              {isConverting ? "转换中..." : "开始转换"}
+              {isConverting ? t("converting") : t("start_convert")}
             </Button>
           </div>
         )}
@@ -203,11 +209,11 @@ export default function ConvertPage() {
           <div>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                转换结果
+                {t("results_title")}
               </h2>
               <Button onClick={downloadAll} variant="outline" size="sm">
                 <Download className="w-4 h-4 mr-2" />
-                全部下载
+                {t("download_all")}
               </Button>
             </div>
             <div className="space-y-4">

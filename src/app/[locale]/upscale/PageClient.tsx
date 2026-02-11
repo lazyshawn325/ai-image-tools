@@ -9,9 +9,9 @@ import { Container } from "@/components/layout/Container";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
 import { SoftwareApplicationJsonLd } from "@/components/seo/JsonLd";
 import { SEOContent } from "@/components/seo/SEOContent";
+import { useTranslations } from "next-intl";
 
 interface UpscaledImage {
-
   original: File;
   previewOriginal: string;
   previewUpscaled: string;
@@ -27,40 +27,16 @@ type ScaleOption = 2 | 3 | 4;
 type Algorithm = "smooth" | "sharp";
 
 export default function UpscalePage() {
+  const t = useTranslations("Upscale");
   const seoData = {
-    title: "图片无损放大 - 免费在线图片画质增强工具",
-    description: "采用先进的图像处理算法，免费在线放大图片尺寸。支持 2倍、3倍、4倍无损放大，提供平滑（Smooth）和锐利（Sharp）两种算法模式，有效消除锯齿和模糊。完全在浏览器本地运行，保护隐私。",
-    features: [
-      "🔍 无损放大：智能插值算法，放大图片同时保持边缘清晰，减少锯齿",
-      "⚙️ 多种模式：提供 Smooth（适合人像）和 Sharp（适合插画/文字）两种算法",
-      "🚀 本地处理：利用 Canvas API 和 WebAssembly 技术，所有计算在本地完成",
-      "👀 实时对比：提供处理前后效果对比滑块，直观感受画质提升",
-      "📱 全平台支持：兼容电脑、平板和手机浏览器，随时随地使用"
-    ],
-    howToUse: [
-      "上传需要放大的图片（支持 JPG, PNG 等常见格式）",
-      "选择放大倍数（2x, 3x, 4x）和处理算法（平滑或锐利）",
-      "点击“开始放大”按钮，系统将自动进行像素增强处理",
-      "使用对比滑块查看效果，满意后点击“下载图片”保存结果"
-    ],
-    faq: [
-      {
-        question: "无损放大是真的无损吗？",
-        answer: "“无损”是指在放大过程中尽可能保留原始细节并减少失真。实际上，从低分辨率生成高分辨率必然涉及像素预测，我们使用优化的算法使结果尽可能接近无损效果。"
-      },
-      {
-        question: "平滑（Smooth）和锐利（Sharp）有什么区别？",
-        answer: "平滑模式适合照片、人像等自然图像，能减少噪点；锐利模式适合动漫、插画、文字截图，能保持边缘锋利清晰。"
-      },
-      {
-        question: "为什么处理速度有时候会变慢？",
-        answer: "处理速度取决于图片原始尺寸和放大倍数。例如将 1000px 图片放大 4 倍会生成 4000px 的大图，计算量呈指数级增长，请耐心等待。"
-      }
-    ]
+    title: t("SEO.title"),
+    description: t("SEO.description"),
+    features: t.raw("SEO.features"),
+    howToUse: t.raw("SEO.howToUse"),
+    faq: t.raw("SEO.faq")
   };
 
   const [file, setFile] = useState<File | null>(null);
-
   const [scale, setScale] = useState<ScaleOption>(2);
   const [algorithm, setAlgorithm] = useState<Algorithm>("sharp");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -101,7 +77,7 @@ export default function UpscalePage() {
 
         if (!ctx) {
           URL.revokeObjectURL(url);
-          reject(new Error("无法创建Canvas上下文"));
+          reject(new Error("Canvas context failed"));
           return;
         }
 
@@ -118,7 +94,7 @@ export default function UpscalePage() {
           
           if (!tempCtx) {
              URL.revokeObjectURL(url);
-             reject(new Error("无法创建临时Canvas"));
+             reject(new Error("Temp canvas failed"));
              return;
           }
 
@@ -162,7 +138,7 @@ export default function UpscalePage() {
           (blob) => {
             URL.revokeObjectURL(url);
             if (!blob) {
-              reject(new Error("生成图片失败"));
+              reject(new Error("Generate failed"));
               return;
             }
             
@@ -185,7 +161,7 @@ export default function UpscalePage() {
 
       img.onerror = () => {
         URL.revokeObjectURL(url);
-        reject(new Error("图片加载失败"));
+        reject(new Error("Image load failed"));
       };
       
       img.src = url;
@@ -206,15 +182,19 @@ export default function UpscalePage() {
       }
       
       setResult(res);
-      success("图片无损放大完成");
+      success(t("success_completed"));
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "处理失败";
-      setError(msg);
-      toastError(msg);
+      const msg = err instanceof Error ? err.message : t("error_failed");
+      const displayMsg = msg === "Canvas context failed" ? t("error_canvas_context") :
+                         msg === "Temp canvas failed" ? t("error_temp_canvas") :
+                         msg === "Generate failed" ? t("error_generate_failed") :
+                         msg === "Image load failed" ? t("error_load_failed") : msg;
+      setError(displayMsg);
+      toastError(displayMsg);
     } finally {
       setIsProcessing(false);
     }
-  }, [file, scale, algorithm, result, success, toastError]);
+  }, [file, scale, algorithm, result, success, toastError, t]);
 
   const downloadResult = () => {
     if (!result) return;
@@ -255,8 +235,8 @@ export default function UpscalePage() {
   return (
     <>
       <SoftwareApplicationJsonLd
-        name="图片无损放大工具"
-        description="免费在线图片无损放大，支持 2x/3x/4x 放大"
+        name={t("title")}
+        description={t("description")}
         url="https://ai-image-tools-h41u.vercel.app/upscale"
       />
       <Container className="py-8">
@@ -267,10 +247,10 @@ export default function UpscalePage() {
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center justify-center gap-3">
             <ZoomIn className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-            图片无损放大
+            {t("title")}
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            使用智能算法放大图片，保持细节清晰，支持 2x/3x/4x 放大
+            {t("description")}
           </p>
         </div>
 
@@ -292,13 +272,13 @@ export default function UpscalePage() {
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                     <Zap className="w-5 h-5 text-yellow-500" />
-                    放大设置
+                    {t("settings_title")}
                   </h3>
                   
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        放大倍数
+                        {t("scale_factor")}
                       </label>
                       <div className="flex gap-3">
                         {[2, 3, 4].map((s) => (
@@ -319,7 +299,7 @@ export default function UpscalePage() {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        处理算法
+                        {t("algorithm")}
                       </label>
                       <div className="grid grid-cols-2 gap-3">
                         <button
@@ -330,8 +310,8 @@ export default function UpscalePage() {
                                 : "bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600"
                           }`}
                         >
-                          <div className="font-medium">平滑 (Smooth)</div>
-                          <div className="text-xs opacity-70 mt-1">适合人像/照片，柔和过渡</div>
+                          <div className="font-medium">{t("algo_smooth")}</div>
+                          <div className="text-xs opacity-70 mt-1">{t("algo_smooth_desc")}</div>
                         </button>
                         <button
                           onClick={() => setAlgorithm("sharp")}
@@ -341,8 +321,8 @@ export default function UpscalePage() {
                                 : "bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600"
                           }`}
                         >
-                          <div className="font-medium">锐利 (Sharp)</div>
-                          <div className="text-xs opacity-70 mt-1">适合文字/插画，边缘清晰</div>
+                          <div className="font-medium">{t("algo_sharp")}</div>
+                          <div className="text-xs opacity-70 mt-1">{t("algo_sharp_desc")}</div>
                         </button>
                       </div>
                     </div>
@@ -351,11 +331,11 @@ export default function UpscalePage() {
 
                 <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
                   <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
-                    <span>原始尺寸:</span>
+                    <span>{t("original_size")}</span>
                     <span className="font-mono">{result ? result.originalWidth : "---"} x {result ? result.originalHeight : "---"}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm text-blue-600 dark:text-blue-400 font-medium">
-                    <span>放大后尺寸:</span>
+                    <span>{t("upscaled_size")}</span>
                     <span className="font-mono">
                       {result ? result.targetWidth : (file ? "---" : "---")} x {result ? result.targetHeight : (file ? "---" : "---")}
                     </span>
@@ -368,7 +348,7 @@ export default function UpscalePage() {
                   loading={isProcessing}
                   className="w-full h-12 text-lg"
                 >
-                  {isProcessing ? "处理中..." : "开始放大"}
+                  {isProcessing ? t("processing") : t("start_upscale")}
                 </Button>
                 
                 {result && (
@@ -378,7 +358,7 @@ export default function UpscalePage() {
                     className="w-full mt-3 border-green-500 text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-900/20"
                   >
                     <Download className="w-5 h-5 mr-2" />
-                    下载图片
+                    {t("download_image")}
                   </Button>
                 )}
               </div>
@@ -387,13 +367,13 @@ export default function UpscalePage() {
                 {!result ? (
                   <div className="text-center text-gray-400">
                     <ImageIcon className="w-16 h-16 mx-auto mb-3 opacity-30" />
-                    <p>点击&quot;开始放大&quot;查看预览效果</p>
+                    <p>{t("preview_hint")}</p>
                   </div>
                 ) : (
                   <div className="relative w-full aspect-square max-h-[500px] flex flex-col">
                     <div className="flex items-center justify-between mb-2 text-sm text-gray-500">
-                      <span>原图 (拉伸)</span>
-                      <span>处理后</span>
+                      <span>{t("original_stretched")}</span>
+                      <span>{t("processed")}</span>
                     </div>
                     
                     <div 
@@ -440,14 +420,14 @@ export default function UpscalePage() {
                       </div>
                       
                       <div className="absolute top-4 left-4 bg-black/50 text-white text-xs px-2 py-1 rounded backdrop-blur-sm pointer-events-none">
-                        处理后
+                        {t("processed")}
                       </div>
                       <div className="absolute top-4 right-4 bg-black/50 text-white text-xs px-2 py-1 rounded backdrop-blur-sm pointer-events-none">
-                        原图
+                        {t("original")}
                       </div>
                     </div>
                     <p className="text-center text-xs text-gray-500 mt-2">
-                      左右拖动查看对比效果
+                      {t("drag_compare")}
                     </p>
                   </div>
                 )}
@@ -468,4 +448,3 @@ export default function UpscalePage() {
     </>
   );
 }
-

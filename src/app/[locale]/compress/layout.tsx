@@ -1,12 +1,16 @@
 import { Metadata } from "next";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 
-import { setRequestLocale } from "next-intl/server";
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "Compress" });
 
-export const metadata: Metadata = {
-  title: "图片压缩 - AI 图片工具箱",
-  description: "免费在线图片压缩工具，智能压缩图片大小，保持画质。支持 JPEG、PNG、WebP 等格式，完全在浏览器本地处理，保护隐私。",
-  keywords: ["图片压缩", "在线压缩", "图片优化", "减小图片大小", "免费工具"],
-};
+  return {
+    title: t("meta_title"),
+    description: t("meta_desc"),
+    keywords: t("meta_keywords").split(","),
+  };
+}
 
 export default async function CompressLayout({
   children,

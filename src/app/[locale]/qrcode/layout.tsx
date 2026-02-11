@@ -1,12 +1,16 @@
-import type { Metadata } from 'next';
+import { Metadata } from 'next';
+import { setRequestLocale, getTranslations } from "next-intl/server";
 
-import { setRequestLocale } from "next-intl/server";
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "QRCode" });
 
-export const metadata: Metadata = {
-  title: '二维码生成器 - 在线制作个性化二维码 | AI Image Tools',
-  description: '免费在线二维码生成工具，支持自定义颜色、尺寸、容错率，提供 SVG 和 PNG 高清下载。快速生成网址、文本二维码。',
-  keywords: '二维码生成器, 在线二维码, 二维码制作, QRCode Generator, 自定义二维码',
-};
+  return {
+    title: t("meta_title"),
+    description: t("meta_desc"),
+    keywords: t("meta_keywords").split(","),
+  };
+}
 
 export default async function QRCodeLayout({
   children,

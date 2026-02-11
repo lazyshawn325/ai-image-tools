@@ -8,6 +8,7 @@ import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
+import { useTranslations } from "next-intl";
 
 interface CollageLayout {
   id: string;
@@ -17,16 +18,8 @@ interface CollageLayout {
   maxImages: number;
 }
 
-const LAYOUTS: CollageLayout[] = [
-  { id: "horizontal", name: "横向拼接", icon: <Columns className="w-5 h-5" />, minImages: 2, maxImages: 9 },
-  { id: "vertical", name: "纵向拼接", icon: <Rows className="w-5 h-5" />, minImages: 2, maxImages: 9 },
-  { id: "grid-2x2", name: "2x2 网格", icon: <Grid2X2 className="w-5 h-5" />, minImages: 4, maxImages: 4 },
-  { id: "grid-3x3", name: "3x3 网格", icon: <Grid3X3 className="w-5 h-5" />, minImages: 9, maxImages: 9 },
-  { id: "layout-1-2", name: "左1右2", icon: <LayoutGrid className="w-5 h-5 rotate-90" />, minImages: 3, maxImages: 3 },
-  { id: "layout-2-1", name: "左2右1", icon: <LayoutGrid className="w-5 h-5 -rotate-90" />, minImages: 3, maxImages: 3 },
-];
-
 export default function CollagePage() {
+  const t = useTranslations("Collage");
   const [files, setFiles] = useState<File[]>([]);
   const [images, setImages] = useState<HTMLImageElement[]>([]);
   const [layoutId, setLayoutId] = useState<string>("horizontal");
@@ -36,6 +29,15 @@ export default function CollagePage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [swapSourceIndex, setSwapSourceIndex] = useState<number | null>(null);
   const { success, error: toastError } = useToast();
+
+  const LAYOUTS: CollageLayout[] = [
+    { id: "horizontal", name: t("layout_horizontal"), icon: <Columns className="w-5 h-5" />, minImages: 2, maxImages: 9 },
+    { id: "vertical", name: t("layout_vertical"), icon: <Rows className="w-5 h-5" />, minImages: 2, maxImages: 9 },
+    { id: "grid-2x2", name: t("layout_grid_2x2"), icon: <Grid2X2 className="w-5 h-5" />, minImages: 4, maxImages: 4 },
+    { id: "grid-3x3", name: t("layout_grid_3x3"), icon: <Grid3X3 className="w-5 h-5" />, minImages: 9, maxImages: 9 },
+    { id: "layout-1-2", name: t("layout_1_2"), icon: <LayoutGrid className="w-5 h-5 rotate-90" />, minImages: 3, maxImages: 3 },
+    { id: "layout-2-1", name: t("layout_2_1"), icon: <LayoutGrid className="w-5 h-5 -rotate-90" />, minImages: 3, maxImages: 3 },
+  ];
 
   useEffect(() => {
     if (files.length === 0) {
@@ -86,7 +88,7 @@ export default function CollagePage() {
       else if (count === 3) setLayoutId("layout-1-2");
       else setLayoutId("horizontal");
     }
-  }, [files.length, layoutId]);
+  }, [files.length, layoutId, LAYOUTS]);
 
   const drawImageCover = (ctx: CanvasRenderingContext2D, img: HTMLImageElement, x: number, y: number, w: number, h: number) => {
     const ratio = w / h;
@@ -252,16 +254,16 @@ export default function CollagePage() {
     link.download = `collage_${Date.now()}.png`;
     link.href = canvasRef.current.toDataURL("image/png");
     link.click();
-    success("拼图下载开始");
+    success(t("download_started"));
   };
 
   const handleFilesSelected = (selectedFiles: File[]) => {
     if (selectedFiles.length < 2) {
-      toastError("请至少选择2张图片");
+      toastError(t("error_min_images"));
       return;
     }
     if (selectedFiles.length > 9) {
-      toastError("最多支持9张图片");
+      toastError(t("error_max_images"));
       setFiles(selectedFiles.slice(0, 9));
     } else {
       setFiles(selectedFiles);
@@ -292,10 +294,10 @@ export default function CollagePage() {
       <div className="max-w-6xl mx-auto">
         <AdBannerAuto slot={process.env.NEXT_PUBLIC_AD_SLOT_BANNER} />
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          图片拼接/拼图
+          {t("title")}
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mb-8">
-          免费在线制作拼图，支持多种布局、调节间距和背景色。
+          {t("description")}
         </p>
 
         {files.length === 0 ? (
@@ -314,7 +316,7 @@ export default function CollagePage() {
                  {previewUrl ? (
                    <img src={previewUrl} alt="Collage Preview" className="max-w-full max-h-[70vh] object-contain shadow-lg" />
                  ) : (
-                   <div className="text-gray-400">正在生成预览...</div>
+                   <div className="text-gray-400">{t("generating_preview")}</div>
                  )}
               </div>
 
@@ -341,13 +343,13 @@ export default function CollagePage() {
                 ))}
               </div>
               <p className="text-sm text-gray-500 text-center">
-                点击两张图片进行交换位置
+                {t("swap_hint")}
               </p>
             </div>
 
             <div className="space-y-6">
               <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-4">布局选择</h3>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-4">{t("select_layout")}</h3>
                 <div className="grid grid-cols-3 gap-2">
                   {LAYOUTS.map((layout) => {
                     const isDisabled = files.length < layout.minImages || files.length > layout.maxImages;
@@ -366,7 +368,7 @@ export default function CollagePage() {
                               ? "border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
                               : "border-gray-100 text-gray-300 cursor-not-allowed dark:border-gray-800 dark:text-gray-600"
                         }`}
-                        title={!valid ? `需要 ${layout.minImages === layout.maxImages ? layout.minImages : `${layout.minImages}-${layout.maxImages}`} 张图片` : layout.name}
+                        title={!valid ? t("need_images_range", { min: layout.minImages, max: layout.maxImages }) : layout.name}
                       >
                         {layout.icon}
                         <span className="text-xs mt-1">{layout.name}</span>
@@ -380,7 +382,7 @@ export default function CollagePage() {
                 <div>
                   <div className="flex justify-between mb-2">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      图片间距
+                      {t("gap")}
                     </label>
                     <span className="text-sm text-gray-500">{gap}px</span>
                   </div>
@@ -396,7 +398,7 @@ export default function CollagePage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    背景颜色
+                    {t("bg_color")}
                   </label>
                   <div className="flex items-center gap-3">
                     <input
@@ -409,12 +411,12 @@ export default function CollagePage() {
                       <button 
                         onClick={() => setBgColor("#ffffff")}
                         className="w-8 h-8 rounded-full bg-white border border-gray-300 shadow-sm"
-                        title="白色"
+                        title={t("color_white")}
                       />
                       <button 
                         onClick={() => setBgColor("#000000")}
                         className="w-8 h-8 rounded-full bg-black border border-gray-600 shadow-sm"
-                        title="黑色"
+                        title={t("color_black")}
                       />
                     </div>
                   </div>
@@ -423,11 +425,11 @@ export default function CollagePage() {
 
               <div className="flex gap-4">
                 <Button variant="outline" onClick={() => setFiles([])} className="flex-1">
-                  重新开始
+                  {t("restart")}
                 </Button>
                 <Button onClick={handleDownload} className="flex-1">
                   <Download className="w-4 h-4 mr-2" />
-                  下载图片
+                  {t("download")}
                 </Button>
               </div>
             </div>

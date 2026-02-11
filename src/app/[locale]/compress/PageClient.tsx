@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 interface CompressedImage {
   original: File;
@@ -19,6 +20,7 @@ interface CompressedImage {
 }
 
 export default function CompressPage() {
+  const t = useTranslations("Compress");
   const [files, setFiles] = useState<File[]>([]);
   const [quality, setQuality] = useState(80);
   const [maxWidth, setMaxWidth] = useState(1920);
@@ -62,15 +64,15 @@ export default function CompressPage() {
         });
       }
       setResults(newResults);
-      success("所有图片压缩完成");
+      success(t("success_all_completed"));
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "压缩失败";
+      const errorMessage = err instanceof Error ? err.message : t("error_compress_failed");
       setError(errorMessage);
       toastError(errorMessage);
     } finally {
       setIsCompressing(false);
     }
-  }, [files, quality, maxWidth, maxHeight, success, toastError]);
+  }, [files, quality, maxWidth, maxHeight, success, toastError, t]);
 
   const downloadImage = (result: CompressedImage) => {
     const url = URL.createObjectURL(result.compressed);
@@ -98,7 +100,7 @@ export default function CompressPage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
           >
-            智能图片压缩
+            {t("title")}
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -106,8 +108,7 @@ export default function CompressPage() {
             transition={{ delay: 0.1 }}
             className="text-lg text-muted-foreground max-w-2xl mx-auto"
           >
-            强大的浏览器端压缩引擎，在保持最佳画质的同时大幅减小文件体积。
-            全程本地处理，您的图片永远不会离开您的设备。
+            {t("description")}
           </motion.p>
         </div>
 
@@ -138,13 +139,13 @@ export default function CompressPage() {
               <div className="glass-card p-6 md:p-8 rounded-2xl space-y-6">
                 <div className="flex items-center gap-2 text-xl font-semibold text-foreground">
                   <Settings2 className="w-5 h-5 text-indigo-500" />
-                  <h2>压缩参数设置</h2>
+                  <h2>{t("settings_title")}</h2>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   <div className="space-y-3">
                     <label className="flex justify-between text-sm font-medium text-muted-foreground">
-                      <span>压缩质量</span>
+                      <span>{t("quality")}</span>
                       <span className="text-indigo-600 font-bold">{quality}%</span>
                     </label>
                     <input
@@ -156,14 +157,14 @@ export default function CompressPage() {
                       className="w-full h-2 bg-indigo-100 rounded-lg appearance-none cursor-pointer accent-indigo-600"
                     />
                     <div className="flex justify-between text-xs text-muted-foreground/60">
-                      <span>更小体积</span>
-                      <span>更佳画质</span>
+                      <span>{t("smaller_size")}</span>
+                      <span>{t("better_quality")}</span>
                     </div>
                   </div>
                   
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-muted-foreground">
-                      最大宽度 (px)
+                      {t("max_width")}
                     </label>
                     <input
                       type="number"
@@ -175,7 +176,7 @@ export default function CompressPage() {
                   
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-muted-foreground">
-                      最大高度 (px)
+                      {t("max_height")}
                     </label>
                     <input
                       type="number"
@@ -194,7 +195,7 @@ export default function CompressPage() {
                     size="lg"
                     className="w-full md:w-auto min-w-[200px]"
                   >
-                    {isCompressing ? "正在处理..." : "开始压缩"}
+                    {isCompressing ? t("processing") : t("start_compress")}
                   </Button>
                 </div>
               </div>
@@ -228,11 +229,11 @@ export default function CompressPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xl font-semibold text-foreground">
                   <CheckCircle2 className="w-5 h-5 text-green-500" />
-                  <h2>处理结果 ({results.length})</h2>
+                  <h2>{t("results_title", { count: results.length })}</h2>
                 </div>
                 <Button onClick={downloadAll} variant="outline" size="sm" className="hover:bg-indigo-50 text-indigo-600 border-indigo-200">
                   <Download className="w-4 h-4 mr-2" />
-                  批量下载
+                  {t("download_all")}
                 </Button>
               </div>
               

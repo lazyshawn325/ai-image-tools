@@ -7,6 +7,7 @@ import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
+import { useTranslations } from "next-intl";
 
 interface CropArea {
   x: number;
@@ -21,16 +22,8 @@ interface AspectRatio {
   icon?: React.ReactNode;
 }
 
-const ASPECT_RATIOS: AspectRatio[] = [
-  { name: "自由", value: null, icon: <CropIcon className="w-4 h-4" /> },
-  { name: "1:1", value: 1, icon: <Square className="w-4 h-4" /> },
-  { name: "4:3", value: 4 / 3, icon: <Monitor className="w-4 h-4" /> },
-  { name: "16:9", value: 16 / 9, icon: <Monitor className="w-4 h-4" /> },
-  { name: "3:2", value: 3 / 2, icon: <Smartphone className="w-4 h-4 rotate-90" /> },
-  { name: "9:16", value: 9 / 16, icon: <Smartphone className="w-4 h-4" /> },
-];
-
 export default function CropPage() {
+  const t = useTranslations("Crop");
   const [file, setFile] = useState<File | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState<CropArea>({ x: 0, y: 0, width: 0, height: 0 });
@@ -45,6 +38,15 @@ export default function CropPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  const ASPECT_RATIOS: AspectRatio[] = [
+    { name: t("ratio_free"), value: null, icon: <CropIcon className="w-4 h-4" /> },
+    { name: "1:1", value: 1, icon: <Square className="w-4 h-4" /> },
+    { name: "4:3", value: 4 / 3, icon: <Monitor className="w-4 h-4" /> },
+    { name: "16:9", value: 16 / 9, icon: <Monitor className="w-4 h-4" /> },
+    { name: "3:2", value: 3 / 2, icon: <Smartphone className="w-4 h-4 rotate-90" /> },
+    { name: "9:16", value: 9 / 16, icon: <Smartphone className="w-4 h-4" /> },
+  ];
 
   const handleFilesSelected = (files: File[]) => {
     if (files.length > 0) {
@@ -245,7 +247,7 @@ export default function CropPage() {
 
     canvas.toBlob((blob) => {
       if (!blob) {
-        toastError("裁剪图片生成失败");
+        toastError(t("error_generate_failed"));
         return;
       }
       const url = URL.createObjectURL(blob);
@@ -257,7 +259,7 @@ export default function CropPage() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      success("裁剪图片下载开始");
+      success(t("success_download_started"));
     });
   };
 
@@ -277,10 +279,10 @@ export default function CropPage() {
       <div className="max-w-6xl mx-auto">
         <AdBannerAuto slot={process.env.NEXT_PUBLIC_AD_SLOT_BANNER} />
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          图片裁剪
+          {t("title")}
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mb-8">
-          自由裁剪图片，支持固定比例和自定义尺寸
+          {t("description")}
         </p>
 
         {!file ? (
@@ -350,7 +352,7 @@ export default function CropPage() {
 
             <div className="space-y-6">
                <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-4">裁剪比例</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-4">{t("aspect_ratio")}</h3>
                   <div className="grid grid-cols-3 gap-2">
                     {ASPECT_RATIOS.map((ratio) => (
                       <button
@@ -370,7 +372,7 @@ export default function CropPage() {
                </div>
 
                <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-4">预览</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-4">{t("preview")}</h3>
                   <div className="w-full aspect-video bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden flex items-center justify-center border border-gray-200 dark:border-gray-700">
                     <canvas ref={previewCanvasRef} className="max-w-full max-h-full object-contain" />
                   </div>
@@ -378,11 +380,11 @@ export default function CropPage() {
 
                <div className="flex gap-4">
                  <Button variant="outline" onClick={() => setFile(null)} className="flex-1">
-                   重新上传
+                   {t("reupload")}
                  </Button>
                  <Button onClick={handleDownload} className="flex-1">
                    <Download className="w-4 h-4 mr-2" />
-                   下载图片
+                   {t("download")}
                  </Button>
                </div>
             </div>

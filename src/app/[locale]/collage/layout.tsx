@@ -1,12 +1,16 @@
 import { Metadata } from "next";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 
-import { setRequestLocale } from "next-intl/server";
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "Collage" });
 
-export const metadata: Metadata = {
-  title: "图片拼接/拼图工具 - 在线免费制作长图和拼贴画",
-  description: "免费在线图片拼接和拼图工具，支持横向拼接、纵向拼接、网格拼图等多种布局。支持调节间距、背景颜色，一键生成高质量拼图。",
-  keywords: ["图片拼接", "图片拼图", "长图制作", "拼贴画", "在线拼图"],
-};
+  return {
+    title: t("meta_title"),
+    description: t("meta_desc"),
+    keywords: t("meta_keywords").split(","),
+  };
+}
 
 export default async function CollageLayout({
   children,

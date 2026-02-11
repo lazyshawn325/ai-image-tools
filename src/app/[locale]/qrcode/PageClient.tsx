@@ -5,8 +5,10 @@ import QRCode from 'qrcode';
 import { RefreshCw, Image as ImageIcon, FileCode } from 'lucide-react';
 import { useToast } from "@/components/ui/Toast";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
+import { useTranslations } from 'next-intl';
 
 export default function QRCodePage() {
+  const t = useTranslations("QRCode");
   const [text, setText] = useState('https://example.com');
   const [size, setSize] = useState(256);
   const [fgColor, setFgColor] = useState('#000000');
@@ -37,11 +39,11 @@ export default function QRCodePage() {
       setSvgString(svg);
     } catch (err) {
       console.error(err);
-      toastError("二维码生成失败");
+      toastError(t("error_failed"));
     } finally {
       setLoading(false);
     }
-  }, [text, size, fgColor, bgColor, level, toastError]);
+  }, [text, size, fgColor, bgColor, level, toastError, t]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -59,7 +61,7 @@ export default function QRCodePage() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    success("二维码(PNG)下载开始");
+    success(t("success_png"));
   };
 
   const downloadSVG = () => {
@@ -73,7 +75,7 @@ export default function QRCodePage() {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    success("二维码(SVG)下载开始");
+    success(t("success_svg"));
   };
 
   return (
@@ -82,10 +84,10 @@ export default function QRCodePage() {
         <AdBannerAuto slot={process.env.NEXT_PUBLIC_AD_SLOT_BANNER} />
         <div className="text-center mb-10">
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-2">
-            二维码生成工具
+            {t("title")}
           </h1>
           <p className="text-lg text-gray-600">
-            在线生成个性化二维码，支持自定义颜色、尺寸和容错率
+            {t("description")}
           </p>
         </div>
 
@@ -94,21 +96,21 @@ export default function QRCodePage() {
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  内容输入
+                  {t("input_label")}
                 </label>
                 <textarea
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   rows={4}
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
-                  placeholder="请输入网址或文本内容..."
+                  placeholder={t("input_placeholder")}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    尺寸 (px)
+                    {t("size")}
                   </label>
                   <select
                     value={size}
@@ -124,17 +126,17 @@ export default function QRCodePage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    容错率
+                    {t("level")}
                   </label>
                   <select
                     value={level}
                     onChange={(e) => setLevel(e.target.value as 'L' | 'M' | 'Q' | 'H')}
                     className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
                   >
-                    <option value="L">低 (7%)</option>
-                    <option value="M">中 (15%)</option>
-                    <option value="Q">高 (25%)</option>
-                    <option value="H">极高 (30%)</option>
+                    <option value="L">{t("level_l")}</option>
+                    <option value="M">{t("level_m")}</option>
+                    <option value="Q">{t("level_q")}</option>
+                    <option value="H">{t("level_h")}</option>
                   </select>
                 </div>
               </div>
@@ -142,7 +144,7 @@ export default function QRCodePage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    前景色
+                    {t("fg_color")}
                   </label>
                   <div className="flex items-center space-x-2">
                     <input
@@ -156,7 +158,7 @@ export default function QRCodePage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    背景色
+                    {t("bg_color")}
                   </label>
                   <div className="flex items-center space-x-2">
                     <input

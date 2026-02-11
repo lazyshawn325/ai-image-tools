@@ -5,6 +5,7 @@ import { Upload, Type, Image as ImageIcon, Download, X } from "lucide-react";
 import { useToast } from "@/components/ui/Toast";
 import { Button } from "@/components/ui/Button";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
+import { useTranslations } from "next-intl";
 
 interface WatermarkSettings {
   type: "text" | "image";
@@ -19,6 +20,7 @@ interface WatermarkSettings {
 }
 
 export default function WatermarkPage() {
+  const t = useTranslations("Watermark");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [resultUrl, setResultUrl] = useState<string>("");
@@ -137,10 +139,10 @@ export default function WatermarkPage() {
       ctx.restore();
 
       setResultUrl(canvas.toDataURL("image/png"));
-      success("水印添加完成");
+      success(t("success_added"));
     } catch (error) {
       console.error(error);
-      toastError("水印添加失败");
+      toastError(t("error_failed"));
     }
   };
 
@@ -150,7 +152,7 @@ export default function WatermarkPage() {
     link.href = resultUrl;
     link.download = `watermarked-${Date.now()}.png`;
     link.click();
-    success("图片下载开始");
+    success(t("download_started"));
   };
 
   const clearAll = () => {
@@ -166,9 +168,9 @@ export default function WatermarkPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <AdBannerAuto slot={process.env.NEXT_PUBLIC_AD_SLOT_BANNER} />
-      <h1 className="text-3xl font-bold text-center mb-2">图片水印工具</h1>
+      <h1 className="text-3xl font-bold text-center mb-2">{t("title")}</h1>
       <p className="text-gray-600 dark:text-gray-400 text-center mb-8">
-        为图片添加文字或图片水印，保护您的作品版权
+        {t("description")}
       </p>
 
       {!selectedFile && (
@@ -187,10 +189,10 @@ export default function WatermarkPage() {
           />
           <Upload className="w-16 h-16 mx-auto mb-4 text-gray-400" />
           <p className="text-xl font-medium text-gray-700 dark:text-gray-300 mb-2">
-            点击或拖拽上传图片
+            {t("upload_text", { defaultMessage: "点击或拖拽上传图片" })}
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            支持 JPG、PNG 格式
+            {t("upload_hint")}
           </p>
         </div>
       )}
@@ -200,10 +202,10 @@ export default function WatermarkPage() {
           <div className="lg:col-span-2 space-y-6">
             <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium">{resultUrl ? "结果预览" : "原图预览"}</h3>
+                <h3 className="text-lg font-medium">{resultUrl ? t("preview_result") : t("preview_original")}</h3>
                 <Button variant="outline" size="sm" onClick={clearAll}>
                   <X className="w-4 h-4 mr-1" />
-                  清除
+                  {t("clear")}
                 </Button>
               </div>
               <div className="bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center min-h-[300px]">
@@ -218,16 +220,16 @@ export default function WatermarkPage() {
             <div className="flex justify-center gap-4">
               {!resultUrl ? (
                 <Button onClick={applyWatermark} size="lg">
-                  添加水印
+                  {t("apply")}
                 </Button>
               ) : (
                 <>
                   <Button onClick={downloadResult} size="lg">
                     <Download className="w-5 h-5 mr-2" />
-                    下载图片
+                    {t("download")}
                   </Button>
                   <Button variant="outline" onClick={() => setResultUrl("")} size="lg">
-                    重新编辑
+                    {t("edit")}
                   </Button>
                 </>
               )}
@@ -235,11 +237,11 @@ export default function WatermarkPage() {
           </div>
 
           <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
-            <h3 className="text-lg font-medium mb-6">水印设置</h3>
+            <h3 className="text-lg font-medium mb-6">{t("settings")}</h3>
 
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium mb-2">水印类型</label>
+                <label className="block text-sm font-medium mb-2">{t("type")}</label>
                 <div className="flex gap-2">
                   <Button
                     variant={settings.type === "text" ? "primary" : "outline"}
@@ -248,7 +250,7 @@ export default function WatermarkPage() {
                     className="flex-1"
                   >
                     <Type className="w-4 h-4 mr-1" />
-                    文字
+                    {t("type_text")}
                   </Button>
                   <Button
                     variant={settings.type === "image" ? "primary" : "outline"}
@@ -257,7 +259,7 @@ export default function WatermarkPage() {
                     className="flex-1"
                   >
                     <ImageIcon className="w-4 h-4 mr-1" />
-                    图片
+                    {t("type_image")}
                   </Button>
                 </div>
               </div>
@@ -265,7 +267,7 @@ export default function WatermarkPage() {
               {settings.type === "text" ? (
                 <>
                   <div>
-                    <label className="block text-sm font-medium mb-2">水印文字</label>
+                    <label className="block text-sm font-medium mb-2">{t("text_content")}</label>
                     <input
                       type="text"
                       value={settings.text}
@@ -274,7 +276,7 @@ export default function WatermarkPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">字体大小: {settings.fontSize}px</label>
+                    <label className="block text-sm font-medium mb-2">{t("font_size")}: {settings.fontSize}px</label>
                     <input
                       type="range"
                       min="12"
@@ -285,7 +287,7 @@ export default function WatermarkPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">文字颜色</label>
+                    <label className="block text-sm font-medium mb-2">{t("text_color")}</label>
                     <input
                       type="color"
                       value={settings.color}
@@ -297,7 +299,7 @@ export default function WatermarkPage() {
               ) : (
                 <>
                   <div>
-                    <label className="block text-sm font-medium mb-2">水印图片</label>
+                    <label className="block text-sm font-medium mb-2">{t("image_upload")}</label>
                     <input
                       ref={watermarkInputRef}
                       type="file"
@@ -312,14 +314,14 @@ export default function WatermarkPage() {
                       className="w-full"
                     >
                       <Upload className="w-4 h-4 mr-1" />
-                      {watermarkImageFile ? "更换水印图片" : "选择水印图片"}
+                      {watermarkImageFile ? t("change_image") : t("select_image")}
                     </Button>
                     {watermarkImageFile && (
                       <p className="text-xs text-gray-500 mt-1">{watermarkImageFile.name}</p>
                     )}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">缩放比例: {Math.round(settings.scale * 100)}%</label>
+                    <label className="block text-sm font-medium mb-2">{t("scale")}: {Math.round(settings.scale * 100)}%</label>
                     <input
                       type="range"
                       min="0.05"
@@ -331,7 +333,7 @@ export default function WatermarkPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">旋转角度: {settings.rotate}°</label>
+                    <label className="block text-sm font-medium mb-2">{t("rotate")}: {settings.rotate}°</label>
                     <input
                       type="range"
                       min="0"
@@ -345,7 +347,7 @@ export default function WatermarkPage() {
               )}
 
               <div>
-                <label className="block text-sm font-medium mb-2">透明度: {Math.round(settings.opacity * 100)}%</label>
+                <label className="block text-sm font-medium mb-2">{t("opacity")}: {Math.round(settings.opacity * 100)}%</label>
                 <input
                   type="range"
                   min="0.1"
@@ -358,17 +360,17 @@ export default function WatermarkPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">位置</label>
+                <label className="block text-sm font-medium mb-2">{t("position")}</label>
                 <select
                   value={settings.position}
                   onChange={(e) => setSettings(prev => ({ ...prev, position: e.target.value as WatermarkSettings["position"] }))}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
                 >
-                  <option value="top-left">左上</option>
-                  <option value="top-right">右上</option>
-                  <option value="bottom-left">左下</option>
-                  <option value="bottom-right">右下</option>
-                  <option value="center">居中</option>
+                  <option value="top-left">{t("pos_tl")}</option>
+                  <option value="top-right">{t("pos_tr")}</option>
+                  <option value="bottom-left">{t("pos_bl")}</option>
+                  <option value="bottom-right">{t("pos_br")}</option>
+                  <option value="center">{t("pos_center")}</option>
                 </select>
               </div>
             </div>

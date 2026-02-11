@@ -32,35 +32,40 @@ export const viewport: Viewport = {
   themeColor: "#4f46e5",
 };
 
-export const metadata: Metadata = {
-  title: "AI 图片工具箱 - 免费在线图片处理工具",
-  description:
-    "免费在线图片处理工具，包括图片压缩、格式转换、尺寸调整、二维码生成、AI去背景等。所有处理在浏览器本地完成，保护您的隐私。",
-  keywords: [
-    "图片压缩",
-    "格式转换",
-    "尺寸调整",
-    "二维码生成",
-    "AI去背景",
-    "在线工具",
-    "免费",
-  ],
-  authors: [{ name: "AI Image Tools" }],
-  openGraph: {
-    title: "AI 图片工具箱 - 免费在线图片处理工具",
-    description: "免费在线图片处理工具，所有处理在浏览器本地完成",
-    type: "website",
-  },
-  verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
-  },
-  manifest: "/manifest.json",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "AI工具箱",
-  },
-};
+import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "Global" });
+
+  return {
+    title: t("meta_title"),
+    description: t("meta_desc"),
+    keywords: [
+      t.raw("meta_title"),
+      (await getTranslations({ locale, namespace: "Navigation" }))("compress"),
+      (await getTranslations({ locale, namespace: "Navigation" }))("convert"),
+      (await getTranslations({ locale, namespace: "Navigation" }))("resize"),
+      (await getTranslations({ locale, namespace: "Navigation" }))("qrcode"),
+      (await getTranslations({ locale, namespace: "Navigation" }))("removeBg"),
+    ],
+    authors: [{ name: "AI Image Tools" }],
+    openGraph: {
+      title: t("meta_title"),
+      description: t("meta_desc"),
+      type: "website",
+    },
+    verification: {
+      google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+    },
+    manifest: "/manifest.json",
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: "default",
+      title: t("apple_title"),
+    },
+  };
+}
 
 export default async function LocaleLayout({
   children,

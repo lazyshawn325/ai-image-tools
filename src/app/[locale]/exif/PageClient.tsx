@@ -8,6 +8,7 @@ import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
+import { useTranslations } from "next-intl";
 
 interface ExifData {
   Make?: string;
@@ -36,6 +37,7 @@ interface ProcessedImage {
 }
 
 export default function ExifPage() {
+  const t = useTranslations("Exif");
   const [selectedImage, setSelectedImage] = useState<ProcessedImage | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { success, error: toastError } = useToast();
@@ -94,7 +96,7 @@ export default function ExifPage() {
       });
     } catch (err) {
       console.error(err);
-      const msg = "读取图片信息失败";
+      const msg = t("error_read");
       setError(msg);
       toastError(msg);
     }
@@ -126,18 +128,18 @@ export default function ExifPage() {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        success("清除EXIF并下载开始");
+        success(t("success_clear"));
       }, selectedImage.file.type, 1.0);
     } catch (err) {
       console.error(err);
-      const msg = "清除EXIF失败";
+      const msg = t("error_clear");
       setError(msg);
       toastError(msg);
     }
   };
 
   const renderExifValue = (value: unknown) => {
-    if (value === undefined || value === null) return "未知";
+    if (value === undefined || value === null) return t("unknown");
     if (typeof value === 'number') return value;
     if (value instanceof Number) return value.valueOf();
     return String(value);
@@ -158,7 +160,7 @@ export default function ExifPage() {
         rel="noopener noreferrer"
         className="text-blue-500 hover:text-blue-600 underline text-sm flex items-center gap-1 mt-1"
       >
-        <MapPin className="w-3 h-3" /> 在地图上查看
+        <MapPin className="w-3 h-3" /> {t("view_map")}
       </a>
     );
   };
@@ -168,10 +170,10 @@ export default function ExifPage() {
       <div className="max-w-4xl mx-auto">
         <AdBannerAuto slot={process.env.NEXT_PUBLIC_AD_SLOT_BANNER} />
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          EXIF 信息查看器
+          {t("title")}
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mb-8">
-          在线查看和编辑图片 EXIF 信息，支持查看拍摄参数、GPS 位置等
+          {t("description")}
         </p>
 
         <FileUploader
@@ -204,7 +206,7 @@ export default function ExifPage() {
                   </span>
                   <Button onClick={removeExifAndDownload} variant="outline" size="sm">
                     <Trash2 className="w-4 h-4 mr-2" />
-                    清除信息并下载
+                    {t("clear_download")}
                   </Button>
                 </div>
               </div>
@@ -214,37 +216,37 @@ export default function ExifPage() {
               {!selectedImage.hasExif ? (
                  <div className="bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 p-4 rounded-lg flex items-center gap-2">
                    <Info className="w-5 h-5" />
-                   此图片不包含 EXIF 信息
+                   {t("no_exif")}
                  </div>
               ) : (
                 <>
                   <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
                     <div className="bg-gray-50 dark:bg-gray-700/50 px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center gap-2">
                       <Camera className="w-5 h-5 text-gray-500" />
-                      <h3 className="font-semibold text-gray-900 dark:text-white">相机信息</h3>
+                      <h3 className="font-semibold text-gray-900 dark:text-white">{t("camera_info")}</h3>
                     </div>
                     <div className="p-4 space-y-2">
                       <div className="grid grid-cols-2 gap-2 text-sm">
-                        <span className="text-gray-500 dark:text-gray-400">设备制造厂商</span>
+                        <span className="text-gray-500 dark:text-gray-400">{t("make")}</span>
                         <span className="font-medium dark:text-gray-200">{renderExifValue(selectedImage.exif?.Make)}</span>
                         
-                        <span className="text-gray-500 dark:text-gray-400">相机型号</span>
+                        <span className="text-gray-500 dark:text-gray-400">{t("model")}</span>
                         <span className="font-medium dark:text-gray-200">{renderExifValue(selectedImage.exif?.Model)}</span>
                         
-                        <span className="text-gray-500 dark:text-gray-400">拍摄时间</span>
+                        <span className="text-gray-500 dark:text-gray-400">{t("datetime")}</span>
                         <span className="font-medium dark:text-gray-200">{renderExifValue(selectedImage.exif?.DateTime)}</span>
                         
-                        <span className="text-gray-500 dark:text-gray-400">曝光时间</span>
-                        <span className="font-medium dark:text-gray-200">{selectedImage.exif?.ExposureTime ? `1/${Math.round(1/selectedImage.exif.ExposureTime)}s` : '未知'}</span>
+                        <span className="text-gray-500 dark:text-gray-400">{t("exposure")}</span>
+                        <span className="font-medium dark:text-gray-200">{selectedImage.exif?.ExposureTime ? `1/${Math.round(1/selectedImage.exif.ExposureTime)}s` : t("unknown")}</span>
                         
-                        <span className="text-gray-500 dark:text-gray-400">光圈值</span>
-                        <span className="font-medium dark:text-gray-200">{selectedImage.exif?.FNumber ? `f/${selectedImage.exif.FNumber}` : '未知'}</span>
+                        <span className="text-gray-500 dark:text-gray-400">{t("aperture")}</span>
+                        <span className="font-medium dark:text-gray-200">{selectedImage.exif?.FNumber ? `f/${selectedImage.exif.FNumber}` : t("unknown")}</span>
                         
-                        <span className="text-gray-500 dark:text-gray-400">ISO 感光度</span>
+                        <span className="text-gray-500 dark:text-gray-400">{t("iso")}</span>
                         <span className="font-medium dark:text-gray-200">{renderExifValue(selectedImage.exif?.ISOSpeedRatings)}</span>
                         
-                        <span className="text-gray-500 dark:text-gray-400">焦距</span>
-                        <span className="font-medium dark:text-gray-200">{selectedImage.exif?.FocalLength ? `${selectedImage.exif.FocalLength}mm` : '未知'}</span>
+                        <span className="text-gray-500 dark:text-gray-400">{t("focal_length")}</span>
+                        <span className="font-medium dark:text-gray-200">{selectedImage.exif?.FocalLength ? `${selectedImage.exif.FocalLength}mm` : t("unknown")}</span>
                       </div>
                     </div>
                   </div>
@@ -252,20 +254,20 @@ export default function ExifPage() {
                   <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
                     <div className="bg-gray-50 dark:bg-gray-700/50 px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center gap-2">
                       <ImageIcon className="w-5 h-5 text-gray-500" />
-                      <h3 className="font-semibold text-gray-900 dark:text-white">图片参数</h3>
+                      <h3 className="font-semibold text-gray-900 dark:text-white">{t("image_params")}</h3>
                     </div>
                     <div className="p-4 space-y-2">
                       <div className="grid grid-cols-2 gap-2 text-sm">
-                        <span className="text-gray-500 dark:text-gray-400">宽度</span>
+                        <span className="text-gray-500 dark:text-gray-400">{t("width")}</span>
                         <span className="font-medium dark:text-gray-200">{renderExifValue(selectedImage.exif?.PixelXDimension)} px</span>
                         
-                        <span className="text-gray-500 dark:text-gray-400">高度</span>
+                        <span className="text-gray-500 dark:text-gray-400">{t("height")}</span>
                         <span className="font-medium dark:text-gray-200">{renderExifValue(selectedImage.exif?.PixelYDimension)} px</span>
                         
-                        <span className="text-gray-500 dark:text-gray-400">色彩空间</span>
+                        <span className="text-gray-500 dark:text-gray-400">{t("color_space")}</span>
                         <span className="font-medium dark:text-gray-200">{selectedImage.exif?.ColorSpace === 1 ? 'sRGB' : 'Uncalibrated'}</span>
                         
-                        <span className="text-gray-500 dark:text-gray-400">方向</span>
+                        <span className="text-gray-500 dark:text-gray-400">{t("orientation")}</span>
                         <span className="font-medium dark:text-gray-200">{renderExifValue(selectedImage.exif?.Orientation)}</span>
                       </div>
                     </div>
@@ -275,16 +277,16 @@ export default function ExifPage() {
                     <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
                       <div className="bg-gray-50 dark:bg-gray-700/50 px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center gap-2">
                         <MapPin className="w-5 h-5 text-gray-500" />
-                        <h3 className="font-semibold text-gray-900 dark:text-white">GPS 位置</h3>
+                        <h3 className="font-semibold text-gray-900 dark:text-white">{t("gps")}</h3>
                       </div>
                       <div className="p-4 space-y-2">
                         <div className="grid grid-cols-2 gap-2 text-sm">
-                          <span className="text-gray-500 dark:text-gray-400">纬度</span>
+                          <span className="text-gray-500 dark:text-gray-400">{t("latitude")}</span>
                           <span className="font-medium dark:text-gray-200">
                             {convertDMSToDD(selectedImage.exif.GPSLatitude, selectedImage.exif.GPSLatitudeRef || "N")?.toFixed(6)}° {selectedImage.exif.GPSLatitudeRef}
                           </span>
                           
-                          <span className="text-gray-500 dark:text-gray-400">经度</span>
+                          <span className="text-gray-500 dark:text-gray-400">{t("longitude")}</span>
                           <span className="font-medium dark:text-gray-200">
                             {convertDMSToDD(selectedImage.exif.GPSLongitude, selectedImage.exif.GPSLongitudeRef || "E")?.toFixed(6)}° {selectedImage.exif.GPSLongitudeRef}
                           </span>

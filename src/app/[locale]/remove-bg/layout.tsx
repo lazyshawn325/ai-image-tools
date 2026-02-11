@@ -1,12 +1,16 @@
 import { Metadata } from "next";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 
-import { setRequestLocale } from "next-intl/server";
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "RemoveBg" });
 
-export const metadata: Metadata = {
-  title: "AI 去背景 - 智能抠图工具 | AI 图片工具箱",
-  description: "免费 AI 图片去背景工具，一键智能抠图，完全在浏览器运行，保护您的隐私。支持人物、产品、物体等多种场景。",
-  keywords: ["AI去背景", "智能抠图", "去除背景", "背景移除", "在线抠图", "免费抠图"],
-};
+  return {
+    title: t("meta_title"),
+    description: t("meta_desc"),
+    keywords: t("meta_keywords").split(","),
+  };
+}
 
 export default async function RemoveBgLayout({
   children,

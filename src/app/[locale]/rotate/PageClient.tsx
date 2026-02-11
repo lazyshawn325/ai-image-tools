@@ -14,8 +14,10 @@ import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
+import { useTranslations } from "next-intl";
 
 export default function RotatePage() {
+  const t = useTranslations("Rotate");
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [rotation, setRotation] = useState(0);
@@ -65,7 +67,7 @@ export default function RotatePage() {
       const ctx = canvas.getContext("2d");
       
       if (!ctx) {
-        throw new Error("Could not get canvas context");
+        throw new Error(t("error_canvas"));
       }
 
       const rad = (rotation * Math.PI) / 180;
@@ -98,12 +100,12 @@ export default function RotatePage() {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         setIsProcessing(false);
-        success("旋转图片下载开始");
+        success(t("success_download"));
       }, file.type);
 
     } catch (error) {
       console.error("Error processing image:", error);
-      toastError(error instanceof Error ? error.message : "旋转失败");
+      toastError(error instanceof Error ? error.message : t("error_failed"));
       setIsProcessing(false);
     }
   };
@@ -113,10 +115,10 @@ export default function RotatePage() {
       <div className="max-w-4xl mx-auto">
         <AdBannerAuto slot={process.env.NEXT_PUBLIC_AD_SLOT_BANNER} />
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          图片旋转与翻转
+          {t("title")}
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mb-8">
-          在线旋转图片角度，支持任意角度旋转和水平/垂直翻转，实时预览
+          {t("description")}
         </p>
 
         {!file ? (
@@ -136,7 +138,7 @@ export default function RotatePage() {
                     variant="outline" 
                     size="sm" 
                     onClick={() => setRotation((r) => (r - 90 + 360) % 360)}
-                    title="向左旋转90°"
+                    title={t("rotate_left_90")}
                   >
                     <RotateCcw className="w-4 h-4 mr-1" /> -90°
                   </Button>
@@ -144,7 +146,7 @@ export default function RotatePage() {
                     variant="outline" 
                     size="sm" 
                     onClick={() => setRotation((r) => (r + 90) % 360)}
-                    title="向右旋转90°"
+                    title={t("rotate_right_90")}
                   >
                     <RotateCw className="w-4 h-4 mr-1" /> +90°
                   </Button>
@@ -155,26 +157,26 @@ export default function RotatePage() {
                     variant={flipH ? "secondary" : "outline"} 
                     size="sm" 
                     onClick={() => setFlipH(!flipH)}
-                    title="水平翻转"
+                    title={t("flip_h")}
                   >
-                    <FlipHorizontal className="w-4 h-4 mr-1" /> 水平
+                    <FlipHorizontal className="w-4 h-4 mr-1" /> {t("flip_h")}
                   </Button>
                   <Button 
                     variant={flipV ? "secondary" : "outline"} 
                     size="sm" 
                     onClick={() => setFlipV(!flipV)}
-                    title="垂直翻转"
+                    title={t("flip_v")}
                   >
-                    <FlipVertical className="w-4 h-4 mr-1" /> 垂直
+                    <FlipVertical className="w-4 h-4 mr-1" /> {t("flip_v")}
                   </Button>
                 </div>
 
                 <div className="flex gap-2">
-                   <Button variant="ghost" size="sm" onClick={handleReset} title="重置">
-                    <Undo2 className="w-4 h-4 mr-1" /> 重置
+                   <Button variant="ghost" size="sm" onClick={handleReset} title={t("reset")}>
+                    <Undo2 className="w-4 h-4 mr-1" /> {t("reset")}
                   </Button>
                   <Button variant="ghost" size="sm" onClick={() => setFile(null)}>
-                    重新上传
+                    {t("reupload")}
                   </Button>
                 </div>
               </div>
@@ -200,7 +202,7 @@ export default function RotatePage() {
                 <div className="flex flex-col md:flex-row gap-6 items-center justify-between">
                   <div className="flex-1 w-full md:max-w-md space-y-2">
                     <div className="flex justify-between text-sm">
-                      <label className="font-medium text-gray-700 dark:text-gray-300">旋转角度</label>
+                      <label className="font-medium text-gray-700 dark:text-gray-300">{t("rotation_angle")}</label>
                       <span className="text-blue-600 dark:text-blue-400 font-mono">{rotation}°</span>
                     </div>
                     <div className="flex items-center gap-4">
@@ -238,7 +240,7 @@ export default function RotatePage() {
                     className="w-full md:w-auto min-w-[160px]"
                   >
                     <Download className="w-4 h-4 mr-2" />
-                    下载图片
+                    {t("download")}
                   </Button>
                 </div>
               </div>

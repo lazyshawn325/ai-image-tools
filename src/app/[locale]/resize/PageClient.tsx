@@ -7,6 +7,7 @@ import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
+import { useTranslations } from "next-intl";
 
 interface ResizedImage {
   original: File;
@@ -21,14 +22,6 @@ interface PresetSize {
   width: number;
   height: number;
 }
-
-const presets: PresetSize[] = [
-  { name: "微信头像", width: 132, height: 132 },
-  { name: "微博封面", width: 980, height: 300 },
-  { name: "淘宝主图", width: 800, height: 800 },
-  { name: "1080P", width: 1920, height: 1080 },
-  { name: "4K", width: 3840, height: 2160 },
-];
 
 function resizeImage(
   file: File,
@@ -46,17 +39,18 @@ function resizeImage(
       ctx?.drawImage(img, 0, 0, width, height);
 
       canvas.toBlob(
-        (blob) => (blob ? resolve(blob) : reject(new Error("调整失败"))),
+        (blob) => (blob ? resolve(blob) : reject(new Error("Resize failed"))),
         "image/png"
       );
     };
 
-    img.onerror = () => reject(new Error("图片加载失败"));
+    img.onerror = () => reject(new Error("Image load failed"));
     img.src = URL.createObjectURL(file);
   });
 }
 
 export default function ResizePage() {
+  const t = useTranslations("Resize");
   const [files, setFiles] = useState<File[]>([]);
   const [originalSize, setOriginalSize] = useState({ width: 0, height: 0 });
   const [targetWidth, setTargetWidth] = useState(800);
@@ -67,6 +61,14 @@ export default function ResizePage() {
   const [results, setResults] = useState<ResizedImage[]>([]);
   const [error, setError] = useState<string | null>(null);
   const { success, error: toastError } = useToast();
+
+  const presets: PresetSize[] = [
+    { name: t("preset_wechat"), width: 132, height: 132 },
+    { name: t("preset_weibo"), width: 980, height: 300 },
+    { name: t("preset_taobao"), width: 800, height: 800 },
+    { name: "1080P", width: 1920, height: 1080 },
+    { name: "4K", width: 3840, height: 2160 },
+  ];
 
   // Get original image dimensions
   useEffect(() => {
@@ -129,15 +131,17 @@ export default function ResizePage() {
         });
       }
       setResults(newResults);
-      success("所有图片尺寸调整完成");
+      success(t("success_all_completed"));
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "调整失败";
-      setError(msg);
-      toastError(msg);
+      const msg = err instanceof Error ? err.message : t("error_resize_failed");
+      const displayMsg = msg === "Resize failed" ? t("error_resize_failed") : 
+                         msg === "Image load failed" ? t("error_load_failed") : msg;
+      setError(displayMsg);
+      toastError(displayMsg);
     } finally {
       setIsResizing(false);
     }
-  }, [files, targetWidth, targetHeight, success, toastError]);
+  }, [files, targetWidth, targetHeight, success, toastError, t]);
 
   const downloadImage = (result: ResizedImage) => {
     const url = URL.createObjectURL(result.resized);
@@ -160,10 +164,10 @@ export default function ResizePage() {
       <div className="max-w-4xl mx-auto">
         <AdBannerAuto slot={process.env.NEXT_PUBLIC_AD_SLOT_BANNER} />
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          尺寸调整
+          {t("title")}
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mb-8">
-          调整图片尺寸，支持预设尺寸和自定义尺寸
+          {t("description")}
         </p>
 
         {/* Upload Area */}
@@ -179,18 +183,18 @@ export default function ResizePage() {
         {files.length > 0 && (
           <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 mb-6">
             <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-              尺寸设置
+              {t("settings_title")}
             </h2>
 
             {/* Original Size */}
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              原始尺寸: {originalSize.width} x {originalSize.height} px
+              {t("original_size", { width: originalSize.width, height: originalSize.height })}
             </p>
 
             {/* Presets */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                预设尺寸
+                {t("presets_title")}
               </label>
               <div className="flex flex-wrap gap-2">
                 {presets.map((preset) => (
@@ -209,7 +213,7 @@ export default function ResizePage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  宽度 (px)
+                  {t("width_px")}
                 </label>
                 <input
                   type="number"
@@ -226,7 +230,7 @@ export default function ResizePage() {
                       ? "bg-blue-100 dark:bg-blue-900/30 text-blue-600"
                       : "bg-gray-100 dark:bg-gray-700 text-gray-500"
                   }`}
-                  title={keepRatio ? "锁定宽高比" : "解锁宽高比"}
+                  title={keepRatio ? t("lock_ratio") : t("unlock_ratio")}
                 >
                   {keepRatio ? (
                     <Link className="w-5 h-5" />
@@ -237,7 +241,7 @@ export default function ResizePage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  高度 (px)
+                  {t("height_px")}
                 </label>
                 <input
                   type="number"
@@ -254,7 +258,7 @@ export default function ResizePage() {
               loading={isResizing}
               className="mt-6"
             >
-              {isResizing ? "调整中..." : "开始调整"}
+              {isResizing ? t("resizing") : t("start_resize")}
             </Button>
           </div>
         )}
@@ -271,11 +275,11 @@ export default function ResizePage() {
           <div>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                调整结果
+                {t("results_title")}
               </h2>
               <Button onClick={downloadAll} variant="outline" size="sm">
                 <Download className="w-4 h-4 mr-2" />
-                全部下载
+                {t("download_all")}
               </Button>
             </div>
             <div className="space-y-4">

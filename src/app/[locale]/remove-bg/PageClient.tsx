@@ -9,9 +9,9 @@ import { AdBannerAuto } from "@/components/ads/AdBanner";
 
 import { SoftwareApplicationJsonLd } from "@/components/seo/JsonLd";
 import { SEOContent } from "@/components/seo/SEOContent";
+import { useTranslations } from "next-intl";
 
 interface ProcessedImage {
-
   original: string;
   result: string;
   width: number;
@@ -19,36 +19,13 @@ interface ProcessedImage {
 }
 
 export default function RemoveBackgroundPage() {
+  const t = useTranslations("RemoveBg");
   const seoData = {
-    title: "AI 智能去背景 - 免费在线图片抠图工具",
-    description: "基于先进 AI 模型的在线去背景工具，一键自动移除图片背景。采用 WebAssembly 技术，所有处理均在浏览器本地完成，保护您的隐私。支持发丝级精细抠图，适合电商主图、证件照制作、设计素材处理等多种场景。",
-    features: [
-      "🤖 智能识别：使用 u2netp 深度学习模型，精准识别人物、物体和边缘",
-      "🛡️ 隐私保护：所有计算均在本地浏览器完成，图片无需上传到云端",
-      "⚡️ 实时处理：利用 ONNX Runtime Web 加速，无需等待服务器排队",
-      "✨ 精细抠图：支持处理复杂背景和半透明物体（如头发、婚纱）",
-      "🆓 永久免费：无限制使用次数，无水印导出高清单图"
-    ],
-    howToUse: [
-      "点击上传区域或直接拖拽图片到页面中",
-      "系统自动加载 AI 模型并开始分析图片（首次加载可能需要几秒）",
-      "等待处理进度条完成，预览抠图效果",
-      "点击“下载 PNG 图片”保存透明背景结果，或点击“清除”处理下一张"
-    ],
-    faq: [
-      {
-        question: "去背景后的图片是什么格式？",
-        answer: "为了支持透明背景，处理后的图片将自动保存为 PNG 格式。"
-      },
-      {
-        question: "为什么第一次使用加载比较慢？",
-        answer: "首次使用时需要下载 AI 模型文件（约 40MB）到您的浏览器缓存中。下载完成后，后续使用将非常快速，甚至可以离线使用。"
-      },
-      {
-        question: "处理大图片会卡顿吗？",
-        answer: "为了保证性能，超大图片会被自动压缩到适中尺寸进行 AI 推理，然后再还原到原始分辨率，通常不会造成明显卡顿。"
-      }
-    ]
+    title: t("SEO.title"),
+    description: t("SEO.description"),
+    features: t.raw("SEO.features"),
+    howToUse: t.raw("SEO.howToUse"),
+    faq: t.raw("SEO.faq")
   };
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -66,14 +43,14 @@ export default function RemoveBackgroundPage() {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      const msg = "请选择图片文件";
+      const msg = t("error_select_file");
       setError(msg);
       toastError(msg);
       return;
     }
 
     if (file.size > 10 * 1024 * 1024) {
-      const msg = "图片大小不能超过 10MB";
+      const msg = t("error_file_size");
       setError(msg);
       toastError(msg);
       return;
@@ -83,14 +60,14 @@ export default function RemoveBackgroundPage() {
     setSelectedFile(file);
     setPreviewUrl(URL.createObjectURL(file));
     setProcessed(null);
-  }, [toastError]);
+  }, [toastError, t]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     if (file && file.type.startsWith("image/")) {
       if (file.size > 10 * 1024 * 1024) {
-        const msg = "图片大小不能超过 10MB";
+        const msg = t("error_file_size");
         setError(msg);
         toastError(msg);
         return;
@@ -100,7 +77,7 @@ export default function RemoveBackgroundPage() {
       setPreviewUrl(URL.createObjectURL(file));
       setProcessed(null);
     }
-  }, [toastError]);
+  }, [toastError, t]);
 
   const preprocessImage = async (imgElement: HTMLImageElement): Promise<Float32Array> => {
     const targetSize = 320;
@@ -173,7 +150,7 @@ export default function RemoveBackgroundPage() {
     if (!selectedFile) return;
 
     setIsProcessing(true);
-    setProgress("正在加载模型...");
+    setProgress(t("loading_model"));
     setError("");
 
     try {
@@ -187,10 +164,10 @@ export default function RemoveBackgroundPage() {
       const originalWidth = img.width;
       const originalHeight = img.height;
 
-      setProgress("正在预处理图片...");
+      setProgress(t("preprocessing"));
       const inputData = await preprocessImage(img);
 
-      setProgress("正在加载 AI 模型...");
+      setProgress(t("loading_ai"));
       // Dynamically import onnxruntime-web to avoid SSR issues
       const ort = (await import("onnxruntime-web")) as any;
       ort.env.wasm.wasmPaths = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.24.1/dist/";
@@ -203,13 +180,13 @@ export default function RemoveBackgroundPage() {
         }
       );
 
-      setProgress("正在 AI 抠图...");
+      setProgress(t("processing_ai"));
       const tensor = new ort.Tensor("float32", inputData, [1, 3, 320, 320]);
       const feeds = { input: tensor };
       const results = await session.run(feeds);
       const output = results.output;
 
-      setProgress("正在生成结果...");
+      setProgress(t("generating"));
       const maskData = output.data as Float32Array;
       const maskImageData = postprocessMask(maskData, originalWidth, originalHeight);
 
@@ -236,12 +213,12 @@ export default function RemoveBackgroundPage() {
         height: originalHeight,
       });
 
-      setProgress("完成！");
+      setProgress(t("completed"));
       session.release();
-      success("AI 抠图完成");
+      success(t("success_completed"));
     } catch (err) {
       console.error("处理失败:", err);
-      const msg = "处理失败，请重试。如果问题持续，请尝试使用较小的图片。";
+      const msg = t("error_failed");
       setError(msg);
       toastError(msg);
     } finally {
@@ -271,16 +248,16 @@ export default function RemoveBackgroundPage() {
   return (
     <>
       <SoftwareApplicationJsonLd
-        name="AI 智能去背景工具"
-        description="免费在线 AI 抠图工具，一键移除图片背景"
+        name={t("title")}
+        description={t("description")}
         url="https://ai-image-tools-h41u.vercel.app/remove-bg"
       />
       <div className="max-w-6xl mx-auto px-4 py-8">
 
       <AdBannerAuto slot={process.env.NEXT_PUBLIC_AD_SLOT_BANNER} />
-      <h1 className="text-3xl font-bold text-center mb-2">AI 智能去背景</h1>
+      <h1 className="text-3xl font-bold text-center mb-2">{t("title")}</h1>
       <p className="text-gray-600 dark:text-gray-400 text-center mb-8">
-        一键智能抠图，自动移除图片背景，完全在浏览器运行，保护您的隐私
+        {t("description")}
       </p>
 
       {!selectedFile && (
@@ -299,10 +276,10 @@ export default function RemoveBackgroundPage() {
           />
           <Upload className="w-16 h-16 mx-auto mb-4 text-gray-400" />
           <p className="text-xl font-medium text-gray-700 dark:text-gray-300 mb-2">
-            点击或拖拽上传图片
+            {t("upload_text")}
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            支持 JPG、PNG 格式，最大 10MB
+            {t("upload_hint")}
           </p>
         </div>
       )}
@@ -317,13 +294,13 @@ export default function RemoveBackgroundPage() {
         <div className="mt-6 space-y-6">
           <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium">预览</h3>
+              <h3 className="text-lg font-medium">{t("preview")}</h3>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={clearAll}
               >
-                清除
+                {t("clear")}
               </Button>
             </div>
             <div className="flex justify-center">
@@ -342,7 +319,7 @@ export default function RemoveBackgroundPage() {
               size="lg"
               loading={isProcessing}
             >
-              {isProcessing ? "处理中..." : "开始 AI 抠图"}
+              {isProcessing ? t("processing") : t("start_process")}
             </Button>
           </div>
 
@@ -359,7 +336,7 @@ export default function RemoveBackgroundPage() {
         <div className="mt-6 space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4">
-              <h3 className="text-lg font-medium mb-3">原图</h3>
+              <h3 className="text-lg font-medium mb-3">{t("original")}</h3>
               <div className="bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
                 <img
                   src={processed.original}
@@ -370,7 +347,7 @@ export default function RemoveBackgroundPage() {
             </div>
 
             <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4">
-              <h3 className="text-lg font-medium mb-3">抠图结果</h3>
+              <h3 className="text-lg font-medium mb-3">{t("result")}</h3>
               <div 
                 className="rounded-lg overflow-hidden"
                 style={{
@@ -392,14 +369,14 @@ export default function RemoveBackgroundPage() {
               onClick={downloadResult}
               size="lg"
             >
-              下载 PNG 图片
+              {t("download")}
             </Button>
             <Button
               variant="outline"
               onClick={clearAll}
               size="lg"
             >
-              处理新图片
+              {t("process_new")}
             </Button>
           </div>
         </div>
@@ -410,4 +387,3 @@ export default function RemoveBackgroundPage() {
     </>
   );
 }
-
