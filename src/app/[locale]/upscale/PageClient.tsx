@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
 import { RelatedTools } from "@/components/shared/RelatedTools";
+import { ShareButtons } from "@/components/shared/ShareButtons";
 import { SoftwareApplicationJsonLd } from "@/components/seo/JsonLd";
 import { SEOContent } from "@/components/seo/SEOContent";
 import { useTranslations } from "next-intl";
@@ -362,6 +363,8 @@ export default function UpscalePage() {
                     {t("download_image")}
                   </Button>
                 )}
+                
+                {result && <ShareButtons />}
               </div>
 
               <div className="bg-gray-50 dark:bg-black/20 rounded-xl p-4 min-h-[400px] flex items-center justify-center">

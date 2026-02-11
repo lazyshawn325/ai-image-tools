@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
 import { RelatedTools } from "@/components/shared/RelatedTools";
+import { ShareButtons } from "@/components/shared/ShareButtons";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 
@@ -237,6 +238,7 @@ export default function CompressPage() {
                   {t("download_all")}
                 </Button>
               </div>
+              <ShareButtons />
               
               <div className="grid grid-cols-1 gap-4">
                 {results.map((result, index) => {

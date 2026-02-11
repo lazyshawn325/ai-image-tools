@@ -7,6 +7,7 @@ import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
+import { ShareButtons } from "@/components/shared/ShareButtons";
 import { useTranslations } from "next-intl";
 
 type ImageFormat = "png" | "jpeg" | "webp" | "gif";
@@ -246,6 +247,7 @@ export default function ConvertPage() {
                 </div>
               ))}
             </div>
+            <ShareButtons />
           </div>
         )}
       </div>

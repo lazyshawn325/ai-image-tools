@@ -18,7 +18,14 @@
     "contact": "Contact",
     "privacy": "Privacy",
     "terms": "Terms",
-    "more_tools": "More Tools"
+    "more_tools": "More Tools",
+    "share_title": "Share with friends",
+    "share_copied": "Link copied",
+    "history_title": "Recent History",
+    "history_empty": "No recent history",
+    "history_clear": "Clear",
+    "coffee_title": "Buy me a coffee",
+    "coffee_desc": "Support development"
   },
   "Hero": {
     "badge": "v1.0 Live Now",

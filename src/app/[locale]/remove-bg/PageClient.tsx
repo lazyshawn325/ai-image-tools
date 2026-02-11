@@ -7,6 +7,7 @@ import { useToast } from "@/components/ui/Toast";
 import { Button } from "@/components/ui/Button";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
 import { RelatedTools } from "@/components/shared/RelatedTools";
+import { ShareButtons } from "@/components/shared/ShareButtons";
 
 import { SoftwareApplicationJsonLd } from "@/components/seo/JsonLd";
 import { SEOContent } from "@/components/seo/SEOContent";
@@ -380,6 +381,7 @@ export default function RemoveBackgroundPage() {
               {t("process_new")}
             </Button>
           </div>
+          <ShareButtons />
         </div>
       )}
 

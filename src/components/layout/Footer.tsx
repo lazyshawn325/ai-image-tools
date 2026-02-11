@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useTranslations } from 'next-intl';
-import { Coffee, Github, Heart } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Github, Heart } from "lucide-react";
+import { DonationButton } from "@/components/shared/DonationButton";
+import { HistoryPanel } from "@/components/shared/HistoryPanel";
 
 export function Footer() {
   const t = useTranslations('Footer');
@@ -22,7 +23,10 @@ export function Footer() {
   ];
 
   return (
-    <footer className="border-t border-border/40 bg-muted/20 backdrop-blur-sm mt-auto">
+    <footer className="border-t border-border/40 bg-muted/20 backdrop-blur-sm mt-auto relative">
+      <HistoryPanel />
+      <DonationButton variant="floating" />
+
       <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
           <div className="space-y-4">
@@ -48,12 +52,7 @@ export function Footer() {
             </div>
             
             <div className="pt-4">
-              <a href="https://www.buymeacoffee.com/lazyshawn" target="_blank" rel="noopener noreferrer">
-                <Button variant="outline" size="sm" className="gap-2 border-yellow-400/50 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400">
-                  <Coffee className="h-4 w-4" />
-                  <span>{t('buyMeCoffee')}</span>
-                </Button>
-              </a>
+              <DonationButton />
             </div>
           </div>
           
@@ -99,3 +98,4 @@ export function Footer() {
     </footer>
   );
 }
+
