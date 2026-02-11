@@ -44,12 +44,16 @@ export function DonationButton({ variant = "default" }: { variant?: "default" | 
       href={donationUrl}
       target="_blank"
       rel="noopener noreferrer"
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-[#FFDD00] to-[#FBB03B] text-black font-semibold shadow-sm hover:shadow-md transition-all text-sm"
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      className="inline-block"
     >
-      <Coffee className="w-4 h-4" />
-      {t("coffee_title")}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img 
+        src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" 
+        alt="Buy Me A Coffee" 
+        style={{ height: '60px', width: '217px' }}
+      />
     </motion.a>
   );
 }
