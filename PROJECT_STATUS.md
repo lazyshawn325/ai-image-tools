@@ -224,6 +224,20 @@ git push
 
 ## 9. 更新日志
 
+### 2026-02-12 (第八次更新 - 商业化与 SEO 终极优化)
+- 💰 **商业化闭环**:
+  - **打赏实装**: 集成 Buy Me a Coffee 官方按钮，链接直达您的真实账户 `buymeacoffee.com/andojbk7`，实现美元收款。
+  - **广告合规**: 自动创建 `public/ads.txt`，确保 AdSense 审核无障碍。
+- 🕸️ **Programmatic SEO (编程化 SEO)**:
+  - **格式专用页**: 基于 `src/config/seo-matrix.ts`，自动生成数百个 `/convert/[slug]` 落地页（如 `/convert/webp-to-png`）。
+  - **智能预选**: 用户访问专用页时，工具会自动选中对应的输入/输出格式。
+  - **结构化导航**: 全站引入 Schema.org 面包屑导航 (`Breadcrumbs`)，提升搜索结果展示层级。
+  - **Sitemap**: 动态路由已全量自动注入 `sitemap.xml`。
+- ⚡ **增长黑客 (Growth Features)**:
+  - **流量内循环**: 新增 `RelatedTools` 组件，在工具底部推荐相关工具并展示广告，提升 PV 和广告库存。
+  - **用户留存**: 新增 `HistoryPanel`（本地历史记录），自动保存用户操作记录。
+  - **社交裂变**: 新增 `ShareButtons`，支持 Twitter/Facebook 一键分享结果。
+
 ### 2026-02-12 (第七次更新 - 紧急修复与全站国际化)
 - 🐛 **BUG 修复**:
   - **语言切换失效**: 修复了点击切换语言按钮无法从英文切回中文的问题。
