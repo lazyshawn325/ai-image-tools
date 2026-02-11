@@ -77,7 +77,9 @@ export default async function LocaleLayout({
   // Enable static rendering
   setRequestLocale(safeLocale);
 
-  const messages = await getMessages();
+  // We must pass the locale to getMessages, otherwise it might infer the wrong one
+  // or default to something else in static generation context
+  const messages = await getMessages({locale: safeLocale});
   const adsenseClientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
 
   return (
