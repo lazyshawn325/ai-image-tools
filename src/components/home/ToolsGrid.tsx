@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useTranslations } from 'next-intl';
-import { Card } from "@/components/ui/Card";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import {
   ImageDown,
   FileImage,
@@ -81,13 +81,12 @@ export function ToolsGrid() {
         >
           {tools.map((tool) => (
             <motion.div key={tool.href} variants={item} className="h-full">
-              <Card
+              <SpotlightCard
                 title={tool.title}
                 description={tool.description}
                 href={tool.href}
                 icon={tool.icon}
                 badge={tool.badge}
-                className="h-full glass-card hover:bg-white/40 dark:hover:bg-zinc-800/40 hover:scale-[1.02] hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 group !border-white/20 dark:!border-white/5"
               />
             </motion.div>
           ))}
