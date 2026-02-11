@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
+import { Link, usePathname } from '@/i18n/navigation';
 import { Image as ImageIcon, Menu, X, Globe } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
@@ -24,6 +24,7 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const t = useTranslations('Navigation');
   const locale = useLocale();
+  const pathname = usePathname();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
@@ -59,7 +60,8 @@ export function Header() {
 
         <div className="flex items-center gap-2">
           <Link 
-            href={`/${switchLocale}`}
+            href={pathname}
+            locale={switchLocale}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent hover:text-primary transition-colors"
           >
             <Globe className="h-4 w-4" />
