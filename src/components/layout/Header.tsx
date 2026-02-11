@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { Link, usePathname, useRouter } from '@/i18n/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { Link } from '@/i18n/navigation';
 import { Image as ImageIcon, Menu, X, Globe } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
@@ -33,7 +34,22 @@ export function Header() {
   const switchLocale = locale === 'zh' ? 'en' : 'zh';
 
   const handleLanguageSwitch = () => {
-    router.replace(pathname, { locale: switchLocale });
+    let newPath = pathname;
+    
+    const segments = pathname.split('/');
+    if (segments[1] === 'en' || segments[1] === 'zh') {
+      newPath = '/' + segments.slice(2).join('/');
+    }
+    
+    if (!newPath.startsWith('/')) newPath = '/' + newPath;
+    
+    if (switchLocale === 'en') {
+      newPath = `/en${newPath}`;
+    }
+    
+    newPath = newPath.replace('//', '/');
+    
+    router.replace(newPath);
   };
 
   return (

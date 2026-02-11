@@ -226,6 +226,7 @@ git push
 
 ### 2026-02-11 (第六次更新 - 核心修复与体验升级)
 - 🐛 **严重 BUG 修复**:
+  - **语言切换修复**: 彻底修复了语言切换导致的 404 错误。移除了 `next-intl` 的自动路由逻辑，改为手动构建路径，确保在任何页面都能正确切换语言而不丢失路径或重复添加前缀。
   - **ONNX Runtime 崩溃修复**: 将 AI 去背景模型的加载改为动态导入 (Dynamic Import)，彻底解决了 Vercel 部署时的 "Server-side exception" 问题。
   - **构建失败修复**: 解决了 Next.js SSG 构建时的 "Locale is required" 错误。
     - 重构所有 12 个工具页面为 **Server Wrapper + Client Component** 模式。
