@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Link } from '@/i18n/navigation';
+import { Link, usePathname, useRouter } from '@/i18n/navigation';
 import { Image as ImageIcon, Menu, X, Globe } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
@@ -34,22 +33,10 @@ export function Header() {
   const switchLocale = locale === 'zh' ? 'en' : 'zh';
 
   const handleLanguageSwitch = () => {
-    let newPath = pathname;
-    
-    const segments = pathname.split('/');
-    if (segments[1] === 'en' || segments[1] === 'zh') {
-      newPath = '/' + segments.slice(2).join('/');
-    }
-    
-    if (!newPath.startsWith('/')) newPath = '/' + newPath;
-    
-    if (switchLocale === 'en') {
-      newPath = `/en${newPath}`;
-    }
-    
-    newPath = newPath.replace('//', '/');
-    
-    router.replace(newPath);
+    // Force update the locale cookie to prevent middleware from redirecting back based on old cookie
+    // This is crucial for 'as-needed' strategy where the default locale has no prefix
+    document.cookie = `NEXT_LOCALE=${switchLocale}; path=/; max-age=31536000; SameSite=Lax`;
+    router.replace(pathname, { locale: switchLocale });
   };
 
   return (
