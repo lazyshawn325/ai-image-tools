@@ -1,12 +1,25 @@
 import { Container } from "@/components/layout/Container";
 import type { Metadata } from "next";
+import { setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
 
 export const metadata: Metadata = {
   title: "隐私政策 - AI 图片工具箱",
   description: "AI 图片工具箱的隐私政策，说明我们如何保护您的数据和隐私。",
 };
 
-export default function PrivacyPage() {
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export default async function PrivacyPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <Container className="py-12">
       <div className="max-w-3xl mx-auto prose prose-gray dark:prose-invert">

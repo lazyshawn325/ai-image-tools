@@ -1,12 +1,25 @@
 import { Container } from "@/components/layout/Container";
 import type { Metadata } from "next";
+import { setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
 
 export const metadata: Metadata = {
   title: "关于我们 - AI 图片工具箱",
   description: "了解 AI 图片工具箱的使命、技术优势和我们提供的免费在线图片处理服务。我们致力于提供安全、高效、无需上传服务器的本地化图片处理解决方案。",
 };
 
-export default function AboutPage() {
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export default async function AboutPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <Container className="py-12">
       <div className="max-w-4xl mx-auto space-y-12">

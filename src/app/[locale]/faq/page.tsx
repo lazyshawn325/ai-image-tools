@@ -1,11 +1,17 @@
 import { Container } from "@/components/layout/Container";
 import type { Metadata } from "next";
+import { setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
 
 export const metadata: Metadata = {
   title: "常见问题 - AI 图片工具箱",
   description: "AI 图片工具箱常见问题解答 (FAQ)。了解图片压缩原理、隐私安全、支持格式、文件大小限制及 AI 去背景功能。",
   keywords: ["常见问题", "FAQ", "图片压缩原理", "AI去背景", "隐私安全", "图片格式转换", "WebP"],
 };
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
 const faqs = [
   {
@@ -66,7 +72,14 @@ const faqs = [
   }
 ];
 
-export default function FAQPage() {
+export default async function FAQPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <Container className="py-12">
       <div className="max-w-3xl mx-auto">

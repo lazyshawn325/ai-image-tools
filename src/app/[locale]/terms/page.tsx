@@ -1,13 +1,26 @@
 import { Container } from "@/components/layout/Container";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
 
 export const metadata: Metadata = {
   title: "使用条款 - AI 图片工具箱",
   description: "AI 图片工具箱的使用条款和服务协议。",
 };
 
-export default function TermsPage() {
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export default async function TermsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <Container className="py-12">
       <div className="max-w-3xl mx-auto prose prose-gray dark:prose-invert">

@@ -2,13 +2,26 @@ import { Container } from "@/components/layout/Container";
 import type { Metadata } from "next";
 import { Mail, Github, MessageCircle, HelpCircle } from "lucide-react";
 import Link from "next/link";
+import { setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
 
 export const metadata: Metadata = {
   title: "联系我们 - AI 图片工具箱",
   description: "有任何问题、建议或反馈？欢迎联系 AI 图片工具箱团队。我们可以通过邮件或 GitHub 接收您的反馈。",
 };
 
-export default function ContactPage() {
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export default async function ContactPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <Container className="py-12">
       <div className="max-w-4xl mx-auto">
