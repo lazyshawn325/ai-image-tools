@@ -56,6 +56,118 @@
   "Common": {
     "loading": "加载中...",
     "error": "发生错误",
-    "success": "操作成功"
+    "success": "操作成功",
+    "upload_text": "点击或拖拽上传图片",
+    "support_format": "支持 {accept} 格式，最大 {size}"
+  },
+  "Features": {
+    "title": "为什么选择我们？",
+    "subtitle": "专注于提供安全、高效、便捷的图片处理服务",
+    "privacy_title": "隐私优先",
+    "privacy_desc": "所有图片处理完全在您的浏览器中进行，图片不会上传到任何服务器，确保数据绝对安全。",
+    "speed_title": "极速处理",
+    "speed_desc": "利用 WebAssembly 和现代浏览器技术，实现毫秒级图片处理，无需等待上传下载。",
+    "free_title": "完全免费",
+    "free_desc": "无需注册，无隐藏收费，所有功能永久免费使用，致力于提供最优质的工具体验。"
+  },
+  "Filters": {
+    "meta_title": "图片滤镜 - AI 图片工具箱",
+    "meta_desc": "免费在线图片滤镜工具，提供多种预设滤镜和参数调整（亮度、对比度、饱和度等），实时预览，一键美化图片。完全在浏览器本地处理，保护隐私。",
+    "meta_keywords": "图片滤镜,在线滤镜,图片美化,照片编辑,调整亮度,调整对比度",
+    "title": "图片滤镜",
+    "description": "在线调整图片亮度、对比度、饱和度，添加滤镜效果",
+    "upload_text": "点击或拖拽上传图片",
+    "change_image": "更换图片",
+    "download_image": "下载图片",
+    "presets_title": "预设滤镜",
+    "reset": "重置",
+    "params_title": "参数调整",
+    "brightness": "亮度",
+    "contrast": "对比度",
+    "saturation": "饱和度",
+    "grayscale": "灰度",
+    "blur": "模糊",
+    "sepia": "复古(Sepia)",
+    "download_start": "滤镜图片下载开始",
+    "download_fail": "滤镜图片生成失败",
+    "process_fail": "处理图片失败",
+    "preset_original": "原图",
+    "preset_vintage": "复古",
+    "preset_bw": "黑白",
+    "preset_warm": "暖色",
+    "preset_cool": "冷色",
+    "preset_high_contrast": "高对比"
+  },
+  "PrivacyPage": {
+    "meta_title": "隐私政策 - AI 图片工具箱",
+    "meta_desc": "AI 图片工具箱的隐私政策，说明我们如何保护您的数据和隐私。",
+    "title": "隐私政策",
+    "last_updated": "最后更新日期：2024年12月",
+    "sections": {
+      "overview": {
+        "title": "1. 概述",
+        "content": "欢迎使用 AI 图片工具箱（以下简称“本网站”）。我们非常重视您的隐私保护。本隐私政策说明了我们如何收集、使用和保护您的个人信息。"
+      },
+      "processing": {
+        "title": "2. 数据处理方式",
+        "content_strong": "本地处理原则：",
+        "content": "本网站提供的所有图片处理功能（包括图片压缩、格式转换、尺寸调整、二维码生成、AI去背景、水印添加等）均在您的浏览器中本地完成。",
+        "list": [
+          "您的图片不会被上传到我们的服务器",
+          "所有图片处理完全在您的设备上进行",
+          "处理完成后，原始图片和处理结果仅存在于您的设备中",
+          "关闭浏览器页面后，所有临时数据将被清除"
+        ]
+      },
+      "collection": {
+        "title": "3. 我们收集的信息",
+        "content": "我们可能通过以下方式收集有限的信息：",
+        "list": [
+          {
+            "title": "使用统计：",
+            "content": "我们可能使用 Google Analytics 等工具收集匿名的网站使用统计数据，如访问量、页面浏览量等。这些数据不包含任何可识别个人身份的信息。"
+          },
+          {
+            "title": "Cookies：",
+            "content": "我们可能使用 Cookies 来改善用户体验和提供广告服务。您可以在浏览器设置中选择禁用 Cookies。"
+          }
+        ]
+      },
+      "third_party": {
+        "title": "4. 第三方服务",
+        "content": "本网站可能使用以下第三方服务：",
+        "list": [
+          {
+            "title": "Google AdSense：",
+            "content": "用于展示广告。Google 可能会使用 Cookies 来提供个性化广告。您可以访问 Google 的广告设置页面管理您的广告偏好。"
+          },
+          {
+            "title": "Google Analytics：",
+            "content": "用于分析网站流量和用户行为。"
+          },
+          {
+            "title": "Hugging Face：",
+            "content": "AI 去背景功能使用的模型托管在 Hugging Face 上，在首次使用时会下载到您的浏览器中。"
+          }
+        ]
+      },
+      "security": {
+        "title": "5. 数据安全",
+        "content": "由于所有图片处理都在您的本地浏览器中进行，您的图片数据始终保留在您的设备上。我们不会访问、存储或处理您的任何图片内容。"
+      },
+      "minors": {
+        "title": "6. 未成年人隐私",
+        "content": "本网站不会故意收集任何 16 岁以下未成年人的个人信息。如果您是家长或监护人，发现您的孩子向我们提供了个人信息，请与我们联系。"
+      },
+      "updates": {
+        "title": "7. 隐私政策更新",
+        "content": "我们可能会不时更新本隐私政策。更新后的政策将在本页面发布，建议您定期查看以了解我们如何保护您的隐私。"
+      },
+      "contact": {
+        "title": "8. 联系我们",
+        "content": "如果您对本隐私政策有任何疑问或建议，请通过以下方式联系我们：",
+        "email": "邮箱：contact@example.com"
+      }
+    }
   }
 }

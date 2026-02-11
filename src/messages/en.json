@@ -56,6 +56,118 @@
   "Common": {
     "loading": "Loading...",
     "error": "An error occurred",
-    "success": "Success"
+    "success": "Success",
+    "upload_text": "Click or drag to upload image",
+    "support_format": "Supports {accept} format, max size {size}"
+  },
+  "Features": {
+    "title": "Why Choose Us?",
+    "subtitle": "Focused on providing secure, efficient, and convenient image processing services",
+    "privacy_title": "Privacy First",
+    "privacy_desc": "All image processing happens entirely in your browser. Images are never uploaded to any server, ensuring absolute data security.",
+    "speed_title": "Blazing Fast",
+    "speed_desc": "Powered by WebAssembly and modern browser technology for millisecond-level processing without waiting for uploads/downloads.",
+    "free_title": "Completely Free",
+    "free_desc": "No registration, no hidden fees. All features are free forever, dedicated to providing the best tool experience."
+  },
+  "Filters": {
+    "meta_title": "Image Filters - AI Image Tools",
+    "meta_desc": "Free online photo filter tool. Adjust brightness, contrast, saturation, and apply presets. Real-time preview, secure local processing.",
+    "meta_keywords": "image filters, online filters, photo editing, brightness, contrast",
+    "title": "Image Filters",
+    "description": "Adjust brightness, contrast, saturation, and apply filters online.",
+    "upload_text": "Click or drag to upload image",
+    "change_image": "Change Image",
+    "download_image": "Download Image",
+    "presets_title": "Preset Filters",
+    "reset": "Reset",
+    "params_title": "Adjustments",
+    "brightness": "Brightness",
+    "contrast": "Contrast",
+    "saturation": "Saturation",
+    "grayscale": "Grayscale",
+    "blur": "Blur",
+    "sepia": "Sepia",
+    "download_start": "Download started",
+    "download_fail": "Failed to generate image",
+    "process_fail": "Failed to process image",
+    "preset_original": "Original",
+    "preset_vintage": "Vintage",
+    "preset_bw": "B&W",
+    "preset_warm": "Warm",
+    "preset_cool": "Cool",
+    "preset_high_contrast": "High Contrast"
+  },
+  "PrivacyPage": {
+    "meta_title": "Privacy Policy - AI Image Tools",
+    "meta_desc": "Privacy policy for AI Image Tools, explaining how we protect your data and privacy.",
+    "title": "Privacy Policy",
+    "last_updated": "Last updated: December 2024",
+    "sections": {
+      "overview": {
+        "title": "1. Overview",
+        "content": "Welcome to AI Image Tools (hereinafter referred to as \"this website\"). We attach great importance to your privacy protection. This privacy policy explains how we collect, use, and protect your personal information."
+      },
+      "processing": {
+        "title": "2. Data Processing",
+        "content_strong": "Local Processing Principle: ",
+        "content": "All image processing functions provided by this website (including image compression, format conversion, resizing, QR code generation, AI background removal, watermark addition, etc.) are completed locally in your browser.",
+        "list": [
+          "Your images will not be uploaded to our servers",
+          "All image processing takes place entirely on your device",
+          "After processing, original images and results exist only on your device",
+          "All temporary data will be cleared after closing the browser tab"
+        ]
+      },
+      "collection": {
+        "title": "3. Information We Collect",
+        "content": "We may collect limited information in the following ways:",
+        "list": [
+          {
+            "title": "Usage Statistics: ",
+            "content": "We may use tools like Google Analytics to collect anonymous website usage statistics, such as visitor numbers and page views. These data do not contain any personally identifiable information."
+          },
+          {
+            "title": "Cookies: ",
+            "content": "We may use Cookies to improve user experience and provide advertising services. You can choose to disable Cookies in your browser settings."
+          }
+        ]
+      },
+      "third_party": {
+        "title": "4. Third-Party Services",
+        "content": "This website may use the following third-party services:",
+        "list": [
+          {
+            "title": "Google AdSense: ",
+            "content": "Used to display ads. Google may use Cookies to provide personalized ads. You can manage your ad preferences on Google's ad settings page."
+          },
+          {
+            "title": "Google Analytics: ",
+            "content": "Used to analyze website traffic and user behavior."
+          },
+          {
+            "title": "Hugging Face: ",
+            "content": "Models used for AI background removal are hosted on Hugging Face and downloaded to your browser upon first use."
+          }
+        ]
+      },
+      "security": {
+        "title": "5. Data Security",
+        "content": "Since all image processing happens in your local browser, your image data always remains on your device. We do not access, store, or process any of your image content."
+      },
+      "minors": {
+        "title": "6. Children's Privacy",
+        "content": "This website does not knowingly collect any personal information from minors under the age of 16. If you are a parent or guardian and discover that your child has provided us with personal information, please contact us."
+      },
+      "updates": {
+        "title": "7. Policy Updates",
+        "content": "We may update this privacy policy from time to time. Updated policies will be published on this page. We recommend you review it periodically to understand how we protect your privacy."
+      },
+      "contact": {
+        "title": "8. Contact Us",
+        "content": "If you have any questions or suggestions regarding this privacy policy, please contact us via:",
+        "email": "Email: contact@example.com"
+      }
+    }
   }
 }

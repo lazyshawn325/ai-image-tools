@@ -4,6 +4,7 @@ import { useCallback, useState, useRef } from "react";
 import { UploadCloud, X, FileImage } from "lucide-react";
 import { clsx } from "clsx";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 interface FileUploaderProps {
   accept?: string;
@@ -12,6 +13,7 @@ interface FileUploaderProps {
   onFilesSelected: (files: File[]) => void;
   onError?: (error: string) => void;
   className?: string;
+  text?: string;
 }
 
 interface FileWithPreview {
@@ -26,7 +28,10 @@ export function FileUploader({
   onFilesSelected,
   onError,
   className,
+  text,
 }: FileUploaderProps) {
+  const t = useTranslations("Common");
+  const uploadText = text || t("upload_text");
   const [files, setFiles] = useState<FileWithPreview[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -154,10 +159,10 @@ export function FileUploader({
           
           <div className="space-y-1">
             <p className="text-xl font-semibold text-foreground">
-              点击或拖拽上传图片
+              {uploadText}
             </p>
             <p className="text-sm text-muted-foreground">
-              支持 {accept} 格式，最大 {formatSize(maxSize)}
+              {t("support_format", { accept, size: formatSize(maxSize) })}
             </p>
           </div>
         </div>

@@ -7,6 +7,7 @@ import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
+import { useTranslations } from "next-intl";
 
 interface FilterSettings {
   brightness: number;
@@ -26,36 +27,37 @@ const DEFAULT_SETTINGS: FilterSettings = {
   sepia: 0,
 };
 
-const PRESETS = [
-  { name: "原图", settings: DEFAULT_SETTINGS },
-  {
-    name: "复古",
-    settings: { ...DEFAULT_SETTINGS, sepia: 50, contrast: 110, brightness: 90 },
-  },
-  {
-    name: "黑白",
-    settings: { ...DEFAULT_SETTINGS, grayscale: 100, contrast: 120 },
-  },
-  {
-    name: "暖色",
-    settings: { ...DEFAULT_SETTINGS, sepia: 30, saturate: 120, brightness: 105 },
-  },
-  {
-    name: "冷色",
-    settings: { ...DEFAULT_SETTINGS, saturate: 90, contrast: 110, brightness: 105 },
-  },
-  {
-    name: "高对比",
-    settings: { ...DEFAULT_SETTINGS, contrast: 150, saturate: 120 },
-  },
-];
-
 export default function FiltersPage() {
+  const t = useTranslations("Filters");
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [settings, setSettings] = useState<FilterSettings>(DEFAULT_SETTINGS);
   const [isProcessing, setIsProcessing] = useState(false);
   const { success, error: toastError } = useToast();
+
+  const PRESETS = [
+    { name: t("preset_original"), settings: DEFAULT_SETTINGS },
+    {
+      name: t("preset_vintage"),
+      settings: { ...DEFAULT_SETTINGS, sepia: 50, contrast: 110, brightness: 90 },
+    },
+    {
+      name: t("preset_bw"),
+      settings: { ...DEFAULT_SETTINGS, grayscale: 100, contrast: 120 },
+    },
+    {
+      name: t("preset_warm"),
+      settings: { ...DEFAULT_SETTINGS, sepia: 30, saturate: 120, brightness: 105 },
+    },
+    {
+      name: t("preset_cool"),
+      settings: { ...DEFAULT_SETTINGS, saturate: 90, contrast: 110, brightness: 105 },
+    },
+    {
+      name: t("preset_high_contrast"),
+      settings: { ...DEFAULT_SETTINGS, contrast: 150, saturate: 120 },
+    },
+  ];
 
   const getFilterString = (s: FilterSettings) => {
     return `brightness(${s.brightness}%) contrast(${s.contrast}%) saturate(${s.saturate}%) grayscale(${s.grayscale}%) blur(${s.blur}px) sepia(${s.sepia}%)`;
@@ -106,29 +108,29 @@ export default function FiltersPage() {
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            success("滤镜图片下载开始");
+            success(t("download_start"));
           } else {
-            toastError("滤镜图片生成失败");
+            toastError(t("download_fail"));
           }
         }, file.type);
       }
     } catch (error) {
       console.error("Failed to process image", error);
-      toastError("处理图片失败");
+      toastError(t("process_fail"));
     } finally {
       setIsProcessing(false);
     }
-  }, [file, previewUrl, settings, success, toastError]);
+  }, [file, previewUrl, settings, success, toastError, t]);
 
   return (
     <Container className="py-8">
       <div className="max-w-6xl mx-auto">
         <AdBannerAuto slot={process.env.NEXT_PUBLIC_AD_SLOT_BANNER} />
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          图片滤镜
+          {t("title")}
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mb-8">
-          在线调整图片亮度、对比度、饱和度，添加滤镜效果
+          {t("description")}
         </p>
 
         {!file ? (
@@ -138,6 +140,7 @@ export default function FiltersPage() {
             onFilesSelected={handleFilesSelected}
             onError={(err) => console.error(err)}
             className="mb-6"
+            text={t("upload_text")}
           />
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -172,7 +175,7 @@ export default function FiltersPage() {
                     }}
                 >
                     <ImageIcon className="w-4 h-4 mr-2" />
-                    更换图片
+                    {t("change_image")}
                 </Button>
                 <Button 
                     className="flex-1" 
@@ -180,7 +183,7 @@ export default function FiltersPage() {
                     loading={isProcessing}
                 >
                     <Download className="w-4 h-4 mr-2" />
-                    下载图片
+                    {t("download_image")}
                 </Button>
               </div>
 
@@ -188,14 +191,14 @@ export default function FiltersPage() {
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                     <Wand2 className="w-4 h-4" />
-                    预设滤镜
+                    {t("presets_title")}
                   </h2>
                   <button
                     onClick={() => setSettings(DEFAULT_SETTINGS)}
                     className="text-xs text-gray-500 hover:text-blue-600 flex items-center gap-1"
                   >
                     <RotateCcw className="w-3 h-3" />
-                    重置
+                    {t("reset")}
                   </button>
                 </div>
                 <div className="grid grid-cols-3 gap-2">
@@ -213,11 +216,11 @@ export default function FiltersPage() {
 
               <div className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 space-y-4">
                 <h2 className="font-semibold text-gray-900 dark:text-white mb-2">
-                  参数调整
+                  {t("params_title")}
                 </h2>
                 
                 <FilterSlider
-                  label="亮度"
+                  label={t("brightness")}
                   value={settings.brightness}
                   min={0}
                   max={200}
@@ -225,7 +228,7 @@ export default function FiltersPage() {
                   onChange={(v) => updateSetting("brightness", v)}
                 />
                 <FilterSlider
-                  label="对比度"
+                  label={t("contrast")}
                   value={settings.contrast}
                   min={0}
                   max={200}
@@ -233,7 +236,7 @@ export default function FiltersPage() {
                   onChange={(v) => updateSetting("contrast", v)}
                 />
                 <FilterSlider
-                  label="饱和度"
+                  label={t("saturation")}
                   value={settings.saturate}
                   min={0}
                   max={200}
@@ -241,7 +244,7 @@ export default function FiltersPage() {
                   onChange={(v) => updateSetting("saturate", v)}
                 />
                 <FilterSlider
-                  label="灰度"
+                  label={t("grayscale")}
                   value={settings.grayscale}
                   min={0}
                   max={100}
@@ -249,7 +252,7 @@ export default function FiltersPage() {
                   onChange={(v) => updateSetting("grayscale", v)}
                 />
                 <FilterSlider
-                  label="模糊"
+                  label={t("blur")}
                   value={settings.blur}
                   min={0}
                   max={10}
@@ -258,7 +261,7 @@ export default function FiltersPage() {
                   onChange={(v) => updateSetting("blur", v)}
                 />
                 <FilterSlider
-                  label="复古(Sepia)"
+                  label={t("sepia")}
                   value={settings.sepia}
                   min={0}
                   max={100}
