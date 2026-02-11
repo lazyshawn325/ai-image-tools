@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { Link, usePathname } from '@/i18n/navigation';
+import { Link, usePathname, useRouter } from '@/i18n/navigation';
 import { Image as ImageIcon, Menu, X, Globe } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
@@ -25,11 +25,16 @@ export function Header() {
   const t = useTranslations('Navigation');
   const locale = useLocale();
   const pathname = usePathname();
+  const router = useRouter();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
 
   const switchLocale = locale === 'zh' ? 'en' : 'zh';
+
+  const handleLanguageSwitch = () => {
+    router.replace(pathname, { locale: switchLocale });
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 transition-all duration-300">
@@ -59,14 +64,13 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Link 
-            href={pathname}
-            locale={switchLocale}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent hover:text-primary transition-colors"
+          <button 
+            onClick={handleLanguageSwitch}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent hover:text-primary transition-colors cursor-pointer"
           >
             <Globe className="h-4 w-4" />
             <span className="uppercase">{switchLocale}</span>
-          </Link>
+          </button>
           <ThemeToggle />
           <button
             className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground lg:hidden focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
