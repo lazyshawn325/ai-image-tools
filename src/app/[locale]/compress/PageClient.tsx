@@ -21,8 +21,18 @@ interface CompressedImage {
   preview: string;
 }
 
+import { SEOContent } from "@/components/seo/SEOContent";
+
 export default function CompressPage() {
   const t = useTranslations("Compress");
+  
+  const seoData = {
+    title: t("SEO.title"),
+    description: t("SEO.description"),
+    features: t.raw("SEO.features"),
+    howToUse: t.raw("SEO.howToUse"),
+    faq: t.raw("SEO.faq")
+  };
   const [files, setFiles] = useState<File[]>([]);
   const [quality, setQuality] = useState(80);
   const [maxWidth, setMaxWidth] = useState(1920);
