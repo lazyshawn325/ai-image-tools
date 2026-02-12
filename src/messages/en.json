@@ -27,6 +27,16 @@
     "coffee_title": "Buy me a coffee",
     "coffee_desc": "Support development"
   },
+  "Donation": {
+    "title": "Support Development",
+    "desc": "Your support helps keep this tool free and running!",
+    "tab_international": "International 🌏",
+    "tab_china": "CN / 中文 🇨🇳",
+    "bmc_button": "Buy Me a Coffee",
+    "afdian_button": "Support on Afdian",
+    "afdian_desc": "Support via WeChat / Alipay",
+    "close": "Close"
+  },
   "Hero": {
     "badge": "v1.0 Live Now",
     "title_prefix": "Unleash Creativity",
