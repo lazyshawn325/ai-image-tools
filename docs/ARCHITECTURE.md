@@ -113,14 +113,30 @@ import { Link, usePathname } from '@/i18n/navigation';
 - **Styling**: Tailwind CSS 4 (`globals.css`)
 - **Animation**: Framer Motion (`framer-motion`)
 - **Components**:
-  - `SpotlightCard`: Mouse-tracking gradient effect.
-  - `Glassmorphism`: Utilities in `globals.css` (`.glass`, `.glass-card`).
-  - `Aurora Background`: Pure CSS keyframe animations.
+  - `SpotlightCard`: Interactive card with **3D Tilt effect** (using `rotateX/rotateY` mouse tracking) and **Parallax Content** (`translateZ`).
+  - `Bento Grid`: Implemented using CSS Grid with `auto-rows` and conditional `col-span/row-span` for visual rhythm.
+  - `Mesh Gradients`: Dynamic multi-point radial gradients used for immersive backgrounds.
+  - `Border Tracing`: Conic-gradient powered border animations for hover states.
 
-## 5. File Structure Conventions
+## 5. SEO & Content Strategy
 
-- `src/app/[locale]/`: All localized routes.
-- `src/components/ui/`: Generic, reusable UI components (Button, Card, Input).
-- `src/components/home/`: Page-specific components.
-- `src/lib/utils.ts`: Utility functions (`cn` for class merging).
-- `src/messages/`: Translation JSON files (`en.json`, `zh.json`).
+### Dynamic SEO Content Injection
+To satisfy Google's content requirements for high-ranking tool pages, we use a **Namespace-based Injection** pattern.
+
+**Pattern:**
+1. Each tool's translation JSON contains an `SEO` object (title, features, howToUse, faq).
+2. The `SEOContent` component automatically parses these arrays and renders them with semantic HTML (H2, lists, FAQ cards).
+3. This adds ~500 words of indexable, high-value text to every tool page without cluttering the main functional UI.
+
+### Structured Data (JSON-LD)
+We automatically generate:
+- `SoftwareApplication`: For the app rating and platform metadata.
+- `HowTo`: (Implemented in components) providing step-by-step instructions to search engines.
+- `FAQPage`: Enhancing SERP appearance with dropdown answers.
+
+## 6. PWA Implementation
+
+Using `next-pwa`, we generate a service worker that caches static assets. 
+- **manifest.json**: Configured with tool-specific shortcuts for deep-linking.
+- **Install Flow**: Custom `Header` logic listens for `beforeinstallprompt` to show a stylish install button only when available.
+
