@@ -21,7 +21,7 @@ export default async function Home({
     <>
       <WebsiteJsonLd />
       <OrganizationJsonLd />
-      <main className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      <main className="min-h-screen">
         <Hero />
         <ToolsGrid />
         <Features />

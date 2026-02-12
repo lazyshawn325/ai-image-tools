@@ -40,14 +40,17 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 transition-all duration-300">
-      <div className="container flex h-16 max-w-screen-2xl items-center justify-between px-4 md:px-8">
-        <div className="flex items-center gap-8">
+    <header className="fixed top-4 left-0 right-0 z-50 px-4 md:px-8 pointer-events-none">
+      <div className="mx-auto max-w-7xl glass rounded-2xl h-16 flex items-center justify-between px-6 pointer-events-auto shadow-[0_8px_32px_rgba(0,0,0,0.12)] border border-white/10 dark:border-white/5 relative overflow-hidden">
+        {/* Subtle internal glow */}
+        <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-transparent to-purple-500/5 pointer-events-none" />
+        
+        <div className="flex items-center gap-8 relative z-10">
           <Link className="flex items-center space-x-2 group" href="/" onClick={closeMenu}>
-            <div className="rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 p-1.5 shadow-lg shadow-indigo-500/20 group-hover:shadow-indigo-500/40 transition-all duration-300 group-hover:scale-105">
+            <div className="rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 p-1.5 shadow-lg shadow-indigo-500/20 group-hover:shadow-indigo-500/50 transition-all duration-300 group-hover:scale-105 group-hover:rotate-3">
               <ImageIcon className="h-5 w-5 text-white" />
             </div>
-            <span className="hidden font-bold tracking-tight sm:inline-block text-lg bg-clip-text text-transparent bg-gradient-to-r from-slate-900 via-indigo-800 to-slate-900 dark:from-white dark:via-indigo-200 dark:to-white">
+            <span className="hidden font-bold tracking-tight sm:inline-block text-lg bg-clip-text text-transparent bg-gradient-to-r from-slate-900 via-indigo-800 to-slate-900 dark:from-white dark:via-indigo-200 dark:to-white group-hover:via-purple-500 transition-all duration-500">
               AI 图片工具箱
             </span>
           </Link>
@@ -57,26 +60,26 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="px-3 py-2 rounded-md text-sm font-medium text-muted-foreground transition-all duration-200 hover:bg-accent hover:text-primary relative group"
+                className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground transition-all duration-200 hover:bg-white/10 hover:text-primary relative group"
               >
                 {t(link.key)}
-                <span className="absolute inset-x-0 bottom-0 h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+                <span className="absolute inset-x-0 bottom-1 h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
               </Link>
             ))}
           </nav>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 relative z-10">
           <button 
             onClick={handleLanguageSwitch}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent hover:text-primary transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-white/10 hover:text-primary transition-colors cursor-pointer"
           >
             <Globe className="h-4 w-4" />
-            <span className="uppercase">{switchLocale}</span>
+            <span className="uppercase font-mono text-xs">{switchLocale}</span>
           </button>
           <ThemeToggle />
           <button
-            className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground lg:hidden focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+            className="inline-flex items-center justify-center rounded-lg p-2 text-muted-foreground hover:bg-white/10 hover:text-accent-foreground lg:hidden focus:outline-none"
             onClick={toggleMenu}
             aria-label="Toggle menu"
           >
@@ -89,13 +92,13 @@ export function Header() {
         </div>
 
         {isMenuOpen && (
-          <div className="absolute left-0 top-16 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80 lg:hidden animate-fade-in-up">
-            <nav className="container grid grid-cols-2 gap-2 p-4">
+          <div className="absolute left-0 top-[calc(100%+8px)] z-50 w-full rounded-2xl glass p-4 lg:hidden animate-fade-in-up border border-white/10 shadow-2xl">
+            <nav className="grid grid-cols-2 gap-2">
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="flex items-center justify-center p-3 rounded-xl text-sm font-medium transition-all hover:bg-accent hover:text-primary text-muted-foreground border border-transparent hover:border-border/50 hover:shadow-sm"
+                  className="flex items-center justify-center p-3 rounded-xl text-sm font-medium transition-all hover:bg-white/10 hover:text-primary text-muted-foreground border border-transparent hover:border-white/10"
                   onClick={closeMenu}
                 >
                   {t(link.key)}

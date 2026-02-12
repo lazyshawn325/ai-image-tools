@@ -62,7 +62,11 @@ export function ToolsGrid() {
 
   return (
     <section className="py-24 relative" id="tools">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      {/* Background Gradient for Tools Section */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-50/50 to-transparent dark:via-slate-900/50 pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-4xl max-h-[800px] bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             {t('title')}
