@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Link, usePathname, useRouter } from '@/i18n/navigation';
-import { Image as ImageIcon, Menu, X, Globe } from 'lucide-react';
+import { Image as ImageIcon, Menu, X, Globe, DownloadCloud } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 const NAV_LINKS = [
@@ -22,10 +22,29 @@ const NAV_LINKS = [
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const t = useTranslations('Navigation');
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
+
+  useEffect(() => {
+    const handler = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
+  };
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
@@ -70,6 +89,16 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-2 relative z-10">
+          {deferredPrompt && (
+            <button
+              onClick={handleInstallClick}
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors animate-pulse-slow"
+            >
+              <DownloadCloud className="h-4 w-4" />
+              <span>Install App</span>
+            </button>
+          )}
+
           <button 
             onClick={handleLanguageSwitch}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-white/10 hover:text-primary transition-colors cursor-pointer"

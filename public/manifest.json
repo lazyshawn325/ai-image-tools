@@ -1,16 +1,42 @@
 {
-  "name": "AI 图片工具箱",
+  "name": "AI 图片工具箱 - 专业图像处理工作台",
   "short_name": "AI工具箱",
-  "description": "专业的AI图片处理工具箱：压缩、转换、裁剪、去背景、无损放大等一站式解决方案",
+  "description": "一站式AI图片处理工具：无损压缩、智能抠图、格式转换、自由裁剪。完全本地运行，保护您的隐私。",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#0f172a",
   "theme_color": "#4f46e5",
+  "orientation": "any",
+  "categories": ["productivity", "utilities", "photo"],
   "icons": [
     {
       "src": "/icon.svg",
       "sizes": "192x192 512x512",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "图片压缩",
+      "short_name": "压缩",
+      "description": "无损压缩图片体积",
+      "url": "/compress",
+      "icons": [{ "src": "/icon.svg", "sizes": "96x96" }]
+    },
+    {
+      "name": "格式转换",
+      "short_name": "转换",
+      "description": "批量转换图片格式",
+      "url": "/convert",
+      "icons": [{ "src": "/icon.svg", "sizes": "96x96" }]
+    },
+    {
+      "name": "智能裁剪",
+      "short_name": "裁剪",
+      "description": "自由裁剪图片尺寸",
+      "url": "/crop",
+      "icons": [{ "src": "/icon.svg", "sizes": "96x96" }]
     }
   ]
 }
