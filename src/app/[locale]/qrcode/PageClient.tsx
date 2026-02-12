@@ -1,218 +1,181 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import QRCode from 'qrcode';
-import { RefreshCw, Image as ImageIcon, FileCode } from 'lucide-react';
+import { useState, useCallback, useEffect } from "react";
+import QRCode from "qrcode";
+import { Download, QrCode as QrIcon, Settings, Palette, CheckCircle2, Link as LinkIcon, RefreshCw, Layers } from "lucide-react";
 import { useToast } from "@/components/ui/Toast";
+import { Button } from "@/components/ui/Button";
+import { Container } from "@/components/layout/Container";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
-import { useTranslations } from 'next-intl';
+import { ShareButtons } from "@/components/shared/ShareButtons";
+import { RelatedTools } from "@/components/shared/RelatedTools";
+import { addToHistory } from "@/lib/historyUtils";
+import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
+import { clsx } from "clsx";
 
 export default function QRCodePage() {
   const t = useTranslations("QRCode");
-  const [text, setText] = useState('https://example.com');
-  const [size, setSize] = useState(256);
-  const [fgColor, setFgColor] = useState('#000000');
-  const [bgColor, setBgColor] = useState('#ffffff');
-  const [level, setLevel] = useState<'L' | 'M' | 'Q' | 'H'>('M');
-  const [dataUrl, setDataUrl] = useState('');
-  const [svgString, setSvgString] = useState('');
-  const [, setLoading] = useState(false);
+  const [text, setText] = useState("https://ai-image-tools.app");
+  const [size, setSize] = useState(300);
+  const [level, setLevel] = useState<"L" | "M" | "Q" | "H">("M");
+  const [fgColor, setFgColor] = useState("#000000");
+  const [bgColor, setBgColor] = useState("#ffffff");
+  const [qrUrl, setQrUrl] = useState("");
   const { success, error: toastError } = useToast();
 
-  const generateQRCode = useCallback(async () => {
+  const generateQR = useCallback(async () => {
+    if (!text) return;
     try {
-      setLoading(true);
-      const options = {
+      const url = await QRCode.toDataURL(text, {
         width: size,
-        margin: 1,
+        margin: 2,
         color: {
           dark: fgColor,
           light: bgColor,
         },
         errorCorrectionLevel: level,
-      };
-
-      const url = await QRCode.toDataURL(text, options);
-      const svg = await QRCode.toString(text, { ...options, type: 'svg' });
-      
-      setDataUrl(url);
-      setSvgString(svg);
+      });
+      setQrUrl(url);
     } catch (err) {
-      console.error(err);
       toastError(t("error_failed"));
-    } finally {
-      setLoading(false);
     }
-  }, [text, size, fgColor, bgColor, level, toastError, t]);
+  }, [text, size, level, fgColor, bgColor, t, toastError]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (text) generateQRCode();
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [text, size, fgColor, bgColor, level, generateQRCode]);
+    generateQR();
+  }, [generateQR]);
 
   const downloadPNG = () => {
-    if (!dataUrl) return;
-    const link = document.createElement('a');
-    link.href = dataUrl;
-    link.download = 'qrcode.png';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const a = document.createElement("a");
+    a.href = qrUrl;
+    a.download = `qrcode_${Date.now()}.png`;
+    a.click();
+    
+    addToHistory({
+      tool: "qrcode",
+      fileName: `qrcode_${Date.now()}.png`,
+      thumbnail: qrUrl
+    });
     success(t("success_png"));
   };
 
-  const downloadSVG = () => {
-    if (!svgString) return;
-    const blob = new Blob([svgString], { type: 'image/svg+xml' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'qrcode.svg';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    success(t("success_svg"));
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
+    <Container className="py-12 md:py-20">
+      <div className="max-w-5xl mx-auto space-y-8">
         <AdBannerAuto slot={process.env.NEXT_PUBLIC_AD_SLOT_BANNER} />
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-2">
+        
+        <div className="text-center space-y-4">
+          <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="inline-flex p-3 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 mb-2">
+            <QrIcon className="w-8 h-8" />
+          </motion.div>
+          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500">
             {t("title")}
-          </h1>
-          <p className="text-lg text-gray-600">
-            {t("description")}
-          </p>
+          </motion.h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">{t("description")}</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden md:flex">
-          <div className="p-8 md:w-1/2 bg-gray-50/50 border-r border-gray-100">
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t("input_label")}
-                </label>
-                <textarea
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  rows={4}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
-                  placeholder={t("input_placeholder")}
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t("size")}
-                  </label>
-                  <select
-                    value={size}
-                    onChange={(e) => setSize(Number(e.target.value))}
-                    className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
-                  >
-                    <option value={128}>128 x 128</option>
-                    <option value={256}>256 x 256</option>
-                    <option value={512}>512 x 512</option>
-                    <option value={1024}>1024 x 1024</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t("level")}
-                  </label>
-                  <select
-                    value={level}
-                    onChange={(e) => setLevel(e.target.value as 'L' | 'M' | 'Q' | 'H')}
-                    className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
-                  >
-                    <option value="L">{t("level_l")}</option>
-                    <option value="M">{t("level_m")}</option>
-                    <option value="Q">{t("level_q")}</option>
-                    <option value="H">{t("level_h")}</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t("fg_color")}
-                  </label>
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="color"
-                      value={fgColor}
-                      onChange={(e) => setFgColor(e.target.value)}
-                      className="h-10 w-full rounded cursor-pointer"
+        <div className="grid lg:grid-cols-2 gap-8">
+           {/* Editor */}
+           <div className="space-y-6">
+              <div className="glass-card p-6 rounded-3xl space-y-6">
+                 <div className="space-y-2">
+                    <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                       <LinkIcon className="w-4 h-4 text-emerald-500" /> {t("input_label")}
+                    </label>
+                    <textarea
+                      value={text}
+                      onChange={(e) => setText(e.target.value)}
+                      placeholder={t("input_placeholder")}
+                      className="w-full h-32 px-4 py-3 rounded-2xl border border-input bg-background/50 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all resize-none"
                     />
-                  </div>
-                </div>
+                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t("bg_color")}
-                  </label>
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="color"
-                      value={bgColor}
-                      onChange={(e) => setBgColor(e.target.value)}
-                      className="h-10 w-full rounded cursor-pointer"
-                    />
-                  </div>
-                </div>
+                 <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                       <label className="text-xs font-medium text-muted-foreground flex items-center gap-2">
+                          <Layers className="w-3.5 h-3.5" /> {t("level")}
+                       </label>
+                       <select value={level} onChange={(e) => setLevel(e.target.value as any)} className="w-full px-3 py-2 rounded-xl border border-input bg-background/50">
+                          <option value="L">{t("level_l")}</option>
+                          <option value="M">{t("level_m")}</option>
+                          <option value="Q">{t("level_q")}</option>
+                          <option value="H">{t("level_h")}</option>
+                       </select>
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-xs font-medium text-muted-foreground flex items-center gap-2">
+                          <Settings className="w-3.5 h-3.5" /> {t("size")}
+                       </label>
+                       <input type="number" value={size} onChange={(e) => setSize(Number(e.target.value))} className="w-full px-3 py-2 rounded-xl border border-input bg-background/50" />
+                    </div>
+                 </div>
+
+                 <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                       <label className="text-xs font-medium text-muted-foreground flex items-center gap-2">
+                          <Palette className="w-3.5 h-3.5 text-emerald-500" /> {t("fg_color")}
+                       </label>
+                       <div className="flex items-center gap-2 p-1.5 bg-muted/50 rounded-xl border border-border">
+                          <input type="color" value={fgColor} onChange={(e) => setFgColor(e.target.value)} className="w-8 h-8 rounded-lg border-none bg-transparent cursor-pointer" />
+                          <span className="text-xs font-mono uppercase">{fgColor}</span>
+                       </div>
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-xs font-medium text-muted-foreground flex items-center gap-2">
+                          <Palette className="w-3.5 h-3.5" /> {t("bg_color")}
+                       </label>
+                       <div className="flex items-center gap-2 p-1.5 bg-muted/50 rounded-xl border border-border">
+                          <input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="w-8 h-8 rounded-lg border-none bg-transparent cursor-pointer" />
+                          <span className="text-xs font-mono uppercase">{bgColor}</span>
+                       </div>
+                    </div>
+                 </div>
               </div>
-            </div>
-          </div>
 
-          <div className="p-8 md:w-1/2 flex flex-col items-center justify-center bg-white min-h-[400px]">
-            <div className="mb-8 relative group">
-              {dataUrl ? (
-                <div className="p-4 border border-gray-200 rounded-lg shadow-sm bg-white">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={dataUrl}
-                    alt="QR Code Preview"
-                    className="max-w-[280px] w-full h-auto"
-                    style={{ imageRendering: 'pixelated' }}
-                  />
-                </div>
-              ) : (
-                <div className="w-64 h-64 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
-                  <RefreshCw className="w-8 h-8 animate-spin" />
-                </div>
-              )}
-            </div>
+              <div className="flex gap-4">
+                 <Button onClick={downloadPNG} className="flex-1 bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-500/20 h-12">
+                    <Download className="w-5 h-5 mr-2" /> Download PNG
+                 </Button>
+                 <Button variant="ghost" onClick={() => setText("")} className="px-6 h-12">
+                    <RefreshCw className="w-5 h-5" />
+                 </Button>
+              </div>
+           </div>
 
-            <div className="flex space-x-4 w-full max-w-[280px]">
-              <button
-                onClick={downloadPNG}
-                disabled={!dataUrl}
-                className="flex-1 flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                <ImageIcon className="w-4 h-4 mr-2" />
-                PNG
-              </button>
-              <button
-                onClick={downloadSVG}
-                disabled={!svgString}
-                className="flex-1 flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                <FileCode className="w-4 h-4 mr-2" />
-                SVG
-              </button>
-            </div>
-          </div>
+           {/* Preview */}
+           <div className="space-y-6">
+              <div className="glass-card p-12 rounded-[2.5rem] bg-slate-100 dark:bg-slate-900/50 border border-border flex flex-col items-center justify-center min-h-[450px] relative group overflow-hidden">
+                 <div className="absolute inset-0 bg-grid-emerald-500/[0.03] dark:bg-grid-white/[0.02]" />
+                 <AnimatePresence mode="wait">
+                    {qrUrl ? (
+                       <motion.div key="qr" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative z-10 p-6 bg-white rounded-3xl shadow-2xl">
+                          <img src={qrUrl} className="w-full max-w-[300px] h-auto" alt="QRCode" />
+                          <div className="absolute -bottom-2 -right-2 p-2 bg-emerald-500 rounded-full text-white shadow-lg">
+                             <CheckCircle2 className="w-4 h-4" />
+                          </div>
+                       </motion.div>
+                    ) : (
+                       <div className="text-center text-muted-foreground space-y-2 relative z-10">
+                          <QrIcon className="w-16 h-16 mx-auto opacity-10" />
+                          <p>Enter text to generate QR</p>
+                       </div>
+                    )}
+                 </AnimatePresence>
+                 <div className="absolute bottom-6 right-6">
+                    <div className="px-3 py-1.5 bg-black/60 backdrop-blur-md rounded-full text-white text-[10px] font-bold border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                       Dynamic Preview
+                    </div>
+                 </div>
+              </div>
+              <ShareButtons />
+           </div>
+        </div>
+
+        <div className="pt-12">
+          <RelatedTools currentTool="qrcode" />
         </div>
       </div>
-    </div>
+    </Container>
   );
 }

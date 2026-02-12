@@ -229,6 +229,7 @@
     "meta_keywords": "AI去背景,智能抠图,去除背景,背景移除,在线抠图,免费抠图",
     "title": "AI 智能去背景",
     "description": "一键智能抠图，自动移除图片背景，完全在浏览器运行，保护您的隐私",
+    "upload_text": "点击或拖拽上传图片",
     "upload_hint": "支持 JPG、PNG 格式，最大 10MB",
     "error_select_file": "请选择图片文件",
     "error_file_size": "图片大小不能超过 10MB",

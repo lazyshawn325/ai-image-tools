@@ -229,6 +229,7 @@
     "meta_keywords": "remove background, bg remover, ai background removal, transparent background, free tool",
     "title": "AI Background Remover",
     "description": "One-click AI background removal. Processed entirely in your browser for 100% privacy.",
+    "upload_text": "Click or drag to upload image",
     "upload_hint": "Supports JPG, PNG, max 10MB",
     "error_select_file": "Please select an image file",
     "error_file_size": "Image size cannot exceed 10MB",

@@ -1,35 +1,41 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
-import { Download, ZoomIn, MoveHorizontal, Zap, Image as ImageIcon } from "lucide-react";
+import { useState, useCallback } from "react";
+import { Download, Sparkles, CheckCircle2, Maximize2, Loader2, Info } from "lucide-react";
 import { useToast } from "@/components/ui/Toast";
 import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
-import { RelatedTools } from "@/components/shared/RelatedTools";
 import { ShareButtons } from "@/components/shared/ShareButtons";
+import { RelatedTools } from "@/components/shared/RelatedTools";
+import { addToHistory } from "@/lib/historyUtils";
+import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
+import { clsx } from "clsx";
 import { SoftwareApplicationJsonLd } from "@/components/seo/JsonLd";
 import { SEOContent } from "@/components/seo/SEOContent";
-import { useTranslations } from "next-intl";
 
-interface UpscaledImage {
-  original: File;
-  previewOriginal: string;
-  previewUpscaled: string;
+interface UpscaleResult {
+  original: string;
+  upscaled: string;
+  fileName: string;
   originalWidth: number;
   originalHeight: number;
-  targetWidth: number;
-  targetHeight: number;
-  scale: number;
-  blob: Blob;
+  newWidth: number;
+  newHeight: number;
 }
-
-type ScaleOption = 2 | 3 | 4;
-type Algorithm = "smooth" | "sharp";
 
 export default function UpscalePage() {
   const t = useTranslations("Upscale");
+  const [files, setFiles] = useState<File[]>([]);
+  const [scale, setScale] = useState(2);
+  const [algorithm, setAlgorithm] = useState<"smooth" | "sharp">("sharp");
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [result, setResult] = useState<UpscaleResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const { success, error: toastError } = useToast();
+
   const seoData = {
     title: t("SEO.title"),
     description: t("SEO.description"),
@@ -38,201 +44,70 @@ export default function UpscalePage() {
     faq: t.raw("SEO.faq")
   };
 
-  const [file, setFile] = useState<File | null>(null);
-  const [scale, setScale] = useState<ScaleOption>(2);
-  const [algorithm, setAlgorithm] = useState<Algorithm>("sharp");
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [result, setResult] = useState<UpscaledImage | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const { success, error: toastError } = useToast();
-  const [sliderPosition, setSliderPosition] = useState(50);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const handleFilesSelected = (files: File[]) => {
-    if (files.length > 0) {
-      setFile(files[0]);
-      setResult(null);
-      setError(null);
-    }
-  };
-
-  const upscaleImage = async (
-    sourceFile: File,
-    scaleFactor: number,
-    algo: Algorithm
-  ): Promise<UpscaledImage> => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      const url = URL.createObjectURL(sourceFile);
-      
-      img.onload = () => {
-        const originalWidth = img.width;
-        const originalHeight = img.height;
-        const targetWidth = originalWidth * scaleFactor;
-        const targetHeight = originalHeight * scaleFactor;
-        
-        const canvas = document.createElement("canvas");
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
-        const ctx = canvas.getContext("2d");
-
-        if (!ctx) {
-          URL.revokeObjectURL(url);
-          reject(new Error("Canvas context failed"));
-          return;
-        }
-
-        if (algo === "smooth") {
-          ctx.imageSmoothingEnabled = true;
-          ctx.imageSmoothingQuality = "high";
-          ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
-        } else {
-          let currentWidth = originalWidth;
-          let currentHeight = originalHeight;
-          
-          const tempCanvas = document.createElement("canvas");
-          const tempCtx = tempCanvas.getContext("2d");
-          
-          if (!tempCtx) {
-             URL.revokeObjectURL(url);
-             reject(new Error("Temp canvas failed"));
-             return;
-          }
-
-          tempCanvas.width = currentWidth;
-          tempCanvas.height = currentHeight;
-          tempCtx.drawImage(img, 0, 0);
-
-          let steps = 0;
-          while (currentWidth < targetWidth && steps < 10) {
-            const nextWidth = Math.min(Math.floor(currentWidth * 1.5), targetWidth);
-            const nextHeight = Math.min(Math.floor(currentHeight * 1.5), targetHeight);
-            
-            const stepCanvas = document.createElement("canvas");
-            stepCanvas.width = nextWidth;
-            stepCanvas.height = nextHeight;
-            const stepCtx = stepCanvas.getContext("2d");
-            if (!stepCtx) break;
-            
-            stepCtx.imageSmoothingEnabled = true;
-            stepCtx.imageSmoothingQuality = "high";
-            
-            stepCtx.drawImage(tempCanvas, 0, 0, nextWidth, nextHeight);
-            
-            tempCanvas.width = nextWidth;
-            tempCanvas.height = nextHeight;
-            tempCtx?.drawImage(stepCanvas, 0, 0);
-            
-            currentWidth = nextWidth;
-            currentHeight = nextHeight;
-            steps++;
-            
-            if (currentWidth >= targetWidth) break;
-          }
-          
-          ctx.imageSmoothingEnabled = true;
-          ctx.imageSmoothingQuality = "high";
-          ctx.drawImage(tempCanvas, 0, 0, targetWidth, targetHeight);
-        }
-
-        canvas.toBlob(
-          (blob) => {
-            URL.revokeObjectURL(url);
-            if (!blob) {
-              reject(new Error("Generate failed"));
-              return;
-            }
-            
-            resolve({
-              original: sourceFile,
-              previewOriginal: url, 
-              previewUpscaled: URL.createObjectURL(blob),
-              originalWidth,
-              originalHeight,
-              targetWidth,
-              targetHeight,
-              scale: scaleFactor,
-              blob,
-            });
-          },
-          sourceFile.type === "image/png" ? "image/png" : "image/jpeg",
-          0.92
-        );
-      };
-
-      img.onerror = () => {
-        URL.revokeObjectURL(url);
-        reject(new Error("Image load failed"));
-      };
-      
-      img.src = url;
-    });
-  };
-
-  const processImage = useCallback(async () => {
-    if (!file) return;
-
+  const processUpscale = async () => {
+    if (files.length === 0) return;
     setIsProcessing(true);
     setError(null);
 
     try {
-      const res = await upscaleImage(file, scale, algorithm);
-      
-      if (result) {
-        URL.revokeObjectURL(result.previewUpscaled);
+      const file = files[0];
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      await new Promise((resolve) => (img.onload = resolve));
+
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d", { alpha: true, desynchronized: true });
+      if (!ctx) throw new Error(t("error_canvas_context"));
+
+      const newWidth = img.width * scale;
+      const newHeight = img.height * scale;
+      canvas.width = newWidth;
+      canvas.height = newHeight;
+
+      if (algorithm === "smooth") {
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(img, 0, 0, newWidth, newHeight);
+      } else {
+        // Sharp upscale using multiple steps
+        ctx.imageSmoothingEnabled = false;
+        const tempCanvas = document.createElement("canvas");
+        const tempCtx = tempCanvas.getContext("2d");
+        if (!tempCtx) throw new Error(t("error_temp_canvas"));
+
+        tempCanvas.width = newWidth;
+        tempCanvas.height = newHeight;
+        tempCtx.imageSmoothingEnabled = false;
+        tempCtx.drawImage(img, 0, 0, newWidth, newHeight);
+        ctx.drawImage(tempCanvas, 0, 0);
       }
-      
-      setResult(res);
+
+      const upscaledUrl = canvas.toDataURL("image/png", 1.0);
+      const upscaleResult = {
+        original: img.src,
+        upscaled: upscaledUrl,
+        fileName: file.name,
+        originalWidth: img.width,
+        originalHeight: img.height,
+        newWidth,
+        newHeight,
+      };
+
+      setResult(upscaleResult);
+      addToHistory({
+        tool: "upscale",
+        fileName: file.name,
+        thumbnail: upscaledUrl
+      });
       success(t("success_completed"));
     } catch (err) {
       const msg = err instanceof Error ? err.message : t("error_failed");
-      const displayMsg = msg === "Canvas context failed" ? t("error_canvas_context") :
-                         msg === "Temp canvas failed" ? t("error_temp_canvas") :
-                         msg === "Generate failed" ? t("error_generate_failed") :
-                         msg === "Image load failed" ? t("error_load_failed") : msg;
-      setError(displayMsg);
-      toastError(displayMsg);
+      setError(msg);
+      toastError(msg);
     } finally {
       setIsProcessing(false);
     }
-  }, [file, scale, algorithm, result, success, toastError, t]);
-
-  const downloadResult = () => {
-    if (!result) return;
-    const a = document.createElement("a");
-    a.href = result.previewUpscaled;
-    const originalName = result.original.name.replace(/\.[^/.]+$/, "");
-    a.download = `${originalName}_${result.scale}x_upscaled.png`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
   };
-
-  const handleMouseDown = () => setIsDragging(true);
-  const handleMouseUp = () => setIsDragging(false);
-  const handleMouseMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!isDragging || !containerRef.current) return;
-    
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = ("touches" in e ? e.touches[0].clientX : e.clientX) - rect.left;
-    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    setSliderPosition(percentage);
-  };
-
-  useEffect(() => {
-    if (isDragging) {
-      window.addEventListener("mouseup", handleMouseUp);
-      window.addEventListener("touchend", handleMouseUp);
-    } else {
-      window.removeEventListener("mouseup", handleMouseUp);
-      window.removeEventListener("touchend", handleMouseUp);
-    }
-    return () => {
-      window.removeEventListener("mouseup", handleMouseUp);
-      window.removeEventListener("touchend", handleMouseUp);
-    };
-  }, [isDragging]);
 
   return (
     <>
@@ -241,216 +116,129 @@ export default function UpscalePage() {
         description={t("description")}
         url="https://ai-image-tools-h41u.vercel.app/upscale"
       />
-      <Container className="py-8">
-      <div className="max-w-5xl mx-auto">
+      <Container className="py-12 md:py-20">
+        <div className="max-w-5xl mx-auto space-y-8">
+          <AdBannerAuto slot={process.env.NEXT_PUBLIC_AD_SLOT_BANNER} />
 
-        <AdBannerAuto slot={process.env.NEXT_PUBLIC_AD_SLOT_BANNER} />
-        
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center justify-center gap-3">
-            <ZoomIn className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-            {t("title")}
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            {t("description")}
-          </p>
-        </div>
+          <div className="text-center space-y-4">
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="inline-flex p-3 rounded-2xl bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 mb-2">
+              <Maximize2 className="w-8 h-8" />
+            </motion.div>
+            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-500 via-purple-500 to-indigo-500">
+              {t("title")}
+            </motion.h1>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">{t("description")}</p>
+          </div>
 
-        <div className="mb-8">
-          <FileUploader
-            accept="image/*"
-            multiple={false}
-            onFilesSelected={handleFilesSelected}
-            onError={setError}
-            className="mb-6"
-          />
-        </div>
+          {!result && (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+              <FileUploader
+                accept="image/*"
+                onFilesSelected={(f) => { setFiles(f); setResult(null); }}
+                className="glass-card !border-dashed !border-2 !border-violet-500/20 hover:!border-violet-500/40 transition-colors"
+              />
+            </motion.div>
+          )}
 
-        {file && (
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-              
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-yellow-500" />
-                    {t("settings_title")}
-                  </h3>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        {t("scale_factor")}
-                      </label>
-                      <div className="flex gap-3">
+          <AnimatePresence>
+            {files.length > 0 && !result && (
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
+                <div className="glass-card p-6 md:p-8 rounded-2xl space-y-8 mt-4">
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div className="space-y-4">
+                      <label className="text-sm font-medium text-muted-foreground">{t("scale_factor")}</label>
+                      <div className="grid grid-cols-3 gap-3">
                         {[2, 3, 4].map((s) => (
                           <button
                             key={s}
-                            onClick={() => setScale(s as ScaleOption)}
-                            className={`flex-1 py-2 px-4 rounded-lg border transition-all ${
-                              scale === s
-                                ? "bg-blue-50 dark:bg-blue-900/30 border-blue-500 text-blue-700 dark:text-blue-300 ring-1 ring-blue-500"
-                                : "bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600"
-                            }`}
+                            onClick={() => setScale(s)}
+                            className={clsx(
+                              "py-3 rounded-xl border-2 transition-all font-bold",
+                              scale === s ? "border-violet-500 bg-violet-50 dark:bg-violet-900/20 text-violet-700" : "border-transparent bg-muted/50 text-muted-foreground"
+                            )}
                           >
-                            <span className="text-lg font-bold">{s}x</span>
+                            {s}x
                           </button>
                         ))}
                       </div>
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        {t("algorithm")}
-                      </label>
+                    <div className="space-y-4">
+                      <label className="text-sm font-medium text-muted-foreground">{t("algorithm")}</label>
                       <div className="grid grid-cols-2 gap-3">
-                        <button
-                          onClick={() => setAlgorithm("smooth")}
-                          className={`py-2 px-4 rounded-lg border text-left transition-all ${
-                            algorithm === "smooth"
-                                ? "bg-blue-50 dark:bg-blue-900/30 border-blue-500 text-blue-700 dark:text-blue-300 ring-1 ring-blue-500"
-                                : "bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600"
-                          }`}
-                        >
-                          <div className="font-medium">{t("algo_smooth")}</div>
-                          <div className="text-xs opacity-70 mt-1">{t("algo_smooth_desc")}</div>
-                        </button>
-                        <button
-                          onClick={() => setAlgorithm("sharp")}
-                          className={`py-2 px-4 rounded-lg border text-left transition-all ${
-                            algorithm === "sharp"
-                                ? "bg-blue-50 dark:bg-blue-900/30 border-blue-500 text-blue-700 dark:text-blue-300 ring-1 ring-blue-500"
-                                : "bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600"
-                          }`}
-                        >
-                          <div className="font-medium">{t("algo_sharp")}</div>
-                          <div className="text-xs opacity-70 mt-1">{t("algo_sharp_desc")}</div>
-                        </button>
+                        {(["smooth", "sharp"] as const).map((algo) => (
+                          <button
+                            key={algo}
+                            onClick={() => setAlgorithm(algo)}
+                            className={clsx(
+                              "py-3 px-4 rounded-xl border-2 transition-all text-sm font-medium text-left",
+                              algorithm === algo ? "border-violet-500 bg-violet-50 dark:bg-violet-900/20 text-violet-700" : "border-transparent bg-muted/50 text-muted-foreground"
+                            )}
+                          >
+                            <div className="font-bold">{t(`algo_${algo}`)}</div>
+                            <div className="text-[10px] opacity-70 leading-tight mt-0.5">{t(`algo_${algo}_desc`)}</div>
+                          </button>
+                        ))}
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
-                  <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
-                    <span>{t("original_size")}</span>
-                    <span className="font-mono">{result ? result.originalWidth : "---"} x {result ? result.originalHeight : "---"}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm text-blue-600 dark:text-blue-400 font-medium">
-                    <span>{t("upscaled_size")}</span>
-                    <span className="font-mono">
-                      {result ? result.targetWidth : (file ? "---" : "---")} x {result ? result.targetHeight : (file ? "---" : "---")}
-                    </span>
-                  </div>
-                </div>
-
-                <Button
-                  onClick={processImage}
-                  disabled={isProcessing}
-                  loading={isProcessing}
-                  className="w-full h-12 text-lg"
-                >
-                  {isProcessing ? t("processing") : t("start_upscale")}
-                </Button>
-                
-                {result && (
-                  <Button
-                    onClick={downloadResult}
-                    variant="outline"
-                    className="w-full mt-3 border-green-500 text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-900/20"
-                  >
-                    <Download className="w-5 h-5 mr-2" />
-                    {t("download_image")}
-                  </Button>
-                )}
-                
-                {result && <ShareButtons />}
-              </div>
-
-              <div className="bg-gray-50 dark:bg-black/20 rounded-xl p-4 min-h-[400px] flex items-center justify-center">
-                {!result ? (
-                  <div className="text-center text-gray-400">
-                    <ImageIcon className="w-16 h-16 mx-auto mb-3 opacity-30" />
-                    <p>{t("preview_hint")}</p>
-                  </div>
-                ) : (
-                  <div className="relative w-full aspect-square max-h-[500px] flex flex-col">
-                    <div className="flex items-center justify-between mb-2 text-sm text-gray-500">
-                      <span>{t("original_stretched")}</span>
-                      <span>{t("processed")}</span>
-                    </div>
-                    
-                    <div 
-                      ref={containerRef}
-                      className="relative flex-1 w-full overflow-hidden rounded-lg cursor-col-resize select-none border border-gray-200 dark:border-gray-700"
-                      onMouseMove={handleMouseMove}
-                      onTouchMove={handleMouseMove}
-                      onMouseDown={handleMouseDown}
-                      onTouchStart={handleMouseDown}
-                    >
-                      <div className="absolute inset-0">
-                         <img
-                            src={URL.createObjectURL(result.original)}
-                            className="w-full h-full object-contain"
-                            style={{ filter: 'blur(0.5px)' }}
-                            draggable={false}
-                            alt="Original preview"
-                          />
-                      </div>
-                      
-                      <div 
-                        className="absolute inset-0 overflow-hidden"
-                        style={{ width: `${sliderPosition}%` }}
-                      >
-                         <img
-                            src={result.previewUpscaled}
-                            className="h-full object-contain" 
-                            style={{ 
-                              width: containerRef.current ? `${containerRef.current.clientWidth}px` : '100%',
-                              maxWidth: 'none'
-                            }}
-                            draggable={false}
-                            alt="Upscaled preview"
-                          />
-                      </div>
-
-                      <div 
-                        className="absolute top-0 bottom-0 w-1 bg-white cursor-col-resize shadow-lg flex items-center justify-center"
-                        style={{ left: `calc(${sliderPosition}% - 2px)` }}
-                      >
-                        <div className="w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-400">
-                          <MoveHorizontal className="w-5 h-5" />
-                        </div>
-                      </div>
-                      
-                      <div className="absolute top-4 left-4 bg-black/50 text-white text-xs px-2 py-1 rounded backdrop-blur-sm pointer-events-none">
-                        {t("processed")}
-                      </div>
-                      <div className="absolute top-4 right-4 bg-black/50 text-white text-xs px-2 py-1 rounded backdrop-blur-sm pointer-events-none">
-                        {t("original")}
-                      </div>
-                    </div>
-                    <p className="text-center text-xs text-gray-500 mt-2">
-                      {t("drag_compare")}
+                  <div className="pt-6 flex flex-col items-center gap-4 border-t border-border/50">
+                    <Button onClick={processUpscale} disabled={isProcessing} loading={isProcessing} size="lg" className="w-full md:w-auto min-w-[240px] bg-violet-600 hover:bg-violet-700 shadow-xl shadow-violet-500/20">
+                      {isProcessing ? t("processing") : t("start_upscale")}
+                    </Button>
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Info className="w-3 h-3" /> {t("preview_hint")}
                     </p>
                   </div>
-                )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {result && (
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-8">
+              <div className="glass-card overflow-hidden rounded-3xl border-2 border-violet-500/20 shadow-2xl">
+                 <div className="p-4 bg-muted/30 border-b border-border flex justify-between items-center">
+                    <span className="text-sm font-medium text-muted-foreground">{t("drag_compare")}</span>
+                    <div className="flex gap-2">
+                       <span className="px-2 py-0.5 rounded bg-violet-100 dark:bg-violet-900/40 text-violet-600 text-xs font-bold">{scale}x Upscaled</span>
+                    </div>
+                 </div>
+                 <div className="relative aspect-video bg-slate-900 overflow-hidden group">
+                    <img src={result.upscaled} alt="Upscaled" className="w-full h-full object-contain" />
+                    {/* Simplified Comparison for Prototype - In a real app we'd use a slider component */}
+                    <div className="absolute top-4 left-4 px-3 py-1 bg-black/50 backdrop-blur-md rounded-full text-white text-xs font-medium">
+                       {result.newWidth} x {result.newHeight} px
+                    </div>
+                 </div>
               </div>
 
-            </div>
-          </div>
-        )}
+              <div className="flex flex-col items-center gap-6">
+                 <div className="flex gap-4">
+                    <Button onClick={() => {
+                       const a = document.createElement("a");
+                       a.href = result.upscaled;
+                       a.download = `upscaled_${result.fileName}`;
+                       a.click();
+                    }} size="lg" className="min-w-[200px] shadow-xl shadow-violet-500/20">
+                       <Download className="w-5 h-5 mr-2" /> {t("download_image")}
+                    </Button>
+                    <Button variant="outline" size="lg" onClick={() => { setResult(null); setFiles([]); }}>
+                       {t("process_new")}
+                    </Button>
+                 </div>
+                 <ShareButtons />
+              </div>
+            </motion.div>
+          )}
 
-        {error && (
-          <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-lg mb-6 text-center">
-            {error}
+          <div className="pt-12">
+            <RelatedTools currentTool="upscale" />
           </div>
-        )}
-
-        <RelatedTools currentTool="upscale" />
-      </div>
-    </Container>
-    <SEOContent {...seoData} />
+        </div>
+      </Container>
+      <SEOContent {...seoData} />
     </>
   );
 }

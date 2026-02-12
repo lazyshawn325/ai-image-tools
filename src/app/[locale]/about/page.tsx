@@ -25,6 +25,7 @@ export default async function AboutPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "About" });
+  const tNav = await getTranslations({ locale, namespace: "Navigation" });
 
   return (
     <Container className="py-12">
@@ -128,7 +129,7 @@ export default async function AboutPage({
                 className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
               >
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
-                  {t.raw(`../Navigation.${feature.title}`)}
+                  {tNav(feature.title as any)}
                 </h3>
               </div>
             ))}

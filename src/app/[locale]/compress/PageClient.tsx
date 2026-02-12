@@ -64,6 +64,13 @@ export default function CompressPage() {
           compressedSize: compressedBlob.size,
           preview,
         });
+
+        // Add to history
+        addToHistory({
+          tool: "compress",
+          fileName: file.name,
+          thumbnail: preview
+        });
       }
       setResults(newResults);
       success(t("success_all_completed"));

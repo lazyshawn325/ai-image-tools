@@ -11,6 +11,7 @@ import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { ToastProvider } from "@/components/ui/Toast";
 import { routing } from '@/i18n/routing';
 import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
+import { HistoryPanel } from "@/components/shared/HistoryPanel";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -112,6 +113,7 @@ export default async function LocaleLayout({
                 {children}
               </main>
               <Footer />
+              <HistoryPanel />
               <GoogleAnalytics />
             </ToastProvider>
           </ThemeProvider>

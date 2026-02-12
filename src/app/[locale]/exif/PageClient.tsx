@@ -1,305 +1,179 @@
 "use client";
 
 import { useState } from "react";
-import { Trash2, MapPin, Camera, Image as ImageIcon, Info } from "lucide-react";
 import EXIF from "exif-js";
+import { Info, Download, Trash2, Camera, Calendar, MapPin, Maximize, Scan, RefreshCw } from "lucide-react";
 import { useToast } from "@/components/ui/Toast";
 import { FileUploader } from "@/components/shared/FileUploader";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
 import { AdBannerAuto } from "@/components/ads/AdBanner";
+import { ShareButtons } from "@/components/shared/ShareButtons";
+import { RelatedTools } from "@/components/shared/RelatedTools";
+import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
-
-interface ExifData {
-  Make?: string;
-  Model?: string;
-  DateTime?: string;
-  ExposureTime?: number;
-  FNumber?: number;
-  ISOSpeedRatings?: number;
-  FocalLength?: number;
-  PixelXDimension?: number;
-  PixelYDimension?: number;
-  Orientation?: number;
-  ColorSpace?: number;
-  GPSLatitude?: number[];
-  GPSLatitudeRef?: string;
-  GPSLongitude?: number[];
-  GPSLongitudeRef?: string;
-  [key: string]: unknown;
-}
-
-interface ProcessedImage {
-  file: File;
-  preview: string;
-  exif: ExifData | null;
-  hasExif: boolean;
-}
+import { clsx } from "clsx";
 
 export default function ExifPage() {
   const t = useTranslations("Exif");
-  const [selectedImage, setSelectedImage] = useState<ProcessedImage | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [exifData, setExifData] = useState<any>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
+  const [isProcessing, setIsProcessing] = useState(false);
   const { success, error: toastError } = useToast();
 
-  const convertDMSToDD = (dms: number[], ref: string) => {
-    if (!dms || dms.length < 3) return null;
-    let dd = dms[0] + dms[1] / 60 + dms[2] / 3600;
-    if (ref === "S" || ref === "W") {
-      dd = dd * -1;
-    }
-    return dd;
-  };
-
-  const getExifData = (file: File): Promise<ExifData | null> => {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (!e.target?.result) return resolve(null);
-        
-        const img = new Image();
-        img.src = URL.createObjectURL(file);
-        img.onload = () => {
-          // @ts-expect-error - exif-js types might be slightly off regarding 'this' context or overload
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          EXIF.getData(img, function(this: any) {
-            const allTags = EXIF.getAllTags(this);
-            URL.revokeObjectURL(img.src);
-            resolve(allTags && Object.keys(allTags).length > 0 ? allTags : null);
-          });
-        };
-        img.onerror = () => {
-          URL.revokeObjectURL(img.src);
-          resolve(null);
-        };
-      };
-      reader.readAsArrayBuffer(file);
-    });
-  };
-
-  const handleFilesSelected = async (selectedFiles: File[]) => {
-    if (selectedFiles.length === 0) {
-      setSelectedImage(null);
-      return;
-    }
-
-    setError(null);
-    try {
-      const file = selectedFiles[0];
-      const exif = await getExifData(file);
+  const handleFileSelect = (files: File[]) => {
+    if (files.length > 0) {
+      const selectedFile = files[0];
+      setFile(selectedFile);
+      setPreviewUrl(URL.createObjectURL(selectedFile));
       
-      setSelectedImage({
-        file,
-        preview: URL.createObjectURL(file),
-        exif,
-        hasExif: !!exif
+      EXIF.getData(selectedFile as any, function(this: any) {
+        const allMetadata = EXIF.getAllTags(this);
+        setExifData(Object.keys(allMetadata).length > 0 ? allMetadata : null);
       });
-    } catch (err) {
-      console.error(err);
-      const msg = t("error_read");
-      setError(msg);
-      toastError(msg);
     }
   };
 
-  const removeExifAndDownload = async () => {
-    if (!selectedImage) return;
-
+  const removeExif = async () => {
+    if (!file) return;
+    setIsProcessing(true);
+    
     try {
       const img = new Image();
-      img.src = selectedImage.preview;
-      await new Promise((resolve) => { img.onload = resolve; });
-
+      img.src = previewUrl;
+      await new Promise(r => (img.onload = r));
+      
       const canvas = document.createElement("canvas");
       canvas.width = img.naturalWidth;
       canvas.height = img.naturalHeight;
       const ctx = canvas.getContext("2d");
-      if (!ctx) throw new Error("Could not get canvas context");
-
-      ctx.drawImage(img, 0, 0);
-
-      canvas.toBlob((blob) => {
-        if (!blob) throw new Error("Could not create blob");
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `clean_${selectedImage.file.name}`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        success(t("success_clear"));
-      }, selectedImage.file.type, 1.0);
+      ctx?.drawImage(img, 0, 0);
+      
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = `no_exif_${file.name}`;
+      a.click();
+      success(t("success_clear"));
     } catch (err) {
-      console.error(err);
-      const msg = t("error_clear");
-      setError(msg);
-      toastError(msg);
+      toastError(t("error_clear"));
+    } finally {
+      setIsProcessing(false);
     }
   };
 
-  const renderExifValue = (value: unknown) => {
-    if (value === undefined || value === null) return t("unknown");
-    if (typeof value === 'number') return value;
-    if (value instanceof Number) return value.valueOf();
-    return String(value);
-  };
-
-  const renderGpsLink = () => {
-    if (!selectedImage?.exif?.GPSLatitude || !selectedImage?.exif?.GPSLongitude) return null;
-    
-    const lat = convertDMSToDD(selectedImage.exif.GPSLatitude, selectedImage.exif.GPSLatitudeRef || "N");
-    const lng = convertDMSToDD(selectedImage.exif.GPSLongitude, selectedImage.exif.GPSLongitudeRef || "E");
-
-    if (lat === null || lng === null) return null;
-
-    return (
-      <a 
-        href={`https://www.google.com/maps?q=${lat},${lng}`} 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="text-blue-500 hover:text-blue-600 underline text-sm flex items-center gap-1 mt-1"
-      >
-        <MapPin className="w-3 h-3" /> {t("view_map")}
-      </a>
-    );
-  };
+  const InfoTag = ({ icon: Icon, label, value }: any) => (
+     <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-xl border border-border/50">
+        <div className="p-2 bg-blue-50 dark:bg-blue-900/30 text-blue-500 rounded-lg">
+           <Icon className="w-4 h-4" />
+        </div>
+        <div className="min-w-0">
+           <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{label}</p>
+           <p className="text-sm font-semibold truncate">{value || t("unknown")}</p>
+        </div>
+     </div>
+  );
 
   return (
-    <Container className="py-8">
-      <div className="max-w-4xl mx-auto">
+    <Container className="py-12 md:py-20">
+      <div className="max-w-5xl mx-auto space-y-8">
         <AdBannerAuto slot={process.env.NEXT_PUBLIC_AD_SLOT_BANNER} />
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          {t("title")}
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400 mb-8">
-          {t("description")}
-        </p>
+        
+        <div className="text-center space-y-4">
+          <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="inline-flex p-3 rounded-2xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 mb-2">
+            <Scan className="w-8 h-8" />
+          </motion.div>
+          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500">
+            {t("title")}
+          </motion.h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">{t("description")}</p>
+        </div>
 
-        <FileUploader
-          accept="image/*"
-          multiple={false}
-          onFilesSelected={handleFilesSelected}
-          onError={setError}
-          className="mb-6"
-        />
-
-        {error && (
-          <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-lg mb-6">
-            {error}
-          </div>
-        )}
-
-        {selectedImage && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-4">
-              <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={selectedImage.preview}
-                  alt={selectedImage.file.name}
-                  className="w-full h-auto rounded-lg"
-                />
-                <div className="mt-4 flex justify-between items-center">
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    {selectedImage.file.name}
-                  </span>
-                  <Button onClick={removeExifAndDownload} variant="outline" size="sm">
-                    <Trash2 className="w-4 h-4 mr-2" />
-                    {t("clear_download")}
-                  </Button>
-                </div>
-              </div>
-            </div>
-
+        {!file ? (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <FileUploader
+              accept="image/jpeg,image/tiff"
+              onFilesSelected={handleFileSelect}
+              className="glass-card !border-dashed !border-2 !border-blue-500/20 hover:!border-blue-500/40 transition-colors"
+            />
+          </motion.div>
+        ) : (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid lg:grid-cols-2 gap-8">
+            {/* Preview */}
             <div className="space-y-6">
-              {!selectedImage.hasExif ? (
-                 <div className="bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 p-4 rounded-lg flex items-center gap-2">
-                   <Info className="w-5 h-5" />
-                   {t("no_exif")}
-                 </div>
-              ) : (
-                <>
-                  <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-                    <div className="bg-gray-50 dark:bg-gray-700/50 px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center gap-2">
-                      <Camera className="w-5 h-5 text-gray-500" />
-                      <h3 className="font-semibold text-gray-900 dark:text-white">{t("camera_info")}</h3>
-                    </div>
-                    <div className="p-4 space-y-2">
-                      <div className="grid grid-cols-2 gap-2 text-sm">
-                        <span className="text-gray-500 dark:text-gray-400">{t("make")}</span>
-                        <span className="font-medium dark:text-gray-200">{renderExifValue(selectedImage.exif?.Make)}</span>
-                        
-                        <span className="text-gray-500 dark:text-gray-400">{t("model")}</span>
-                        <span className="font-medium dark:text-gray-200">{renderExifValue(selectedImage.exif?.Model)}</span>
-                        
-                        <span className="text-gray-500 dark:text-gray-400">{t("datetime")}</span>
-                        <span className="font-medium dark:text-gray-200">{renderExifValue(selectedImage.exif?.DateTime)}</span>
-                        
-                        <span className="text-gray-500 dark:text-gray-400">{t("exposure")}</span>
-                        <span className="font-medium dark:text-gray-200">{selectedImage.exif?.ExposureTime ? `1/${Math.round(1/selectedImage.exif.ExposureTime)}s` : t("unknown")}</span>
-                        
-                        <span className="text-gray-500 dark:text-gray-400">{t("aperture")}</span>
-                        <span className="font-medium dark:text-gray-200">{selectedImage.exif?.FNumber ? `f/${selectedImage.exif.FNumber}` : t("unknown")}</span>
-                        
-                        <span className="text-gray-500 dark:text-gray-400">{t("iso")}</span>
-                        <span className="font-medium dark:text-gray-200">{renderExifValue(selectedImage.exif?.ISOSpeedRatings)}</span>
-                        
-                        <span className="text-gray-500 dark:text-gray-400">{t("focal_length")}</span>
-                        <span className="font-medium dark:text-gray-200">{selectedImage.exif?.FocalLength ? `${selectedImage.exif.FocalLength}mm` : t("unknown")}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-                    <div className="bg-gray-50 dark:bg-gray-700/50 px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center gap-2">
-                      <ImageIcon className="w-5 h-5 text-gray-500" />
-                      <h3 className="font-semibold text-gray-900 dark:text-white">{t("image_params")}</h3>
-                    </div>
-                    <div className="p-4 space-y-2">
-                      <div className="grid grid-cols-2 gap-2 text-sm">
-                        <span className="text-gray-500 dark:text-gray-400">{t("width")}</span>
-                        <span className="font-medium dark:text-gray-200">{renderExifValue(selectedImage.exif?.PixelXDimension)} px</span>
-                        
-                        <span className="text-gray-500 dark:text-gray-400">{t("height")}</span>
-                        <span className="font-medium dark:text-gray-200">{renderExifValue(selectedImage.exif?.PixelYDimension)} px</span>
-                        
-                        <span className="text-gray-500 dark:text-gray-400">{t("color_space")}</span>
-                        <span className="font-medium dark:text-gray-200">{selectedImage.exif?.ColorSpace === 1 ? 'sRGB' : 'Uncalibrated'}</span>
-                        
-                        <span className="text-gray-500 dark:text-gray-400">{t("orientation")}</span>
-                        <span className="font-medium dark:text-gray-200">{renderExifValue(selectedImage.exif?.Orientation)}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {selectedImage.exif?.GPSLatitude && selectedImage.exif?.GPSLongitude && (
-                    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-                      <div className="bg-gray-50 dark:bg-gray-700/50 px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center gap-2">
-                        <MapPin className="w-5 h-5 text-gray-500" />
-                        <h3 className="font-semibold text-gray-900 dark:text-white">{t("gps")}</h3>
-                      </div>
-                      <div className="p-4 space-y-2">
-                        <div className="grid grid-cols-2 gap-2 text-sm">
-                          <span className="text-gray-500 dark:text-gray-400">{t("latitude")}</span>
-                          <span className="font-medium dark:text-gray-200">
-                            {convertDMSToDD(selectedImage.exif.GPSLatitude, selectedImage.exif.GPSLatitudeRef || "N")?.toFixed(6)}° {selectedImage.exif.GPSLatitudeRef}
-                          </span>
-                          
-                          <span className="text-gray-500 dark:text-gray-400">{t("longitude")}</span>
-                          <span className="font-medium dark:text-gray-200">
-                            {convertDMSToDD(selectedImage.exif.GPSLongitude, selectedImage.exif.GPSLongitudeRef || "E")?.toFixed(6)}° {selectedImage.exif.GPSLongitudeRef}
-                          </span>
-                        </div>
-                        {renderGpsLink()}
-                      </div>
-                    </div>
-                  )}
-                </>
-              )}
+               <div className="glass-card p-4 rounded-3xl bg-slate-100 dark:bg-slate-900/50 border border-border flex items-center justify-center min-h-[400px]">
+                  <img src={previewUrl} className="max-h-[500px] rounded-xl shadow-xl" alt="Preview" />
+               </div>
+               <div className="flex gap-4">
+                  <Button onClick={removeExif} loading={isProcessing} variant="outline" className="flex-1 border-red-200 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20">
+                     <Trash2 className="w-4 h-4 mr-2" /> {t("clear_download")}
+                  </Button>
+                  <Button variant="ghost" onClick={() => { setFile(null); setExifData(null); }} className="px-6">
+                     <RefreshCw className="w-4 h-4" />
+                  </Button>
+               </div>
             </div>
-          </div>
+
+            {/* Data Details */}
+            <div className="space-y-6">
+               <AnimatePresence mode="wait">
+                  {exifData ? (
+                     <motion.div key="data" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="glass-card p-6 rounded-3xl space-y-6">
+                        <div className="flex items-center gap-2 pb-4 border-b border-border">
+                           <Info className="w-5 h-5 text-blue-500" />
+                           <h2 className="text-xl font-bold">{t("camera_info")}</h2>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                           <InfoTag icon={Camera} label={t("make")} value={exifData.Make} />
+                           <InfoTag icon={Scan} label={t("model")} value={exifData.Model} />
+                           <InfoTag icon={Calendar} label={t("datetime")} value={exifData.DateTime} />
+                           <InfoTag icon={Maximize} label={t("image_params")} value={`${exifData.PixelXDimension} x ${exifData.PixelYDimension}`} />
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-3">
+                           <div className="p-4 bg-muted/50 rounded-2xl text-center">
+                              <p className="text-[10px] font-bold text-muted-foreground mb-1 uppercase">ISO</p>
+                              <p className="text-lg font-bold">{exifData.ISOSpeedRatings || "-"}</p>
+                           </div>
+                           <div className="p-4 bg-muted/50 rounded-2xl text-center">
+                              <p className="text-[10px] font-bold text-muted-foreground mb-1 uppercase">Aperture</p>
+                              <p className="text-lg font-bold">f/{exifData.FNumber || "-"}</p>
+                           </div>
+                           <div className="p-4 bg-muted/50 rounded-2xl text-center">
+                              <p className="text-[10px] font-bold text-muted-foreground mb-1 uppercase">Shutter</p>
+                              <p className="text-lg font-bold">{exifData.ExposureTime ? `1/${Math.round(1/exifData.ExposureTime)}` : "-"}</p>
+                           </div>
+                        </div>
+
+                        {exifData.GPSLatitude && (
+                           <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-2xl border border-green-100 dark:border-green-800 flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                 <MapPin className="w-5 h-5 text-green-600" />
+                                 <span className="text-sm font-semibold text-green-700 dark:text-green-400">{t("gps")} Data Found</span>
+                              </div>
+                              <Button size="sm" variant="ghost" className="text-green-600">View Map</Button>
+                           </div>
+                        )}
+                     </motion.div>
+                  ) : (
+                     <motion.div key="no-data" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="glass-card p-12 rounded-3xl text-center flex flex-col items-center justify-center space-y-4">
+                        <div className="p-4 bg-muted rounded-full">
+                           <Trash2 className="w-8 h-8 text-muted-foreground" />
+                        </div>
+                        <p className="text-muted-foreground font-medium">{t("no_exif")}</p>
+                     </motion.div>
+                  )}
+               </AnimatePresence>
+               <ShareButtons />
+            </div>
+          </motion.div>
         )}
+
+        <div className="pt-8">
+          <RelatedTools currentTool="exif" />
+        </div>
       </div>
     </Container>
   );
