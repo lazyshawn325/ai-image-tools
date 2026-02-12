@@ -3,6 +3,7 @@
 import { useRef, useState, MouseEvent } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
 interface SpotlightCardProps {
   children?: React.ReactNode;
@@ -29,11 +30,32 @@ export function SpotlightCard({
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [opacity, setOpacity] = useState(0);
 
+  // 3D Tilt Animation Values
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseXSpring = useSpring(x);
+  const mouseYSpring = useSpring(y);
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["7deg", "-7deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-7deg", "7deg"]);
+
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!divRef.current) return;
 
     const rect = divRef.current.getBoundingClientRect();
+    
+    // Spotlight position
     setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+
+    // Tilt values (-0.5 to 0.5)
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    
+    x.set(mouseX / width - 0.5);
+    y.set(mouseY / height - 0.5);
   };
 
   const handleMouseEnter = () => {
@@ -42,16 +64,23 @@ export function SpotlightCard({
 
   const handleMouseLeave = () => {
     setOpacity(0);
+    x.set(0);
+    y.set(0);
   };
 
   return (
-    <div
+    <motion.div
       ref={divRef}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      style={{
+        rotateX,
+        rotateY,
+        transformStyle: "preserve-3d",
+      }}
       className={cn(
-        "relative h-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-slate-800/50 bg-white/50 dark:bg-slate-900/40 backdrop-blur-sm transition-all duration-500 group hover:-translate-y-1",
+        "relative h-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-white/5 bg-white/50 dark:bg-slate-900/40 backdrop-blur-sm transition-all duration-500 group",
         className
       )}
     >
@@ -67,19 +96,14 @@ export function SpotlightCard({
         }}
       />
       
-      {/* Animated Border Gradient on Hover */}
-      <div 
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0 pointer-events-none"
-        style={{
-          background: `radial-gradient(400px circle at ${position.x}px ${position.y}px, rgba(129, 140, 248, 0.1), transparent 40%)`
-        }}
-      />
-      
       {/* Content */}
-      <div className="relative h-full flex flex-col p-8 z-10 pointer-events-none">
+      <div 
+        className="relative h-full flex flex-col z-10 pointer-events-none"
+        style={{ transform: "translateZ(30px)" }} // Parallax content
+      >
         {badge && (
-          <div className="absolute top-4 right-4">
-            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-500/20 shadow-sm">
+          <div className="absolute top-0 right-0">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-500/20 shadow-sm technical-badge">
               {badge}
             </span>
           </div>
@@ -87,8 +111,7 @@ export function SpotlightCard({
         
         <div className="flex items-center gap-5 mb-5">
           {icon && (
-            <div className="relative p-3.5 rounded-2xl bg-indigo-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 shadow-sm border border-indigo-100 dark:border-slate-700 group-hover:shadow-[0_0_20px_-5px_rgba(79,70,229,0.5)]">
-               {/* Inner glow for icon */}
+            <div className="relative p-3.5 rounded-2xl bg-indigo-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500 shadow-sm border border-indigo-100 dark:border-slate-700 group-hover:shadow-[0_0_30px_-5px_rgba(79,70,229,0.6)]">
                <div className="absolute inset-0 rounded-2xl bg-indigo-400/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative z-10">{icon}</div>
             </div>
@@ -115,6 +138,6 @@ export function SpotlightCard({
           <span className="sr-only">View {title}</span>
         </Link>
       )}
-    </div>
+    </motion.div>
   );
 }

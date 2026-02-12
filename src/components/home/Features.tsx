@@ -41,25 +41,43 @@ export function Features() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.2, duration: 0.5 }}
-              viewport={{ once: true }}
-              className="h-full"
-            >
-              <SpotlightCard
-                title={feature.title}
-                description={feature.description}
-                icon={feature.icon}
-                spotlightColor="rgba(168, 85, 247, 0.15)" // Purple tint
-                className="h-full"
-              />
-            </motion.div>
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="md:col-span-7 h-full"
+          >
+            <SpotlightCard
+              title={features[0].title}
+              description={features[0].description}
+              icon={features[0].icon}
+              spotlightColor="rgba(34, 197, 94, 0.1)" // Green tint
+              className="p-10"
+            />
+          </motion.div>
+          
+          <div className="md:col-span-5 flex flex-col gap-6">
+            {features.slice(1).map((feature, index) => (
+              <motion.div
+                key={index + 1}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: (index + 1) * 0.1, duration: 0.5 }}
+                viewport={{ once: true }}
+                className="flex-1"
+              >
+                <SpotlightCard
+                  title={feature.title}
+                  description={feature.description}
+                  icon={feature.icon}
+                  spotlightColor={index === 0 ? "rgba(234, 179, 8, 0.1)" : "rgba(59, 130, 246, 0.1)"}
+                  className="p-8"
+                />
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
