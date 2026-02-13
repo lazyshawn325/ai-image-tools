@@ -141,7 +141,33 @@
     "results_title": "Results ({count})",
     "download_all": "Download All",
     "success_all_completed": "All images compressed successfully",
-    "error_compress_failed": "Compression failed"
+    "error_compress_failed": "Compression failed",
+    "SEO": {
+      "title": "Image Compressor - Professional Online Optimization",
+      "description": "Our image compression tool uses advanced browser-side algorithms to reduce image size by up to 50% or more without visible quality loss, by optimizing pixel encoding and removing useless metadata. Perfect for improving website loading speed or saving storage space.",
+      "features": [
+        "💎 Smart Algorithms: Advanced lossy and lossless compression technologies",
+        "🚀 Batch Processing: Select multiple images at once and complete in one click",
+        "🛡️ Privacy Protection: All operations done locally, images are not uploaded to servers",
+        "📱 Cross-Platform: Perfectly supports mobile and PC browsers"
+      ],
+      "howToUse": [
+        "Drag one or more images to the upload area",
+        "Adjust the compression quality slider, lower value means smaller size",
+        "Click 'Start Compression' and wait for millisecond-level processing",
+        "Click 'Download All' to save the optimized images"
+      ],
+      "faq": [
+        {
+          "question": "Will compression make it blurry?",
+          "answer": "If you choose quality above 80%, the difference is almost invisible to the naked eye. For PNG and other formats, we also provide lossless compression options."
+        },
+        {
+          "question": "Do you support batch compression?",
+          "answer": "Yes, we support processing multiple images at the same time, which can be downloaded as a package after processing."
+        }
+      ]
+    }
   },
   "Convert": {
     "meta_title": "Image Converter - AI Image Tools",
@@ -158,7 +184,33 @@
     "download_all": "Download All",
     "success_all_completed": "All images converted successfully",
     "error_convert_failed": "Conversion failed",
-    "error_load_failed": "Failed to load image"
+    "error_load_failed": "Failed to load image",
+    "SEO": {
+      "title": "Image Format Converter - Cross-Platform Universal Solution",
+      "description": "Whether you need to convert PNG to smaller WebP, or restore WebP to universal JPEG, our conversion tool handles it easily. Using the latest Web Canvas technology, converted images have high color accuracy.",
+      "features": [
+        "🔄 Multi-Format Support: Convert between mainstream image formats freely",
+        "🎨 Color Preservation: Precise color space conversion ensuring no quality loss",
+        "⚡️ Instant Download: Download immediately after conversion, no server link generation",
+        "🔒 100% Privacy: Files converted directly in memory, creating no cloud copies"
+      ],
+      "howToUse": [
+        "Upload the original images you need to convert",
+        "Select the target format (e.g. WebP) from the list below",
+        "If JPEG is selected, you can additionally adjust quality parameters",
+        "Click convert and download the final result"
+      ],
+      "faq": [
+        {
+          "question": "What is the advantage of WebP format?",
+          "answer": "WebP is a modern web recommended format, 30% smaller than JPEG/PNG at same quality, significantly improving website loading speed."
+        },
+        {
+          "question": "Will conversion lose transparency?",
+          "answer": "If converting from PNG to JPEG, since JPEG doesn't support transparency, background will become white; recommend converting to WebP or keeping PNG."
+        }
+      ]
+    }
   },
   "Resize": {
     "meta_title": "Image Resizer - AI Image Tools",

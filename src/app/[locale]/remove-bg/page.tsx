@@ -1,6 +1,6 @@
 import {setRequestLocale} from 'next-intl/server';
-import PageClient from './PageClient';
 import {routing} from '@/i18n/routing';
+import { RemoveBgClientOnly } from '@/components/shared/ClientOnlyWrapper';
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({locale}));
@@ -9,5 +9,5 @@ export function generateStaticParams() {
 export default async function Page({params}: {params: Promise<{locale: string}>}) {
   const {locale} = await params;
   setRequestLocale(locale);
-  return <PageClient />;
+  return <RemoveBgClientOnly />;
 }

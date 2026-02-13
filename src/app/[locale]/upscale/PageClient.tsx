@@ -36,13 +36,27 @@ export default function UpscalePage() {
   const [error, setError] = useState<string | null>(null);
   const { success, error: toastError } = useToast();
 
-  const seoData = {
-    title: t("SEO.title"),
-    description: t("SEO.description"),
-    features: t.raw("SEO.features"),
-    howToUse: t.raw("SEO.howToUse"),
-    faq: t.raw("SEO.faq")
-  };
+  // 安全读取环境变量
+  const adSlot = typeof process !== 'undefined' ? process.env?.NEXT_PUBLIC_AD_SLOT_BANNER : "";
+
+  let seoData;
+  try {
+    seoData = {
+      title: t("SEO.title"),
+      description: t("SEO.description"),
+      features: t.raw("SEO.features"),
+      howToUse: t.raw("SEO.howToUse"),
+      faq: t.raw("SEO.faq")
+    };
+  } catch (e) {
+    seoData = {
+      title: "Image Upscaler",
+      description: "Enhance image quality online",
+      features: [],
+      howToUse: [],
+      faq: []
+    };
+  }
 
   const processUpscale = async () => {
     if (files.length === 0) return;
@@ -118,7 +132,7 @@ export default function UpscalePage() {
       />
       <Container className="py-12 md:py-20">
         <div className="max-w-5xl mx-auto space-y-8">
-          <AdBannerAuto slot={process.env.NEXT_PUBLIC_AD_SLOT_BANNER} />
+          <AdBannerAuto slot={adSlot} />
 
           <div className="text-center space-y-4">
             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="inline-flex p-3 rounded-2xl bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 mb-2">

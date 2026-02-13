@@ -1,5 +1,4 @@
-import { setRequestLocale } from "next-intl/server";
-import { useTranslations } from "next-intl";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 import { PricingCards } from "@/components/pricing/PricingCards";
 import { routing } from "@/i18n/routing";
 
@@ -14,7 +13,7 @@ export default async function PricingPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = useTranslations("Pricing");
+  const t = await getTranslations({ locale, namespace: "Pricing" });
 
   return (
     <main className="min-h-screen pt-32 pb-20 overflow-hidden relative">
