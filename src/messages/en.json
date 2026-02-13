@@ -1,6 +1,7 @@
 {
   "Navigation": {
     "home": "Home",
+    "pricing": "Pricing",
     "compress": "Compress",
     "convert": "Convert",
     "resize": "Resize",
@@ -63,6 +64,41 @@
     "collage_desc": "Combine multiple images into one with layouts",
     "qrcode_desc": "Generate custom QR codes with colors and logos",
     "watermark_desc": "Add text or image watermarks to protect your work"
+  },
+  "Pricing": {
+    "title": "Simple, Transparent Pricing",
+    "subtitle": "Choose the plan that fits your needs",
+    "monthly": "/month",
+    "yearly": "/year",
+    "get_started": "Get Started",
+    "current_plan": "Current Plan",
+    "popular": "Most Popular",
+    "features": "Features",
+    "plans": {
+      "free": {
+        "name": "Free",
+        "desc": "Perfect for casual use",
+        "price": "$0",
+        "features": [
+          "Unlimited Basic Compressions",
+          "Standard Speed Processing",
+          "Ad-supported experience",
+          "Max 5MB per file"
+        ]
+      },
+      "pro": {
+        "name": "Pro",
+        "desc": "For power users & pros",
+        "price": "$9.99",
+        "features": [
+          "Priority Processing Speed",
+          "Ad-Free Experience",
+          "AI Bulk Processing",
+          "Max 50MB per file",
+          "Priority Support"
+        ]
+      }
+    }
   },
   "Footer": {
     "description": "Professional online image tools. Local processing for maximum privacy. Secure, fast, and free.",

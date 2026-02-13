@@ -1,6 +1,7 @@
 {
   "Navigation": {
     "home": "首页",
+    "pricing": "价格",
     "compress": "图片压缩",
     "convert": "格式转换",
     "resize": "尺寸调整",
@@ -63,6 +64,41 @@
     "collage_desc": "将多张图片拼接成一张，支持多种布局模板",
     "qrcode_desc": "生成个性化二维码，支持自定义颜色和尺寸",
     "watermark_desc": "添加文字或图片水印，保护作品版权"
+  },
+  "Pricing": {
+    "title": "简单透明的价格",
+    "subtitle": "选择最适合您的方案",
+    "monthly": "/月",
+    "yearly": "/年",
+    "get_started": "立即开始",
+    "current_plan": "当前方案",
+    "popular": "最受欢迎",
+    "features": "功能特权",
+    "plans": {
+      "free": {
+        "name": "免费版",
+        "desc": "适合日常轻量使用",
+        "price": "¥0",
+        "features": [
+          "无限次基础压缩",
+          "标准处理速度",
+          "包含广告",
+          "单文件最大 5MB"
+        ]
+      },
+      "pro": {
+        "name": "专业版",
+        "desc": "适合专业人士",
+        "price": "¥19.9",
+        "features": [
+          "极速优先处理通道",
+          "完全无广告体验",
+          "AI 批量处理",
+          "单文件最大 50MB",
+          "优先技术支持"
+        ]
+      }
+    }
   },
   "Footer": {
     "description": "专业的在线图片处理工具，所有处理均在浏览器本地完成，安全、快速、免费。",

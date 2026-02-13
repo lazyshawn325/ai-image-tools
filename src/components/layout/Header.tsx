@@ -7,6 +7,7 @@ import { Image as ImageIcon, Menu, X, Globe, DownloadCloud } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 const NAV_LINKS = [
+  { href: '/pricing', key: 'pricing' },
   { href: '/compress', key: 'compress' },
   { href: '/convert', key: 'convert' },
   { href: '/resize', key: 'resize' },

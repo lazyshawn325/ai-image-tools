@@ -39,9 +39,13 @@ import { getTranslations } from "next-intl/server";
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Global" });
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ai-image-tools-h41u.vercel.app";
 
   return {
-    title: t("meta_title"),
+    title: {
+      template: `%s | ${t("meta_title")}`,
+      default: t("meta_title"),
+    },
     description: t("meta_desc"),
     keywords: [
       t.raw("meta_title"),
@@ -52,10 +56,36 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       (await getTranslations({ locale, namespace: "Navigation" }))("removeBg"),
     ],
     authors: [{ name: "AI Image Tools" }],
+    metadataBase: new URL(baseUrl),
+    alternates: {
+      canonical: `/${locale}`,
+      languages: {
+        'en': '/en',
+        'zh': '/zh',
+        'x-default': '/en',
+      },
+    },
     openGraph: {
       title: t("meta_title"),
       description: t("meta_desc"),
+      url: `${baseUrl}/${locale}`,
+      siteName: "AI Image Tools",
+      locale: locale === "zh" ? "zh_CN" : "en_US",
       type: "website",
+      images: [
+        {
+          url: "/icon.svg",
+          width: 800,
+          height: 600,
+          alt: "AI Image Tools Logo",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("meta_title"),
+      description: t("meta_desc"),
+      images: ["/icon.svg"],
     },
     verification: {
       google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,

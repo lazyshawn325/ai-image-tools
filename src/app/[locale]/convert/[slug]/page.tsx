@@ -17,6 +17,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { locale, slug } = await params;
   const pairs = generateConvertPairs();
   const pair = pairs.find(p => p.slug === slug);
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ai-image-tools-h41u.vercel.app";
   
   if (!pair) return {};
 
@@ -34,8 +35,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title,
     description: desc,
+    metadataBase: new URL(baseUrl),
     alternates: {
-      canonical: `/convert/${slug}`,
+      canonical: `/${locale}/convert/${slug}`,
+      languages: {
+        'en': `/en/convert/${slug}`,
+        'zh': `/zh/convert/${slug}`,
+        'x-default': `/en/convert/${slug}`,
+      },
+    },
+    openGraph: {
+      title,
+      description: desc,
+      type: "article",
+      url: `${baseUrl}/${locale}/convert/${slug}`,
     }
   };
 }
